@@ -1,27 +1,27 @@
 import React from 'react';
-import { Row, Col, Modal } from 'antd';
+import { Row, Col } from 'antd';
 import FeatherIcon from 'feather-icons-react';
-import axios from 'axios';
+// import axios from 'axios';
 import { PageHeader } from '../../components/page-headers/page-headers';
 import { Cards } from '../../components/cards/frame/cards-frame';
 import { Button } from '../../components/buttons/buttons';
 import { Main } from '../styled';
 
-const confirm = Modal.confirm;
+// const confirm = Modal.confirm;
 
-const addLogConfig = () => {
-  confirm({
-    title: 'Do you want to add all logs from log folder?',
-    okText: 'Yes',
-    onOk() {
-      axios.get('/api/settings/addLogConfig')
-      .then(res => {
-        console.log(res)
-      })
-    },
-    onCancel() {},
-  });
-}
+// const addLogConfig = () => {
+//   confirm({
+//     title: 'Do you want to add all logs from log folder?',
+//     okText: 'Yes',
+//     onOk() {
+//       axios.get('/api/settings/addLogConfig')
+//       .then(res => {
+//         console.log(res)
+//       })
+//     },
+//     onCancel() {},
+//   });
+// }
 
 const LogMng = () => {
   return (

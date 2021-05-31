@@ -1,16 +1,14 @@
-import Cookies from 'js-cookie';
 import actions from './actions';
 
 const { LOGIN_BEGIN, LOGIN_SUCCESS, LOGIN_ERR, LOGOUT_BEGIN, LOGOUT_SUCCESS, LOGOUT_ERR } = actions;
 
 const initState = {
-  login: Cookies.get('loggedIn'),
-  user: Cookies.get('user'),
-  jwt: Cookies.get('jwt'),
+  login: localStorage.getItem("isSigned"),
+  user: JSON.parse(localStorage.getItem("signedUser")),
+  jwt: localStorage.getItem("jwt"),
   loading: false,
   error: null,
 };
-console.log(initState)
 /**
  *
  * @todo impure state mutation/explaination

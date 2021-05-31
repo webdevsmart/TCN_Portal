@@ -1,4 +1,3 @@
-import Cookies from 'js-cookie';
 import axios from 'axios';
 import { notification } from 'antd';
 import actions from './actions';
@@ -13,9 +12,9 @@ const login = (values) => {
       axios.post(url, { values })
       .then(res => {
         if (res.data.status === "success") {
-          Cookies.set('loggedIn', true);
-          Cookies.set('jwt', res.data.token);
-          Cookies.set('user', res.data.user);
+          localStorage.setItem("isSigned", true);
+          localStorage.setItem("jwt", res.data.token);
+          localStorage.setItem("signedUser", JSON.stringify(res.data.user));
           notification["success"]({
             message: 'Success',
             description:
@@ -45,9 +44,9 @@ const logOut = () => {
   return async dispatch => {
     try {
       dispatch(logoutBegin());
-      Cookies.remove('loggedIn');
-      Cookies.remove('jwt');
-      Cookies.remove('user');
+      localStorage.removeItem("isSigned");
+      localStorage.removeItem("jwt");
+      localStorage.removeItem("signedUser");
       dispatch(logoutSuccess(null));
     } catch (err) {
       dispatch(logoutErr(err));

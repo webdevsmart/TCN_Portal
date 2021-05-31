@@ -9,7 +9,6 @@ const DashboardRoutes = () => {
   return (
     <Switch>
       <Route exact path={path} component={Dashboard} />
-      <Route path={`${path}/logMng`} component={Dashboard} />
     </Switch>
   );
 };

@@ -48,12 +48,12 @@ const MenuItems = ({ darkMode, toggleCollapsed, topMenu }) => {
     >
       <Menu.Item key="home" icon={
           !topMenu && (
-            <NavLink className="menuItem-iocn" to={`${path}`}>
+            <NavLink className="menuItem-iocn" to={`/`}>
               <FeatherIcon icon="home" />
             </NavLink>
           )
         }>
-        <NavLink onClick={toggleCollapsed} to={`${path}`}>
+        <NavLink onClick={toggleCollapsed} to={`/`}>
           Dashboard
         </NavLink>
       </Menu.Item>
@@ -90,9 +90,25 @@ const MenuItems = ({ darkMode, toggleCollapsed, topMenu }) => {
       <SubMenu key="stock" icon={!topMenu && <FeatherIcon icon="shopping-bag" />} title="Stock">
         <Menu.Item key="stock">
           <NavLink
-            to="#"
+            to={`/stock/category`}
           >
-            stock level
+            Categories
+          </NavLink>
+        </Menu.Item>
+        <Menu.Item key="products">
+          <NavLink
+            to={`/stock/product`}
+          >
+            Products
+          </NavLink>
+        </Menu.Item>
+      </SubMenu>
+      <SubMenu key="machine" icon={!topMenu && <FeatherIcon icon="shopping-bag" />} title="Machine">
+        <Menu.Item key="machineMng">
+          <NavLink
+            to={`/machine`}
+          >
+            Machine Management
           </NavLink>
         </Menu.Item>
       </SubMenu>

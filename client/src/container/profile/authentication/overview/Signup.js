@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom/cjs/react-router-dom.min';
-import { Form, Input, Button, notification } from 'antd';
+import { Form, Input, notification } from 'antd';
 import axios from 'axios';
 import { AuthWrapper } from './style';
+import { Button } from '../../../../components/buttons/buttons';
 import { Checkbox } from '../../../../components/checkbox/checkbox';
 import Heading from '../../../../components/heading/heading';
 
