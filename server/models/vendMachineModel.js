@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const {STATUS_ACTIVE, STATUS_DEACTIVE} = require('../constants.js');
 
 const vendMachineSchema = mongoose.Schema({
     machineUID: {
@@ -6,6 +7,14 @@ const vendMachineSchema = mongoose.Schema({
         uppercase: true,
         unique: true,
         required: true
+    },
+    siteId: {
+        type: String
+    },
+    status: {
+        type: String,
+        enum: [STATUS_ACTIVE, STATUS_DEACTIVE],
+        default: STATUS_DEACTIVE
     },
     config: {
         VERSION: String,
@@ -38,7 +47,8 @@ const vendMachineSchema = mongoose.Schema({
         logType: String,
         logText: String,
         }
-    ]
+    ],
+
 });
 
 const VendMachine = mongoose.model('VendMachine', vendMachineSchema)

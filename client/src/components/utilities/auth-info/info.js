@@ -1,60 +1,34 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Avatar } from 'antd';
 import { Link } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import FeatherIcon from 'feather-icons-react';
-import { InfoWraper, NavAuth, UserDropDwon } from './auth-info-style';
+import { InfoWraper, UserDropDwon } from './auth-info-style';
 import { Popover } from '../../popup/popup';
-import { Dropdown } from '../../dropdown/dropdown';
 import { logOut } from '../../../redux/authentication/actionCreator';
 import Heading from '../../heading/heading';
 
 const AuthInfo = () => {
   const dispatch = useDispatch();
-  const [state, setState] = useState({
-    flag: 'english',
-  });
-  const { flag } = state;
-
+  const signedUser = useSelector(state => state.auth.user);
   const SignOut = e => {
     e.preventDefault();
     dispatch(logOut());
   };
-
   const userContent = (
     <UserDropDwon>
       <div className="user-dropdwon">
         <figure className="user-dropdwon__info">
           <img src={require('../../../static/img/avatar/chat-auth.png')} alt="" />
           <figcaption>
-            <Heading as="h5">Abdullah Bin Talha</Heading>
-            <p>UI Expert</p>
+            <Heading as="h5">{signedUser.profile.name}</Heading>
+            <p>{signedUser.role}</p>
           </figcaption>
         </figure>
         <ul className="user-dropdwon__links">
           <li>
             <Link to="#">
               <FeatherIcon icon="user" /> Profile
-            </Link>
-          </li>
-          <li>
-            <Link to="#">
-              <FeatherIcon icon="settings" /> Settings
-            </Link>
-          </li>
-          <li>
-            <Link to="#">
-              <FeatherIcon icon="dollar-sign" /> Billing
-            </Link>
-          </li>
-          <li>
-            <Link to="#">
-              <FeatherIcon icon="users" /> Activity
-            </Link>
-          </li>
-          <li>
-            <Link to="#">
-              <FeatherIcon icon="bell" /> Help
             </Link>
           </li>
         </ul>
@@ -65,44 +39,8 @@ const AuthInfo = () => {
     </UserDropDwon>
   );
 
-  const onFlagChangeHandle = value => {
-    setState({
-      ...state,
-      flag: value,
-    });
-  };
-
-  const country = (
-    <NavAuth>
-      <Link onClick={() => onFlagChangeHandle('english')} to="#">
-        <img src={require('../../../static/img/flag/english.png')} alt="" />
-        <span>English</span>
-      </Link>
-      <Link onClick={() => onFlagChangeHandle('germany')} to="#">
-        <img src={require('../../../static/img/flag/germany.png')} alt="" />
-        <span>Germany</span>
-      </Link>
-      <Link onClick={() => onFlagChangeHandle('spain')} to="#">
-        <img src={require('../../../static/img/flag/spain.png')} alt="" />
-        <span>Spain</span>
-      </Link>
-      <Link onClick={() => onFlagChangeHandle('turky')} to="#">
-        <img src={require('../../../static/img/flag/turky.png')} alt="" />
-        <span>Turky</span>
-      </Link>
-    </NavAuth>
-  );
-
   return (
     <InfoWraper>
-      <div className="nav-author">
-        <Dropdown placement="bottomRight" content={country} trigger="click">
-          <Link to="#" className="head-example">
-            <img src={require(`../../../static/img/flag/${flag}.png`)} alt="" />
-          </Link>
-        </Dropdown>
-      </div>
-
       <div className="nav-author">
         <Popover placement="bottomRight" content={userContent} action="click">
           <Link to="#" className="head-example">

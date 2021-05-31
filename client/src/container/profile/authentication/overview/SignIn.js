@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AuthWrapper } from './style';
 import { login } from '../../../../redux/authentication/actionCreator';
 import { Checkbox } from '../../../../components/checkbox/checkbox';
+// import { Button } from '../../../../components/buttons/buttons';
 import Heading from '../../../../components/heading/heading';
 
 const SignIn = () => {

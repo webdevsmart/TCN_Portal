@@ -13,14 +13,15 @@ const DateRangePickerOne = ({ updateRangeDate }) => {
     datePickerInternational: null,
     dateRangePicker: {
       selection: {
-        startDate: new Date(),
-        endDate: addDays(new Date(), 7),
+        startDate: addDays(new Date(), -30),
+        endDate: addDays(new Date(), 3),
         key: 'selection',
       },
     },
   });
   
   const handleRangeChange = which => {
+    console.log(which)
     setState({
       ...state,
       dateRangePicker: {

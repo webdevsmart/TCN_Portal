@@ -21,6 +21,8 @@
         "directory-tree": "^2.2.9",
         "dotenv": "^6.1.0",
         "express": "^4.16.3",
+        "formidable": "^1.2.2",
+        "fs-extra": "^10.0.0",
         "ftp": "^0.3.10",
         "jsonwebtoken": "^8.3.0",
         "mongoose": "^5.7.5",

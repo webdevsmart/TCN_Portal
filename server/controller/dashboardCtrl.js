@@ -82,21 +82,47 @@ const getMachineList = async(req, res) => {
 const getDetail = async(req, res) => {
     let detailList = {};
     let condition = {
-        "machineUIDs" : req.body.data.machineUIDs
+        "machineUIDs" : req.body.data.machineUIDs,
+        "start" : req.body.data.start,
+        "length" : req.body.data.length,
+        "sort" : req.body.data.sort,
+        "sortDir" : req.body.data.sortDir,
+        "dateRange" : req.body.data.dateRange.dateRange,
     };
     let query = {
-        
+        "time": {
+            $gte: new Date(condition.dateRange.startDate),
+            $lte: new Date(condition.dateRange.endDate)
+        },
     };
-    query["$or"] = [];
-    if (condition.machineUIDs) {
+    if (condition.machineUIDs.length > 0) {
+        query["$or"] = [];
         condition.machineUIDs.map(item => {
             query["$or"].push({"machineUID" : item})
         })
     }
-    if (query["$or"].length > 0)
-        detailList = await Transaction.find(query);
+    let mysort = {};
+    if (condition.sortDir === "ascend") 
+        mysort[condition.sort] = 1;
     else 
-        detailList = await Transaction.find();
+        mysort[condition.sort] = -1;
+    // if (query["$or"].length > 0) {
+        detailList.totalSize = await Transaction.countDocuments(query);
+    if (condition.sort === 'price')
+        detailList.list = await Transaction.find(query).limit(condition.length).skip(condition.start).sort(mysort).forEach(function(doc) {
+            db.collection.update(
+               { _id: doc._id },
+               { $set: { price: parseInt(doc.price) } }
+            )
+        });
+    else
+        detailList.list = await Transaction.find(query).limit(condition.length).skip(condition.start).sort(mysort);
+    
+    // }
+    // else {
+    //     detailList.totalSize = await Transaction.find().estimatedDocumentCount();
+    //     detailList.list = await Transaction.find().limit(condition.length).skip(condition.start).sort(mysort);
+    // } 
     res.json({status : "success", data: detailList})
 }
 

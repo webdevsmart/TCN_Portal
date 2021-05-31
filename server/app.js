@@ -9,6 +9,8 @@ const userRoute = require('./routes/usersRoute.js');
 const authRoute = require('./routes/authRoute.js');
 const settingsRoute = require('./routes/settingsRoute.js');
 const dashboardRoute = require('./routes/dashboardRoute.js');
+const stockRoute = require('./routes/stockRoute.js');
+const machineRoute = require('./routes/machineRoute.js');
 
 const Cron = require('./controller/cronCtrl.js');
 
@@ -47,12 +49,19 @@ app.use((req, res, next) => {
      next();
 });
 
+global.appRoot = path.resolve(__dirname);
+
 // routing
 app.use('/api/users', userRoute);
 app.use('/api/dashboard', dashboardRoute);
 app.use('/api/auth', authRoute);
 app.use('/api/settings', settingsRoute);
+app.use('/api/stock', stockRoute);
+app.use('/api/machine', machineRoute);
 // end routing
+
+// setting the uploads folder. 
+app.use('/uploads', express.static('uploads')); 
 
 // for production mode
 // app.get('*', (req, res) => {

@@ -97,7 +97,7 @@ const socialButton = (color, shape) => `
   `;
 
 const ButtonStyled = Styled(Button)`
-
+    height: 40px;
     background: ${({ type, theme }) => type !== 'default' && theme[`${type}-color`]};
     border-width: 0px;
     border-style: ${({ type }) => (type !== 'dashed' ? 'solid' : 'dashed')};
