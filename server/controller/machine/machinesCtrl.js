@@ -31,7 +31,7 @@ const getMachineById = async ( req, res ) => {
     })
     .catch( err => {
         res.json({ 'status': 'fail', 'message': 'Server Error!' });  
-    })
+    });
 }
 
 const setMachineConfig = async ( req, res ) => {
@@ -39,13 +39,15 @@ const setMachineConfig = async ( req, res ) => {
     vendMachine.config = { ...req.body.data };
     vendMachine.siteId = req.body.data.siteId;
     vendMachine.status = req.body.data.status;
+    vendMachine.maxRow = req.body.data.maxRow;
+    vendMachine.maxAisle = req.body.data.maxAisle;
     vendMachine.save()
     .then( result => {
         res.json({ 'status': 'success' });  
     })
     .catch( err => {
         res.json({ 'status': 'fail', 'message': 'Server Error!' });  
-    })
+    });
 }
 
 module.exports = { getMachineList, getMachineById, setMachineConfig };

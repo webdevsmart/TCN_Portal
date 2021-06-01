@@ -6,11 +6,16 @@ const ROLE_ADMIN = 'Admin';
 const STATUS_ACTIVE = 'Active'; 
 const STATUS_DEACTIVE = 'Deactive'; 
 
+const YES = 'Y'; 
+const NO = 'N'; 
+
 module.exports = { 
     ROLE_MEMBER, 
     ROLE_CLIENT, 
     ROLE_OWNER, 
     ROLE_ADMIN,
     STATUS_ACTIVE,
-    STATUS_DEACTIVE
+    STATUS_DEACTIVE,
+    YES,
+    NO
 };

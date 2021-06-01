@@ -27,7 +27,6 @@ const CreateCategory = ({ visible, onCancel, selectedAisle }) => {
   const [productList, setProductList] = useState([]);
 
   useEffect(() => {
-    console.log("ok")
     const getPlanogram = () => {
       Axios.post('/api/machine/planogram/getAisle', { selectedAisle })
       .then( res => {
@@ -65,7 +64,7 @@ const CreateCategory = ({ visible, onCancel, selectedAisle }) => {
   useEffect((state) => {
     const getCategoryList = () => {
       Axios.get('/api/stock/productCategory/getTotalCategory')
-      .then((res) => {
+      .then(( res ) => {
         if (res.data.status === "success") {
           setCategoryList(res.data.data);
         }
@@ -106,6 +105,12 @@ const CreateCategory = ({ visible, onCancel, selectedAisle }) => {
         });  
         form.resetFields();
         onCancel();
+      } else {
+        notification["warning"]({
+          message: 'Warning',
+          description: 
+          res.data.message,
+        });  
       }
     })
     .catch(err => {

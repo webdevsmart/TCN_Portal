@@ -44,7 +44,7 @@ const ProductForm = ({ visible, selectedProduct, onCancel}) => {
   const fileList = [];
   const fileUploadProps = {
     name: 'ImageFile',
-    multiple: true,
+    multiple: false,
     action: '/api/stock/product/uploadProductImage',
     onChange(info) {
       const { status } = info.file;
@@ -180,10 +180,31 @@ const ProductForm = ({ visible, selectedProduct, onCancel}) => {
                     <AddProductForm>
                         <Form style={{ width: '100%' }} form={form} name="addProduct" onFinish={handleSubmit} initialValues={product}>
                             <BasicFormWrapper>
-                            <div className="add-product-block">
+                              <div className="add-product-block">
+                                <Row gutter={15}>
+                                  <Col xs={24}>
+                                      <div className="add-product-content">
+                                      <Cards title="Product Image">
+                                          <Dragger {...fileUploadProps}>
+                                          <p className="ant-upload-drag-icon">
+                                              <FeatherIcon icon="upload" size={50} />
+                                          </p>
+                                          <Heading as="h4" className="ant-upload-text">
+                                              Drag and drop an image
+                                          </Heading>
+                                          <p className="ant-upload-hint">
+                                              or <span>Browse</span> to choose a file
+                                          </p>
+                                          </Dragger>
+                                      </Cards>
+                                      </div>
+                                  </Col>
+                                </Row>
+                              </div>
+                              <div className="add-product-block">
                                 <Row gutter={15}>
                                 <Col xs={24}>
-                                    <div className="add-product-content">
+                                  <div className="add-product-content">
                                     <Cards title="About Product">
                                         <Form.Item name="_id" label="Product Name" style={{ display:"none" }}>
                                           <Input />
@@ -192,6 +213,12 @@ const ProductForm = ({ visible, selectedProduct, onCancel}) => {
                                           <Input />
                                         </Form.Item>
                                         <Form.Item name="name" label="Product Name">
+                                          <Input />
+                                        </Form.Item>
+                                        <Form.Item name="sku" label="Product Sku">
+                                          <Input />
+                                        </Form.Item>
+                                        <Form.Item name="brand" label="Product Brand">
                                           <Input />
                                         </Form.Item>
                                         <Form.Item name="categoryId" label="Category">
@@ -208,6 +235,12 @@ const ProductForm = ({ visible, selectedProduct, onCancel}) => {
                                         </Select>
                                         </Form.Item>
                                         <Form.Item name="price" label="Price(AUD$)">
+                                            <InputNumber style={{ width: '100%' }}/>
+                                        </Form.Item>
+                                        <Form.Item name="buyPrice" label="Buy Price(AUD$)">
+                                            <InputNumber style={{ width: '100%' }}/>
+                                        </Form.Item>
+                                        <Form.Item name="taxRate" label="Tax Rate">
                                             <InputNumber style={{ width: '100%' }}/>
                                         </Form.Item>
 
@@ -227,27 +260,7 @@ const ProductForm = ({ visible, selectedProduct, onCancel}) => {
                                 </Row>
                             </div>
 
-                            <div className="add-product-block">
-                                <Row gutter={15}>
-                                <Col xs={24}>
-                                    <div className="add-product-content">
-                                    <Cards title="Product Image">
-                                        <Dragger {...fileUploadProps}>
-                                        <p className="ant-upload-drag-icon">
-                                            <FeatherIcon icon="upload" size={50} />
-                                        </p>
-                                        <Heading as="h4" className="ant-upload-text">
-                                            Drag and drop an image
-                                        </Heading>
-                                        <p className="ant-upload-hint">
-                                            or <span>Browse</span> to choose a file
-                                        </p>
-                                        </Dragger>
-                                    </Cards>
-                                    </div>
-                                </Col>
-                                </Row>
-                            </div>
+                            
                             <div className="add-form-action">
                                 <Form.Item>
                                 <Button

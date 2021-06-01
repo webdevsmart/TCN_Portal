@@ -39,16 +39,14 @@ const vendMachineSchema = mongoose.Schema({
         DEV_HASH: String,
         DEV_OPER_FLAGS: String,
     },
-    logs : [{
-        time: {
-            type: Date,
-            default: new Date('2021-01-01 00:00:00')
-        },
-        logType: String,
-        logText: String,
-        }
-    ],
-
+    maxRow: {
+        type: Number,
+        default: 6
+    },
+    maxAisle: {
+        type: Number,
+        default: 10
+    }
 });
 
 const VendMachine = mongoose.model('VendMachine', vendMachineSchema)

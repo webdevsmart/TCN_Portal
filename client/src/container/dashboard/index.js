@@ -13,11 +13,13 @@ import { Button } from '../../components/buttons/buttons';
 import Heading from '../../components/heading/heading';
 import { Main } from '../styled';
 
+var date = new Date();
+console.log(new Date(date.getFullYear(), date.getMonth(), 1))
 const Dashboard = () => {
   const [state, updateState] = useState({
     dateRange: {
-      startDate: addDays(new Date(), -30),
-      endDate: new Date(),
+      startDate: new Date(date.getFullYear(), date.getMonth(), 1),
+      endDate: new Date(date.getFullYear(), date.getMonth() + 1, 0),
     },
   });
   const [totalPriceData, setTotalPriceData] = useState({

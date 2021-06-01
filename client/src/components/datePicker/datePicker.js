@@ -8,13 +8,15 @@ import { DatePicker } from 'antd';
 import { ItemWraper, ButtonGroup } from './style';
 import { Button } from '../buttons/buttons';
 
+var date = new Date();
+
 const DateRangePickerOne = ({ updateRangeDate }) => {
   const [state, setState] = useState({
     datePickerInternational: null,
     dateRangePicker: {
       selection: {
-        startDate: addDays(new Date(), -30),
-        endDate: addDays(new Date(), 3),
+        startDate: new Date(date.getFullYear(), date.getMonth(), 1),
+        endDate: new Date(date.getFullYear(), date.getMonth() + 1, 0),
         key: 'selection',
       },
     },

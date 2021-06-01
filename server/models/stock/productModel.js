@@ -13,6 +13,12 @@ const productSchema = mongoose.Schema({
         unique: true,
         required: true,
     },
+    sku: {
+        type: String,
+    },
+    brand: {
+        type: String,
+    },
     categoryId: {
         type: ObjectId,
         required: true,
@@ -20,7 +26,12 @@ const productSchema = mongoose.Schema({
     },
     price: {
         type: Number,
-        required: true,
+    },
+    buyPrice: {
+        type: Number,
+    },
+    taxRate: {
+        type: Number,
     },
     status: {
         type: String,

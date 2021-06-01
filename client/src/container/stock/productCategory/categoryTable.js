@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import { Table, notification, Modal } from 'antd';
+import { format } from 'date-fns';
 import FeatherIcon from 'feather-icons-react';
 import { Cards } from '../../../components/cards/frame/cards-frame';
 import { Button } from '../../../components/buttons/buttons';
@@ -9,13 +10,13 @@ import Axios from 'axios';
 
 const confirm = Modal.confirm;
 
-const CategoryTable = ({refresh, showModal}) => {
+const CategoryTable = ({refresh, showModal, keyword}) => {
 	const [state, setState] = useState({
 		start: 0,
 		length: 5,
 		sort: "time",
 		sortDir: "asc",
-		filter: ""
+		filter: keyword
 	});
 
 	const [categoryList, setCategoryList] = useState({
@@ -31,21 +32,26 @@ const CategoryTable = ({refresh, showModal}) => {
       key: 'createdAt',
     },
     {
-		title: 'Code',
-		dataIndex: 'code',
-		key: 'code',
+		title: 'Image',
+		dataIndex: 'imageUrl',
+		key: 'imageUrl',
     },
-	{
-		title: 'Name',
-		dataIndex: 'name',
-		key: 'name',
+    {
+      title: 'Code',
+      dataIndex: 'code',
+      key: 'code',
     },
-	{
-		title: 'Actions',
-		dataIndex: 'action',
-		key: 'action',
-		width: '90px',
-	  },
+    {
+      title: 'Name',
+      dataIndex: 'name',
+      key: 'name',
+    },
+    {
+      title: 'Actions',
+      dataIndex: 'action',
+      key: 'action',
+      width: '90px',
+    },
   ];
 
 	const showEditModal = (key) => {
@@ -88,31 +94,37 @@ const CategoryTable = ({refresh, showModal}) => {
 	}
 
 	// set transaction datatable datasource
-  categoryList.list.map((value, index) => {
-    const { _id, createdAt, code, name } = value;
-    return categoryDataSource.push({
-      key: _id,
-      createdAt,
-      code,
-      name,
-	  action: (
-		<div className="table-actions">
-			<>
-			<Button className="btn-icon" type="info" to="#" shape="circle" onClick={() => showModal(_id)}>
-				<FeatherIcon icon="edit" size={16} />
-			</Button>
-			<Button className="btn-icon" type="danger" to="#" shape="circle" onClick={() => deleteCategory(_id)}>
-				<FeatherIcon icon="trash-2" size={16} />
-			</Button>
-			</>
-		</div>
-		),
-    });
-  });
+	categoryList.list.map((value, index) => {
+		const { _id, createdAt, imageUrl, code, name } = value;
+    const time = new Date(createdAt);
+		return categoryDataSource.push({
+		key: _id,
+		createdAt: format(time, 'yyyy/MM/dd kk:mm:ss'),
+		code,
+		imageUrl: (
+      <figure>
+        <img src={`/uploads/products/${imageUrl}`} alt={`img`} style={{ maxWidth: '120px' }} />
+      </figure>
+    ),
+		name,
+		action: (
+			<div className="table-actions">
+				<>
+				<Button className="btn-icon" type="info" to="#" shape="circle" onClick={() => showModal(_id)}>
+					<FeatherIcon icon="edit" size={16} />
+				</Button>
+				<Button className="btn-icon" type="danger" to="#" shape="circle" onClick={() => deleteCategory(_id)}>
+					<FeatherIcon icon="trash-2" size={16} />
+				</Button>
+				</>
+			</div>
+			),
+		});
+	});
 	
 	useEffect(() => {
     getCategoryList();
-	}, [state, refresh]);
+	}, [state, refresh, keyword]);
 	
   const getCategoryList = () => {
     let url = "/api/stock/productCategory/getCategoryList";
@@ -121,6 +133,7 @@ const CategoryTable = ({refresh, showModal}) => {
       length: state.length,
       sort: state.sort,
       sortDir: state.sortDir,
+      keyword: keyword
     }
     Axios.post(url, {data})
     .then(res => {

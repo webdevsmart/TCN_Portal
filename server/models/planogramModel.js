@@ -14,7 +14,10 @@ const planogramModel = mongoose.Schema({
             aisleNum: Number,
             width: String,
             height: String,
-            maxQty: Number,
+            maxQty: {
+                type: Number,
+                default: 10
+            },
             productId: {
                 type: ObjectId,
                 ref: 'product'
