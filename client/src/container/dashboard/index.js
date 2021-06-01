@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import { Row, Col } from 'antd';
-import { addDays } from 'date-fns';
+import { format } from 'date-fns';
 import FeatherIcon from 'feather-icons-react';
 import axios from "axios";
 import { CardBarChart2, EChartCard } from './style';
@@ -59,6 +59,9 @@ const Dashboard = () => {
         title="Dashboard"
         buttons={[
           <div key="6" className="page-header-actions">
+            <h4>
+              {`${format(state.dateRange.startDate, 'yyyy.MM.dd')} - ${format(state.dateRange.endDate, 'yyyy.MM.dd')}`}
+            </h4>
             <CalendarButtonPageHeader key="1" updateRangeDate={updateDateRange} dateRange={state.dateRange}/>
             <ExportButtonPageHeader key="2" />
             <Button size="small" key="4" type="primary">

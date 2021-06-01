@@ -112,7 +112,7 @@ const MenuItems = ({ darkMode, toggleCollapsed, topMenu }) => {
           </NavLink>
         </Menu.Item>
       </SubMenu>
-      <SubMenu key="setting" icon={!topMenu && <FeatherIcon icon="settings" />} title="Setting">
+      <SubMenu key="setting" icon={!topMenu && <FeatherIcon icon="settings" />} title="Settings">
         <Menu.Item key="setting">
           <NavLink
             to={`${path}/settings/logMng`}

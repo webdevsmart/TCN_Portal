@@ -127,7 +127,7 @@ const TransactionTable = ( dateRange ) => {
 				<Select
 				mode="multiple"
 				style={{ width: '100%' }}
-				placeholder="select one country"
+				placeholder="Select Machines"
 				defaultValue={[]}
 				optionLabelProp="label"
 				onChange={selectMachine}
