@@ -65,7 +65,7 @@ const Category = () => {
             </>
           }
           buttons={[
-            <Button className="btn-add_new" size="default" type="primary" key="1" onClick={() => showModal()}>
+            <Button className="btn-add_new" size="default" type="primary" key="1" onClick={() => showModal("")}>
               + Add New Category
             </Button>,
           ]}
