@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const ObjectId = mongoose.Schema.Types.ObjectId;
-const {STATUS_ACTIVE, STATUS_DEACTIVE} = require('../../constants.js');
+const {STATUS_ACTIVE, STATUS_DEACTIVE, YES, NO} = require('../../constants.js');
 
 const productSchema = mongoose.Schema({
     code: {
@@ -31,7 +31,7 @@ const productSchema = mongoose.Schema({
         type: Number,
     },
     taxRate: {
-        type: Number,
+        type: String,
     },
     status: {
         type: String,
@@ -44,6 +44,11 @@ const productSchema = mongoose.Schema({
     imageFile: {
         type: String,
         required: true,
+    },
+    isDelete: {
+        type: String,
+        enum: [YES, NO],
+        default: NO
     }
 },
 {
