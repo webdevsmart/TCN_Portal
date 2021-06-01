@@ -15,12 +15,8 @@ const CreateCategory = ({ visible, onCancel, setTableRefresh, selectedCategory }
     visible: false,
     modalType: 'primary'
   });
-  const [formData, setFormData] = useState({
- 
-  });
 
   useEffect((state) => {
-    console.log(selectedCategory)
     if ( selectedCategory !== "" ) {
       Axios.post('/api/stock/productCategory/getCategoryById', { _id: selectedCategory })
       .then( res => {
@@ -54,12 +50,6 @@ const CreateCategory = ({ visible, onCancel, setTableRefresh, selectedCategory }
       unmounted = true;
     };
   }, [visible, selectedCategory]);
-
-  const onInputchange = ( event ) => {
-    setFormData({
-      [event.target.name]: event.target.value
-    });
-  }
 
   const handleOk = values => {
     axios.post('/api/stock/productCategory/addCategory', { _id: selectedCategory, formData: values })
