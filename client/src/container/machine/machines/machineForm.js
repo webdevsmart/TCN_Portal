@@ -24,6 +24,8 @@ const MachineForm = ({ visible, onCancel, selectedMachine }) => {
         form.setFieldsValue( res.data.data.config );
         form.setFieldsValue({ siteId: res.data.data.siteId });
         form.setFieldsValue({ status: res.data.data.status });
+        form.setFieldsValue({ maxRow: res.data.data.maxRow });
+        form.setFieldsValue({ maxAisle: res.data.data.maxAisle });
       } else {
         notification["warning"]({
           message: 'Warning',
@@ -60,7 +62,7 @@ const MachineForm = ({ visible, onCancel, selectedMachine }) => {
   const handleSubmit = values => {
     Axios.post('/api/machine/machines/setMachineConfig', { _id : selectedMachine._id, data: values })
     .then( res => {
-      if ( res.status === 'success' ) {
+      if ( res.data.status === 'success' ) {
         notification["success"]({
           message: 'Success',
           description: 
@@ -172,6 +174,12 @@ const MachineForm = ({ visible, onCancel, selectedMachine }) => {
                           <Radio value="Active">Active</Radio>
                           <Radio value="Deactive">Deactive</Radio>
                       </Radio.Group>
+                    </Form.Item>
+                    <Form.Item name="maxRow" label="Max Rows">
+                      <Input />
+                    </Form.Item>
+                    <Form.Item name="maxAisle" label="Max Aisle">
+                      <Input />
                     </Form.Item>
                   </Cards>
                 </Col>

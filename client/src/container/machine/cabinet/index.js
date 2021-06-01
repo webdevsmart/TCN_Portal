@@ -1,5 +1,5 @@
 import React, { lazy, useState, Suspense, useEffect } from 'react';
-import { Row, Col, notification, Card } from 'antd';
+import { Row, Col, notification, Card, Modal } from 'antd';
 import Axios from 'axios';
 import { Switch, NavLink, Route, useRouteMatch } from 'react-router-dom';
 import FeatherIcon from 'feather-icons-react';
@@ -11,6 +11,8 @@ import { TopToolBox, MachineCardWrapper } from '../style';
 import { Cards } from '../../../components/cards/frame/cards-frame';
 import AisleForm from './aisleForm';
 import SampleProduct from '../../../static/img/sample-product.png'
+
+const confirm = Modal.confirm;
 
 const Product = ({ match }) => {
   const [state, setState] = useState({
@@ -95,19 +97,26 @@ const Product = ({ match }) => {
   }
 
   const deleteAisle = (aisle, row) => {
-    Axios.post('/api/machine/planogram/deleteAisle', {aisleId: aisle, rowId: row})
-    .then( res => {
-      if ( res.data.status === 'success' ) {
-        setRefresh(true);
-      }
-    })
-    .catch( err => {
-      notification["warning"]({
-        message: 'Warning',
-        description: 
-        'Server Error',
-      });
-    })
+    confirm({
+			title: 'Delete this Aisle?',
+			okText: 'Yes',
+			onOk() {
+        Axios.post('/api/machine/planogram/deleteAisle', {aisleId: aisle, rowId: row})
+        .then( res => {
+          if ( res.data.status === 'success' ) {
+            setRefresh(true);
+          }
+        })
+        .catch( err => {
+          notification["warning"]({
+            message: 'Warning',
+            description: 
+            'Server Error',
+          });
+        })
+      },
+      onCancel() {},
+    });
   }
 
   const showModal = ( aisleId, rowId ) => {
@@ -136,7 +145,7 @@ const Product = ({ match }) => {
         title="Machine Cabinet"
         buttons={[
           <Button className="btn-add_new" size="default" type="primary" key="1" onClick={makeCabinet}>
-            + Make Cabinet
+            + Reset Cabinet
           </Button>,
         ]}
       />
@@ -148,19 +157,23 @@ const Product = ({ match }) => {
           <div className="card-grid-wrap">
             {planogram.rows.map( item => {
               let aisleCount = item.aisles.length;
+              item.aisles.sort(( a, b ) => {
+                return ( a.aisleNum > b.aisleNum ) ? 1 : (( b.aisleNum > a.aisleNum ? -1 : 0 ))
+              })
               return (
                 <Cards 
                   key={item._id}
                   title={`Row ${item.rowCode}`} 
                   size="large"
-                  moreText more={
-                  <NavLink to="#" onClick={() => addAisle( item._id )}>
+                  moreText more = {
+                  <NavLink to="#" onClick={() => showModal( null, item._id )}>
                     <FeatherIcon size={16} icon="file-plus" />
                     <span>Add New Aisle</span>
                   </NavLink>
                   }
                 >
-                  { item.aisles.map( aisle => {
+                  { 
+                  item.aisles.map( aisle => {
                     return (
                       <Card.Grid 
                         key={aisle._id}

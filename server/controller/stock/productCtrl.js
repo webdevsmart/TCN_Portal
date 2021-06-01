@@ -1,6 +1,7 @@
 const formidable = require('formidable');
 const fs = require('fs-extra'); 
 const path = require('path');    
+const { YES, NO } = require('../../constants');
 const product = require('../../models/stock/productModel');
 
 const ProductModel = require('../../models/stock/productModel');
@@ -47,7 +48,9 @@ const addProduct = async (req, res) => {
 }
 
 const getProductList = async ( req, res ) => {
-    let query = {};
+    let query = {
+        isDelete: NO,
+    };
     const condition = req.body.filter;
     let mysort = {};
     if (condition.sortDir === "ascend") 
@@ -81,7 +84,7 @@ const getProduct = async (req, res) => {
 }
 
 const getProductByCategory = async ( req, res ) => {
-    ProductModel.find({ categoryId: req.body.categoryId })
+    ProductModel.find({ categoryId: req.body.categoryId, isDelete: NO })
     .then( product => {
         res.json({ 'status': 'success', data: product });  
     })
@@ -101,7 +104,7 @@ const getProductById = async ( req, res ) => {
 }
 
 const deleteProduct = async ( req, res ) => {
-    ProductModel.deleteOne({ _id: req.body._id })
+    ProductModel.updateOne({ _id: req.body._id }, { isDelete: YES })
     .then( result => {
         res.json({ data: result, status: "success" });
     })

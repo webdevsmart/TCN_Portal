@@ -11,23 +11,17 @@ const Category = () => {
     visible: false,
     refresh: false,
     selectedCategory: "",
-    totalCategoryCount: 0
+    totalCategoryCount: 0,
+    keyword: ""
   });
   const { visible } = state;
   
   const showModal = ( selectedCategory = "" ) => {
-    if ( selectedCategory !== "") {
-      setState({
-        ...state,
-        visible: true,
-        selectedCategory: selectedCategory,
-      });
-    } else {
-      setState({
-        ...state,
-        visible: true,
-      });
-    }
+    setState({
+      ...state,
+      visible: true,
+      selectedCategory: selectedCategory,
+    });
   };
 
   const onCancel = () => {
@@ -45,7 +39,10 @@ const Category = () => {
   }
 
   const handleSearch = searchText => {
-    console.log(searchText)
+    setState({
+      ...state,
+      keyword: searchText
+    })
   };
 
   return (
@@ -74,7 +71,7 @@ const Category = () => {
 
       <Main>
         <CreateCategory onCancel={onCancel} visible={visible} setTableRefresh={setTableRefresh} selectedCategory={state.selectedCategory}/>
-        <CategoryTable refresh={state.refresh} showModal={showModal} />
+        <CategoryTable refresh={state.refresh} showModal={showModal} keyword={state.keyword} />
       </Main>
     </>
   );

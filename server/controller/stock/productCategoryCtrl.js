@@ -1,6 +1,7 @@
 const productCategory = require('../../models/stock/categoryModel.js');
 const productCategoryModel = require('../../models/stock/categoryModel.js');
 const { uploadProductImage } = require('./productCtrl.js');
+const {YES, NO} = require('../../constants.js');
 
 const getCategoryList = async (req, res) => {
     let detaList = {};
@@ -9,10 +10,18 @@ const getCategoryList = async (req, res) => {
         "length" : req.body.data.length,
         "sort" : req.body.data.sort,
         "sortDir" : req.body.data.sortDir,
-        "filter" : req.body.data.filter,
+        "keyword" : req.body.data.keyword,
     };
 
-    let query = {};
+    let query = {
+        isDelete: NO
+    };
+    if (condition.keyword !== '') {
+        query['$or'] = [
+            {name: { $regex: condition.keyword }},
+            {code: { $regex: condition.keyword }},
+        ]
+    }
     
     let mysort = {};
     if (condition.sortDir === "ascend") 
@@ -52,7 +61,10 @@ const addCategory = async (req, res) => {
 }
 
 const getTotalCategory = async ( req, res ) => {
-    let dataList = await productCategoryModel.find();
+    let query = {
+        isDelete: NO,
+    }
+    let dataList = await productCategoryModel.find(query);
     res.json({status : "success", data: dataList});
 }
 
@@ -67,7 +79,7 @@ const getCategoryById = async ( req, res ) => {
 }
 
 const deleteCategory = async ( req, res ) => {
-    productCategoryModel.deleteOne({ _id: req.body._id })
+    productCategoryModel.updateOne({ _id: req.body._id }, { isDelete: YES })
     .then( result => {
         res.json({ data: result, status: "success" });
     })
