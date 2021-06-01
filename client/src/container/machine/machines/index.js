@@ -25,7 +25,7 @@ const Product = () => {
 
   const [filter, setFilter] = useState({
     start: 0,
-    length: 10,
+    length: 6,
     keyword: ''
   });
   const [refresh, setRefresh] = useState(true);
