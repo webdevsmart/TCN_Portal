@@ -28,6 +28,7 @@ const makeCabinet = async ( req, res ) => {
     }
     planogram.rows = rows;
     planogram.machineId = req.body.machineId;
+    planogram.machineUID = vendMachine.machineUID;
 
     planogram.save()
     .then( result => {
