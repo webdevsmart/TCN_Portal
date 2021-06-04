@@ -80,9 +80,9 @@ cashCoinTransactionState = {
     "failReason" : "",
     "routingCoins": [],
     "cashBoxCoins": [],
-    "totalVendedPirce": 0,
-    "totalRoutedPirce": 0,
-    "totalRefundPirce": 0,
+    "totalVendedPrice": 0,
+    "totalRoutedPrice": 0,
+    "totalRefundPrice": 0,
 }
 # ---------------------------- end cash coin config ------------------------------------
 
@@ -104,9 +104,9 @@ cashBillTransactionState = {
     "payRefund" : False,
     "initialTubeStatus" : "",
     "afterRefundTubeStatus" : "",
-    "totalVendedPirce": 0,
-    "totalRoutedPirce": 0,
-    "totalRefundPirce": 0,
+    "totalVendedPrice": 0,
+    "totalRoutedPrice": 0,
+    "totalRefundPrice": 0,
     "billLevel": "none",
 }
 # ---------------------------- end cash coin config ------------------------------------
@@ -441,7 +441,7 @@ def checkCashCoinTransaction(line, time, line_no):
         
         tubeLevel = re.search(constants.CASH_COIN_ROUTING_PRICE, line)
         if tubeLevel and tubeLevel.group(1) != '0':
-            cashCoinTransactionState['totalRoutedPirce'] += float(tubeLevel.group(1)) * 100
+            cashCoinTransactionState['totalRoutedPrice'] += float(tubeLevel.group(1)) * 100
     # end add coin
 
     if constants.CASH_COIN_ROUTING_CASH_BOX in line and not cashCoinTransactionState['sessionCom']:
@@ -463,14 +463,18 @@ def checkCashCoinTransaction(line, time, line_no):
             product['price'] = round(float(price.group(1)) * 100, 2)
         cashCoinTransactionState['product'] = product
 
-    if constants.CASH_SESSION_COMPLETE in line and cashCoinTransactionState['start']:
-        cashCoinTransactionState['totalVendedPirce'] = getTotalVendPrice()
+    if constants.CASH_SESSION_COMPLETE in line and cashCoinTransactionState['start'] and not cashCoinTransactionState['sessionCom']:
+        cashCoinTransactionState['totalVendedPrice'] = getTotalVendPrice()
         cashCoinTransactionState['sessionCom'] = True
+        # print(cashCoinTransactionState['sessionCom'])
+        # print(cashCoinTransactionState['start'])
+        # if ( line_no < 283 ):
+        #     print(cashCoinTransactionState)
         if (len(cashCoinTransactionState['initialTubeStatus']) > 0):
             
-            cashCoinTransactionState['totalRoutedPirce'] = getRoutedCoinPrice()
+            cashCoinTransactionState['totalRoutedPrice'] = getRoutedCoinPrice()
 
-            if (cashCoinTransactionState['totalVendedPirce'] == cashCoinTransactionState['totalRoutedPirce']):
+            if (cashCoinTransactionState['totalVendedPrice'] == cashCoinTransactionState['totalRoutedPrice']):
                 cashCoinTransactionState['time'] = time
                 cashCoinTransactionState['totalRefundPrice'] = 0
                 if (cashCoinTransactionState['product']['selectedItem'] == "none"): 
@@ -479,17 +483,16 @@ def checkCashCoinTransaction(line, time, line_no):
                 else:
                     setCashCoinTransaction("success", time, line_no)
 
-        if cashCoinTransactionState['sessionCom']:
-            formatCashCoinTransaction(cashCoinTransactionState['initialTubeStatus'])
+        # if cashCoinTransactionState['sessionCom']:
+        #     formatCashCoinTransaction(cashCoinTransactionState['initialTubeStatus'])
+        # print(cashCoinTransactionState['start'])
 
     if constants.CASH_COIN_TUBE_LEVEL in line and cashCoinTransactionState['start'] and not cashCoinTransactionState['afterVend'] and cashCoinTransactionState['sessionCom']:
         afterVendTubeStatus = re.search(constants.CASH_COIN_TUBE_LEVEL_PATTERN, line)
         if afterVendTubeStatus:
-            print("------------------------------------")
             cashCoinTransactionState['afterVendTubeStatus'] = afterVendTubeStatus.group(1)
-            cashCoinTransactionState['totalRoutedPirce'] = getRoutedCoinPriceFromVendedLevel()
-            # print(line_no)
-            if (cashCoinTransactionState['totalVendedPirce'] == cashCoinTransactionState['totalRoutedPirce']):
+            cashCoinTransactionState['totalRoutedPrice'] = getRoutedCoinPriceFromVendedLevel()
+            if (cashCoinTransactionState['totalVendedPrice'] == cashCoinTransactionState['totalRoutedPrice']):
                 if (cashCoinTransactionState['product']['selectedItem'] == "none"): 
                     cashCoinTransactionState['failReason'] = constants.CASH_COIN_FAIL_REASON['NO_ITEM_SELECTED']
                     setCashCoinTransaction("failed", time, line_no)    
@@ -506,7 +509,7 @@ def checkCashCoinTransaction(line, time, line_no):
             cashCoinTransactionState['afterPayoutTubeStatus'] = afterPayoutTubeStatus.group(1)
             cashCoinTransactionState['totalRefundPrice'] = getRefundPrice()
             cashCoinTransactionState['cashBoxPrice'] = getCashBoxPrice()
-            if (cashCoinTransactionState['totalRoutedPirce'] + cashCoinTransactionState['cashBoxPrice'] == cashCoinTransactionState['totalVendedPirce'] + cashCoinTransactionState['totalRefundPrice']):
+            if (cashCoinTransactionState['totalRoutedPrice'] + cashCoinTransactionState['cashBoxPrice'] == cashCoinTransactionState['totalVendedPrice'] + cashCoinTransactionState['totalRefundPrice']):
                 if (cashCoinTransactionState['product']['selectedItem'] == "none"): 
                     cashCoinTransactionState['failReason'] = constants.CASH_COIN_FAIL_REASON['NO_ITEM_SELECTED']
                     setCashCoinTransaction("failed", time, line_no)    
@@ -514,14 +517,14 @@ def checkCashCoinTransaction(line, time, line_no):
                     setCashCoinTransaction("success", time, line_no)
             elif (countZeroCashBox() > 0):
                 
-                if (cashCoinTransactionState['totalRoutedPirce'] + cashCoinTransactionState['cashBoxPrice'] + countZeroCashBox() * 100 == cashCoinTransactionState['totalVendedPirce'] + cashCoinTransactionState['totalRefundPrice']):
+                if (cashCoinTransactionState['totalRoutedPrice'] + cashCoinTransactionState['cashBoxPrice'] + countZeroCashBox() * 100 == cashCoinTransactionState['totalVendedPrice'] + cashCoinTransactionState['totalRefundPrice']):
                     if (cashCoinTransactionState['product']['selectedItem'] == "none"): 
                         cashCoinTransactionState['failReason'] = constants.CASH_COIN_FAIL_REASON['NO_ITEM_SELECTED']
                         setCashCoinTransaction("failed", time, line_no)    
                     else:
                         setCashCoinTransaction("success", time, line_no)
             else:
-                if (cashCoinTransactionState['totalRefundPrice'] == cashCoinTransactionState['totalRoutedPirce'] + cashCoinTransactionState['cashBoxPrice']):
+                if (cashCoinTransactionState['totalRefundPrice'] == cashCoinTransactionState['totalRoutedPrice'] + cashCoinTransactionState['cashBoxPrice']):
                     cashCoinTransactionState['failReason'] = constants.CASH_COIN_FAIL_REASON['TOTAL_REFUNDED']
                     setCashCoinTransaction("failed", time, line_no)
                 else:
@@ -560,14 +563,14 @@ def formatCashCoinTransaction(lastTubeStatus = ""):
         "failReason" : "",
         "routingCoins": [],
         "cashBoxCoins": [],
-        "totalVendedPirce": 0,
-        "totalRoutedPirce": 0,
-        "totalRefundPirce": 0,
+        "totalVendedPrice": 0,
+        "totalRoutedPrice": 0,
+        "totalRefundPrice": 0,
     }
 
 def getRoutedCoinPrice():
-    if cashCoinTransactionState['totalRoutedPirce'] > 0:
-        return cashCoinTransactionState['totalRoutedPirce']
+    if cashCoinTransactionState['totalRoutedPrice'] > 0:
+        return cashCoinTransactionState['totalRoutedPrice']
     else:
         tubeLevelArray = cashCoinTransactionState['initialTubeStatus'].split(" ")
         totalRoutedCoinPrice = 0
@@ -580,8 +583,8 @@ def getRoutedCoinPrice():
         return totalRoutedCoinPrice
 
 def getRoutedCoinPriceFromVendedLevel():
-    if cashCoinTransactionState['totalRoutedPirce'] > 0:
-        return cashCoinTransactionState['totalRoutedPirce']
+    if cashCoinTransactionState['totalRoutedPrice'] > 0:
+        return cashCoinTransactionState['totalRoutedPrice']
     else:
         tubeLevelArray = cashCoinTransactionState['afterVendTubeStatus'].split(" ")
         totalRoutedCoinPrice = 0
@@ -599,7 +602,6 @@ def getRefundPrice():
     payoutTubeLevelArray = cashCoinTransactionState['afterPayoutTubeStatus'].split(" ")
     totalRefundPrice = 0
     index = 0
-
     while index < len(vendTubeLevelArray) - 1:
         totalRefundPrice += coinTubeLevelFormat[index] * 100 * (int(vendTubeLevelArray[index]) - int(payoutTubeLevelArray[index]))
         index += 1
@@ -624,14 +626,17 @@ def countZeroCashBox():
     return count
 
 def getTotalVendPrice():
-    totalVendedPirce = cashCoinTransactionState['product']['price']
+    totalVendedPrice = cashCoinTransactionState['product']['price']
     # for item in cashCoinTransactionState['product']:
-    #     totalVendedPirce += item['price']
+    #     totalVendedPrice += item['price']
 
-    return totalVendedPirce
+    return totalVendedPrice
 
 def setCashCoinTransaction(type, time, line_no):
     global cashCoinTransactionState
+    if (line_no == 7895):
+        print(cashCoinTransactionState)
+        print(cashCoinTransactionState['totalRefundPrice'])
     data = {
         "machineUID" : machineUID,
         "devName" : devName,
@@ -715,16 +720,16 @@ def checkCashBillTransaction(line, time, line_no):
 
     if "MDBS: COINCH: TubeFull:" in line and cashBillTransactionState['start'] and cashBillTransactionState['stacked'] and cashBillTransactionState['sessionCom'] and cashBillTransactionState['payRefund']:
         cashBillTransactionState['afterRefundTubeStatus'] = re.search(", TubeStatus: (.+?)\ \.\n", line).group(1)
-        cashBillTransactionState['totalRefundPirce'] = calculateBillRefundPrice()
-        if float(cashBillTransactionState['totalRefundPirce']) + float(cashBillTransactionState['product']['price']) * 100 in billValueLevelFormat:
-            index = billValueLevelFormat.index(float(cashBillTransactionState['totalRefundPirce']) + float(cashBillTransactionState['product']['price']) * 100)
+        cashBillTransactionState['totalRefundPrice'] = calculateBillRefundPrice()
+        if float(cashBillTransactionState['totalRefundPrice']) + float(cashBillTransactionState['product']['price']) * 100 in billValueLevelFormat:
+            index = billValueLevelFormat.index(float(cashBillTransactionState['totalRefundPrice']) + float(cashBillTransactionState['product']['price']) * 100)
             cashBillTransactionState['billLevel'] = billValueLevelFormat[index] / 100
             if (cashBillTransactionState['product']['selectedItem'] == "none"):
                 setCashBillTransaction("fail", time, "No Item selected")
             else:   
                 setCashBillTransaction("success", time)
-        elif float(cashBillTransactionState['totalRefundPirce']) in billValueLevelFormat:
-            index = billValueLevelFormat.index(float(cashBillTransactionState['totalRefundPirce']))
+        elif float(cashBillTransactionState['totalRefundPrice']) in billValueLevelFormat:
+            index = billValueLevelFormat.index(float(cashBillTransactionState['totalRefundPrice']))
             cashBillTransactionState['billLevel'] = billValueLevelFormat[index] / 100
             setCashBillTransaction("fail", time, "Totally Refund")
 
@@ -743,9 +748,9 @@ def formatcashBillTransaction(lastTubeStatus = ""):
         "payRefund" : False,
         "initialTubeStatus" : lastTubeStatus,
         "afterRefundTubeStatus" : "",
-        "totalVendedPirce": 0,
-        "totalRoutedPirce": 0,
-        "totalRefundPirce": 0,
+        "totalVendedPrice": 0,
+        "totalRoutedPrice": 0,
+        "totalRefundPrice": 0,
         "billLevel": "none",
     }
 
@@ -761,7 +766,7 @@ def setCashBillTransaction(type, time, failReason = ""):
         "status" : type,
         "time" : time,
         "product" : getProductIdFromSelectedItem(cashBillTransactionState['product']['selectedItem'], cashBillTransactionState['product']['price']),
-        "refund" : cashBillTransactionState['totalRefundPirce'],
+        "refund" : cashBillTransactionState['totalRefundPrice'],
         "billLevel" : cashBillTransactionState['billLevel'],
         "failReason": failReason,
         "tubeLevelBefore" : getTubeLevelBefore('bill'),
@@ -810,8 +815,8 @@ def main():
     deviceDirs = glob.glob("./*")
     for dir in deviceDirs:
         if (len(dir) == 34):
-            # if "03E60C245339393338202020FF06191A" in dir:
-            importMachineData(dir);
+            if "1D7AB3425337433231202020FF0D0000" in dir:
+                importMachineData(dir);
             
     
 
