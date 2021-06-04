@@ -3,6 +3,8 @@ import glob
 import pymongo
 import re
 import constants
+import ast
+
 from datetime import datetime
 
 # constants
@@ -120,6 +122,8 @@ failCommunicationToPaymentServer = "CMV300: Giving up sending Obj: "
 
 # -------------------------- import config data from logs.txt ----------------------------------------
 def ImportConfigData(dir, machine):
+    global lastLineNum
+    lastLineNum = -1
     with open(dir) as content:
         lines = content.readlines()
         start = False
@@ -217,6 +221,8 @@ def ImportLogData(dir):
     global lastLineNum
     with open(dir) as content:
         for line_no, line in enumerate(content):
+            if (line_no <= lastLineNum):
+                continue
             # get current time
             if re.match("[0-9]{4}\-[0-9]{2}\-[0-9]{2}\ [0-9]{2}:[0-9]{2}:[0-9]{2}:[0-9]{3}", line[0:23]):
                 time = datetime.strptime(line[0:23], '%Y-%m-%d %H:%M:%S:%f')
@@ -592,6 +598,7 @@ def formatCashCoinTransaction(lastTubeStatus = "", line_no = 0):
         "totalVendedPrice": 0,
         "totalRoutedPrice": 0,
         "totalRefundPrice": 0,
+        "line_no": line_no
     }
 
 def getRoutedCoinPrice():
@@ -660,14 +667,11 @@ def getTotalVendPrice():
 
 def setCashCoinTransaction(type, time, line_no):
     global cashCoinTransactionState
-    # if (line_no == 7895):
-    #     print(cashCoinTransactionState)
-    #     print(cashCoinTransactionState['totalRefundPrice'])
     data = {
         "machineUID" : machineUID,
         "devName" : devName,
         "siteId" : siteId,
-        "type" : "CASH", 
+        "type" : "CASH",
         "subType" : "COIN",
         "status" : type,
         "time" : time,
@@ -756,6 +760,7 @@ def checkCashBillTransaction(line, time, line_no):
         if totalRefundPrice and (float(totalRefundPrice.group(1)) > 0):
             cashBillTransactionState['totalRefundPrice'] = totalRefundPrice.group(1)
 
+
     if "MDBS: COINCH: TubeFull:" in line and cashBillTransactionState['start'] and cashBillTransactionState['stacked'] and cashBillTransactionState['sessionCom'] and cashBillTransactionState['payRefund']:
         cashBillTransactionState['line_no'] = line_no
         cashBillTransactionState['afterRefundTubeStatus'] = re.search(", TubeStatus: (.+?)\ \.$", line).group(1)
@@ -832,15 +837,180 @@ def calculateBillRefundPrice():
 
 # --------------------------- end check cash bill note ---------------------------
 
+def ImportStateData(dir):
+    global cardTransactionState
+    global coinTubeLevelFormat
+    global cashCoinTransactionState
+    global billValueLevelFormat
+    global cashBillTransactionState
+    global lastLineNum
+
+    with open(dir) as content:
+        lines = content.readlines()
+        for line in lines:
+            keyValue = line.split("=")
+            if (keyValue[0] == 'cardTransactionState'):
+                data = ast.literal_eval(keyValue[1].strip())
+                cardTransactionStateType(data)
+
+            elif (keyValue[0] == 'coinTubeLevelFormat'):
+                array = keyValue[1].split(",")
+                coinTubeLevelFormat = []
+                for item in array:
+                    coinTubeLevelFormat.insert(len(coinTubeLevelFormat), float(item))
+
+            elif (keyValue[0] == 'cashCoinTransactionState'):
+                data = ast.literal_eval(keyValue[1].strip())
+                cashCoinTransactionStateType(data)
+
+            elif (keyValue[0] == 'billValueLevelFormat'):
+                array = keyValue[1].split(",")
+                billValueLevelFormat = []
+                for item in array:
+                    billValueLevelFormat.insert(len(billValueLevelFormat), float(item))
+
+            elif (keyValue[0] == 'cashBillTransactionState'):
+                data = ast.literal_eval(keyValue[1].strip())
+                cashBillTransactionStateType(data)
+            
+            elif (keyValue[0] == 'lastLineNum'):
+                lastLineNum = int(keyValue[1])
+
+def cashCoinTransactionStateType(data):
+    global cashCoinTransactionState
+    cashCoinTransactionState = {
+        "start" : bool(data['start']),
+        "sessionCom" : bool(data['sessionCom']),
+        "afterVend" : bool(data['afterVend']),
+        "status" : bool(data['status']),
+        "time" : bool(data['time']),
+        "initialTubeStatus" : "",
+        "afterVendTubeStatus" : "",
+        "afterPayoutTubeStatus" : "",
+        "product" : {
+        "selectedItem": "none",
+            "price": 0,
+        },
+        "amount" : bool(data['amount']),
+        "failReason" : "",
+        "routingCoins": [],
+        "cashBoxCoins": [],
+        "totalVendedPrice": float(data['totalVendedPrice']),
+        "totalRoutedPrice": float(data['totalRoutedPrice']),
+        "totalRefundPrice": float(data['totalRefundPrice']),
+    }
+
+    productDict = ast.literal_eval(data['product'].strip())
+    cashCoinTransactionState['product'] = {
+        "selectedItem" : "none",
+        "price" : float(productDict['price'])
+    }
+
+    array = data['routingCoins'].replace("[", "").replace("]", "").split(",")
+    for item in array:
+        if item.isdigit():
+            cashCoinTransactionState['routingCoins'].insert(len(cashCoinTransactionState['routingCoins']), int(item))
+
+    array = data['cashBoxCoins'].replace("[", "").replace("]", "").split(",")
+    for item in array:
+        if item.isdigit():
+            cashCoinTransactionState['cashBoxCoins'].insert(len(cashCoinTransactionState['cashBoxCoins']), int(item))
+
+def cardTransactionStateType(data):
+    global cardTransactionState
+    cardTransactionState = {
+        "start": bool(data['start']),
+        "status": bool(data['status']),
+        "time": "",
+        "failReason": "",
+        "preAuth" : {
+            "status" : False,
+            "amount" : 0
+        },
+        "product" : {
+            "selectedItem" : "none",
+            "price" : 0
+        },
+        "vendCom" : bool(data['vendCom']),
+        "sessionCom" : bool(data['sessionCom']),
+        "cardType": "unknown",
+        "fee": float(data['fee']),
+        "refund": float(data['refund']),
+        "terminalID": "",
+        "cardNum": "",
+    }
+    preAuthDict = ast.literal_eval(data['preAuth'].strip())
+    cardTransactionState['preAuth'] = {
+        "status" : bool(preAuthDict['status']),
+        "amount" : int(preAuthDict['amount'])
+    }
+    productDict = ast.literal_eval(data['product'].strip())
+    cardTransactionState['product'] = {
+        "selectedItem" : "none",
+        "price" : float(productDict['price'])
+    }
+
+def cashBillTransactionStateType(data):
+    global cashBillTransactionState
+    cashBillTransactionState = {
+        "start" : bool(data['start']),
+        "stacked" : bool(data['stacked']),
+        "status" : "",
+        "requestNum" : int(data['requestNum']),
+        "time" : "",
+        "product" : {
+            "selectedItem": "none",
+            "price": 0
+        },
+        "sessionCom" : bool(data['sessionCom']),
+        "payRefund" : bool(data['payRefund']),
+        "initialTubeStatus" : "",
+        "afterRefundTubeStatus" : "",
+        "totalVendedPrice": float(data['totalVendedPrice']),
+        "totalRoutedPrice": float(data['totalRoutedPrice']),
+        "totalRefundPrice": float(data['totalRefundPrice']),
+        "billLevel": "none",
+    }
+
+def ExportStateData(dir):
+    # currDir = os.getcwd();
+    # os.chdir(dir);
+    # # os.chdir(dir);
+    # path = ("./stateConfig.conf")
+    with open(dir, 'w') as f:
+        keys_values = cardTransactionState.items()
+        cardTransactionStateString = str({str(key): str(value) for key, value in keys_values})
+        f.write("cardTransactionState=" + cardTransactionStateString + "\n")
+
+        coinTubeLevelFormatString = ','.join(str(e) for e in coinTubeLevelFormat)
+        f.write("coinTubeLevelFormat=" + coinTubeLevelFormatString + "\n")
+
+        keys_values = cashCoinTransactionState.items()
+        cashCoinTransactionStateString = str({str(key): str(value) for key, value in keys_values})
+        f.write("cashCoinTransactionState=" + cashCoinTransactionStateString + "\n") 
+
+        billValueLevelFormatString = ','.join(str(e) for e in billValueLevelFormat)
+        f.write("billValueLevelFormat=" + billValueLevelFormatString + "\n")       
+
+        keys_values = cashBillTransactionState.items()
+        cashBillTransactionStateString = str({str(key): str(value) for key, value in keys_values})
+        f.write("cashBillTransactionState=" + cashBillTransactionStateString + "\n")         
+
+        f.write("lastLineNum=" + str(lastLineNum) + "\n")           
+    # os.chdir(currDir);      
+
 def importMachineData(dir):
+    currDir = os.getcwd();
+    os.chdir(dir);
+
     global cardTransactionState
     global cashCoinTransactionState
     global cashBillTransactionState
-    formatCardTransaction(0)
-    formatCashCoinTransaction("", 0)
-    cashBillTransactionState = formatcashBillTransaction("", 0)
-    currDir = os.getcwd();
-    os.chdir(dir);
+    path = ("./stateConfig.conf")
+    if not os.path.exists(path):
+        open(path, 'x')
+
+    ImportStateData(path)
     subDirs = glob.glob("./*")
     print(dir)
 
@@ -849,6 +1019,7 @@ def importMachineData(dir):
             ImportConfigData(subDir, dir)
         if (subDir[2:len(subDir)] == 'Logs.txt'):
             ImportLogData(subDir)
+            # ExportStateData(path)
     os.chdir(currDir);
 
 def main():
@@ -858,9 +1029,6 @@ def main():
         if (len(dir) == 34):
             # if "1D7AB3425337433231202020FF0D0000" in dir:
             importMachineData(dir);
-            
-    
-
 
 if __name__ == "__main__":
     main()
