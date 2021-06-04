@@ -1,11 +1,11 @@
 # finding value patterns.
-ITEM_PRICE_PATTERN = "Price: (.+?)\.\n"
+ITEM_PRICE_PATTERN = "Price: (.+?)\.$"
 
 # ------------------------------------ card constants ----------------------------------------------
 # finding value pattern
 CARD_PRE_AUTH_AMOUNT_PATTERN = "TXN AUTH OK for amount:(.+?)\."
 CARD_SELECTED_ITEM_PATTERN = "MDBS: CD <= VEND REQUEST Item:(.+?)\, Price"
-CARD_GET1_VALUE_PATTERN = "CMV300: TXN_GET1: (.+?)\n"
+CARD_GET1_VALUE_PATTERN = "CMV300: TXN_GET1: (.+?)$"
 
 # finding line patterns.
 CARD_TANSACTION_START = "CMV300: TXN AUTH"
@@ -41,10 +41,10 @@ CARD_FAIL_REASON = {
 
 # ---------------------------------------------- cash constants ---------------------------------------
 # finding pattern
-CASH_CONFIG_PATTERN = "CoinValues\(\$\): (.+?)\.\n"
-CASH_COIN_TUBE_LEVEL_PATTERN = "TubeStatus: (.+?)\.\n"
+CASH_CONFIG_PATTERN = "CoinValues\(\$\): (.+?)\.$"
+CASH_COIN_TUBE_LEVEL_PATTERN = "TubeStatus: (.+?)\.$"
 CASH_COIN_ROUTING_PRICE = "Routing: TUBES, Coin: (.+?), NumOfCoins"
-CASH_COIN_ROUTING_LEVEL = "NumOfCoins: (.+?)\.\n"
+CASH_COIN_ROUTING_LEVEL = "NumOfCoins: (.+?)\.$"
 CASH_SELECTED_ITEM_PATTERN = "MDBS: OTHER <= VEND REQUEST Item: (.+?), Price"
 
 CASH_COIN_CONFIG = "MDBS: COINCH: CONFIG:"
@@ -64,6 +64,4 @@ CASH_COIN_FAIL_REASON = {
 # ---------------------------------------------- cash bill constants ---------------------------------------
 CASH_BILL_ESCROWED = "MDBS: BILLV: Escrowed: "
 
-
-CASH_BILL_ESCROWED = "MDBS: BILLV: Escrowed: "
 # ---------------------------------------------- end cash bill constants ---------------------------------------
