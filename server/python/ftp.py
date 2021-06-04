@@ -6,7 +6,7 @@ import os
 
 def main():
 	files = ftp.dir()
-	for dir in files
+	for dir in files:
 		if (len(dir) == 34):
 			print(dir)
 
