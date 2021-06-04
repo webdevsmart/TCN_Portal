@@ -68,12 +68,12 @@ const TransactionTable = ( dateRange ) => {
       status: status === "success" ? <Badge count={status}  style={{ backgroundColor: '#20C997' }}/> : <Badge count={status} />,
       devName,
       machineUID,
-      product: product === undefined ? 0 : product,
+      product: product.productId,
       price: (
-        "$" + Math.round(price) / 100
+        "$" + Math.round(product.price) / 100
       ),
 			realStatus: status,
-			realPrice: price,
+			realPrice: product.price,
     });
   });
 	

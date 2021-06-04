@@ -15,6 +15,10 @@ const transactionSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    siteId: {
+        type: String,
+        required: true
+    },
     type : {
         type: String,
         enum: ["CARD", "CASH"],
@@ -30,8 +34,14 @@ const transactionSchema = mongoose.Schema({
         default: "failed"
     },
     product: {
-        type: Number,
-        required: true
+        productId: {
+            type: ObjectId,
+            required: true,
+            unique: true,
+            ref: 'product'
+        },
+        aisleNum: Number,
+        price: Number
     },
     price: {
         type: Number,
@@ -46,6 +56,12 @@ const transactionSchema = mongoose.Schema({
     failReason: {
         type: String,
         required: true,
+    },
+    tubeLevelBefore: {
+        type: Number
+    },
+    tubeLevelAfter: {
+        type: Number
     }
 });
 

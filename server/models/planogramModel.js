@@ -8,6 +8,10 @@ const planogramModel = mongoose.Schema({
         unique: true,
         ref: 'vendmachine'
     },
+    machineUID: {
+        type: String,
+        require: true
+    },
     rows: [{
         rowCode: String,
         aisles: [{

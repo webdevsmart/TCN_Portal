@@ -16,7 +16,7 @@ const getTotalData = async (req, res) => {
         {
             $group : {
                 _id : null, 
-                sum : {$sum : '$price'},
+                sum : {$sum : '$product.price'},
                 refund : {$sum : '$refund'},
             }   
         }
@@ -35,7 +35,7 @@ const getTotalData = async (req, res) => {
         {
             $group : {
                 _id : null, 
-                sum : {$sum : '$price'}
+                sum : {$sum : '$product.price'}
             }   
         }
     ]);
@@ -53,7 +53,7 @@ const getTotalData = async (req, res) => {
         {
             $group : {
                 _id : null,
-                sum : {$sum : '$price'}
+                sum : {$sum : '$product.price'}
             }   
         }
     ]);
@@ -102,6 +102,9 @@ const getDetail = async(req, res) => {
         })
     }
     let mysort = {};
+    if ( condition.sort == 'price' ) {
+        condition.sort = "product.price";
+    }
     if (condition.sortDir === "ascend") 
         mysort[condition.sort] = 1;
     else 
@@ -109,10 +112,10 @@ const getDetail = async(req, res) => {
     // if (query["$or"].length > 0) {
         detailList.totalSize = await Transaction.countDocuments(query);
     if (condition.sort === 'price')
-        detailList.list = await Transaction.find(query).limit(condition.length).skip(condition.start).sort(mysort).forEach(function(doc) {
+        detailList.list = await Transaction.find(query).limit(condition.length).skip(condition.start).sort(mysort).forEach( async (doc) => {
             db.collection.update(
                { _id: doc._id },
-               { $set: { price: parseInt(doc.price) } }
+               { $set: { "product.price": parseInt(doc.product.price) } }
             )
         });
     else
