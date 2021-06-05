@@ -11,7 +11,8 @@ def main():
 	files = ftp.nlst()
 
 	for f in files:
-		print (f)
+		if os.path.isdir(f):
+			print (f)
 
 	# print("*"*50, "LIST", "*"*50)
 	# ftp.dir()
