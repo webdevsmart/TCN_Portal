@@ -54,7 +54,6 @@ const DailyOverview = () => {
       })
     }
     getTodayData();
-    console.log(siteID)
   }, [siteID]);
 
   return (

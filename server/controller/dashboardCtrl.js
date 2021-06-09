@@ -172,6 +172,7 @@ const getTodayData = async (req, res) => {
         siteID.map(item => {
             condition["$or"].push({"siteID" : item})
         });
+        console.log(condition)
     }
 
     // get total transaction count
@@ -226,7 +227,7 @@ const getTodayData = async (req, res) => {
         }
     ]);
     retData.cardRate.cardPrice = cardPrice.length > 0 ? Utility.numberWithCommas(Math.round(cardPrice[0].sum) / 100) : 0;
-    retData.cardRate.currentRate = totalPrice.length == 0 ? 0 : (totalPrice[0].sum == 0 ? 0 : Math.round((cardPrice[0].sum / totalPrice[0].sum) * 100));
+    retData.cardRate.currentRate = (totalPrice.length == 0 || cardPrice == 0) ? 0 : (totalPrice[0].sum == 0 ? 0 : Math.round((cardPrice[0].sum / totalPrice[0].sum) * 100));
     condition['time'] = {
         $gte: yesterdayStart,
         $lte: yesterdayEnd
@@ -255,7 +256,7 @@ const getTodayData = async (req, res) => {
             }   
         }
     ]);
-    retData.cardRate.lastRate = totalPrice.length == 0 ? 0 : (totalPrice[0].sum === 0 ? 0 : Math.round( ( cardPrice[0].sum / totalPrice[0].sum) * 100 ));
+    retData.cardRate.lastRate = (totalPrice.length == 0 || cardPrice.length == 0) ? 0 : (totalPrice[0].sum === 0 ? 0 : Math.round( ( cardPrice[0].sum / totalPrice[0].sum) * 100 ));
     // 
 
     res.json({status : "success", data: retData})
