@@ -44,7 +44,6 @@ const TransactionOverview = () => {
       filter: state.filterDashboard.data
     };
   });
-  console.log(filter)
   const [state, setState] = useState({
     performance: 'year',
     performanceTab: 'users',
@@ -53,6 +52,9 @@ const TransactionOverview = () => {
   const { performance, performanceTab } = state;
 
   useEffect(() => {
+    const getPriceData = () => {
+      
+    }
     console.log("ok")
   }, filter)
 
@@ -103,29 +105,7 @@ const TransactionOverview = () => {
     <PerformanceChartWrapper>
       {performanceState !== null && (
         <Cards
-          isbutton={
-            <div className="card-nav">
-              <ul>
-                <li className={performance === 'week' ? 'active' : 'deactivate'}>
-                  <Link onClick={() => handleActiveChangePerformance('week')} to="#">
-                    Week
-                  </Link>
-                </li>
-                <li className={performance === 'month' ? 'active' : 'deactivate'}>
-                  <Link onClick={() => handleActiveChangePerformance('month')} to="#">
-                    Month
-                  </Link>
-                </li>
-                <li className={performance === 'year' ? 'active' : 'deactivate'}>
-                  <Link onClick={() => handleActiveChangePerformance('year')} to="#">
-                    Year
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          }
-          more={moreContent}
-          title="Website Performance"
+          title="Range Transaction Prices"
           size="large"
         >
           <Pstates>
@@ -136,14 +116,9 @@ const TransactionOverview = () => {
               onKeyPress={() => {}}
               tabIndex="0"
             >
-              <p>Users</p>
+              <p>Card</p>
               <Heading as="h1">
                 {performanceState.users[0]}
-                <sub>
-                  <span>
-                    <FeatherIcon icon="arrow-up" size={14} /> 25%
-                  </span>
-                </sub>
               </Heading>
             </div>
             <div
@@ -153,14 +128,9 @@ const TransactionOverview = () => {
               onKeyPress={() => {}}
               tabIndex="0"
             >
-              <p>Sessions</p>
+              <p>Cash</p>
               <Heading as="h1">
                 {performanceState.sessions[0]}
-                <sub>
-                  <span>
-                    <FeatherIcon icon="arrow-up" size={14} /> 47%
-                  </span>
-                </sub>
               </Heading>
             </div>
             <div
@@ -170,14 +140,9 @@ const TransactionOverview = () => {
               onKeyPress={() => {}}
               tabIndex="0"
             >
-              <p>Bounce Rate</p>
+              <p>Refund</p>
               <Heading as="h1">
                 {performanceState.bounce[0]}
-                <sub>
-                  <span>
-                    <FeatherIcon icon="arrow-down" size={14} /> 28%
-                  </span>
-                </sub>
               </Heading>
             </div>
             <div
@@ -187,14 +152,9 @@ const TransactionOverview = () => {
               onKeyPress={() => {}}
               tabIndex="0"
             >
-              <p>Session Duration</p>
+              <p>Fee</p>
               <Heading as="h1">
                 {performanceState.duration[0]}
-                <sub>
-                  <span>
-                    <FeatherIcon icon="arrow-up" size={14} /> 13%
-                  </span>
-                </sub>
               </Heading>
             </div>
           </Pstates>
