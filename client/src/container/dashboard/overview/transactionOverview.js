@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Spin } from 'antd';
+import { Spin, notification } from 'antd';
 import { NavLink, Link } from 'react-router-dom';
 import FeatherIcon from 'feather-icons-react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -9,6 +9,7 @@ import Heading from '../../../components/heading/heading';
 import { ChartjsAreaChart } from '../../../components/charts/chartjs';
 import { chartLinearGradient, customTooltips } from '../../../components/utilities/utilities';
 import { performanceFilterData, performanceGetData, setIsLoading } from '../../../redux/chartContent/actionCreator';
+import Axios from 'axios';
 
 const moreContent = (
   <>
@@ -47,16 +48,60 @@ const TransactionOverview = () => {
   const [state, setState] = useState({
     performance: 'year',
     performanceTab: 'users',
+    totalPrice: 0,
+    refundPrice: 0,
+    feePrice: 0,
+    cardPriceState: {
+      totalPrice: 0,
+      masterPrice: 0,
+      VisaPrice: 0,
+    },
+    cashPriceState: {
+      totalPrice: 0,
+      coinPrice: 0,
+      billPrice: 0,
+    }
   });
 
-  const { performance, performanceTab } = state;
+  // const [state, setState] = useState({
+    
+  // });
 
+  const { performance, performanceTab, cardPriceState, cashPriceState, totalPrice, refundPrice, feePrice } = state;
+
+  const getPriceData = () => {
+    Axios.post("/api/dashboard/getPriceData", {filter})
+    .then( res => {
+      if ( res.data.status === 'success' ) {
+        setState({
+          ...state,
+          totalPrice: res.data.data.totalPrice,
+          refundPrice: res.data.data.refundPrice,
+          feePrice: res.data.data.feePrice,
+          cardPriceState: res.data.data.cardPriceState,
+          cashPriceState: res.data.data.cashPriceState
+        })
+      } else {
+        notification['warning']({
+          message: 'Warning!',
+          description: 
+            "Server Error!"
+        })
+      }
+    })
+    .catch( err => {
+      notification['warning']({
+        message: 'Warning!',
+        description: 
+          "Server Error!"
+      })
+    });
+  }
+
+  // getPriceData()
   useEffect(() => {
-    const getPriceData = () => {
-      
-    }
-    console.log("ok")
-  }, filter)
+    getPriceData();
+  }, [filter.siteID, filter.date])
 
   useEffect(() => {
     if (performanceGetData) {
@@ -116,9 +161,9 @@ const TransactionOverview = () => {
               onKeyPress={() => {}}
               tabIndex="0"
             >
-              <p>Card</p>
+              <p>Total</p>
               <Heading as="h1">
-                {performanceState.users[0]}
+                $ {totalPrice}
               </Heading>
             </div>
             <div
@@ -128,9 +173,9 @@ const TransactionOverview = () => {
               onKeyPress={() => {}}
               tabIndex="0"
             >
-              <p>Cash</p>
+              <p>Card</p>
               <Heading as="h1">
-                {performanceState.sessions[0]}
+                $ { cardPriceState.totalPrice }
               </Heading>
             </div>
             <div
@@ -140,9 +185,9 @@ const TransactionOverview = () => {
               onKeyPress={() => {}}
               tabIndex="0"
             >
-              <p>Refund</p>
+              <p>Cash</p>
               <Heading as="h1">
-                {performanceState.bounce[0]}
+                $ { cashPriceState.totalPrice }
               </Heading>
             </div>
             <div
@@ -154,7 +199,7 @@ const TransactionOverview = () => {
             >
               <p>Fee</p>
               <Heading as="h1">
-                {performanceState.duration[0]}
+                $ { feePrice }
               </Heading>
             </div>
           </Pstates>

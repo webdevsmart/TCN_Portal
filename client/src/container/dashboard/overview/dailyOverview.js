@@ -10,7 +10,8 @@ import { Dropdown } from '../../../components/dropdown/dropdown';
 import Axios from 'axios';
 
 const DailyOverview = () => {
-  const siteID = useSelector(state => state.filterDashboard.data.siteID)
+  const filter = useSelector(state => state.filterDashboard.data)
+  
   const { rtl } = useSelector(state => {
     return {
       rtl: state.ChangeLayoutMode.rtlData,
@@ -32,8 +33,9 @@ const DailyOverview = () => {
   });
 
   useEffect(() => {
+    // console.log(filter)
     const getTodayData = () => {
-      Axios.post('/api/dashboard/getTodayData', {siteID})
+      Axios.post('/api/dashboard/getTodayData', {siteID: filter.siteID})
       .then( res => {
         if ( res.data.status === 'success' ) {
           setstate(res.data.data)
@@ -54,17 +56,12 @@ const DailyOverview = () => {
       })
     }
     getTodayData();
-  }, [siteID]);
+  }, [filter.siteID]);
 
   return (
     <OverviewCard>
       <div className="d-flex align-items-center justify-content-between overview-head">
         <Heading as="h4">Today Transaction Overview</Heading>
-        <Dropdown>
-          <Button>
-            Export <FeatherIcon icon="chevron-down" size={14} />
-          </Button>
-        </Dropdown>
       </div>
       <div className="overview-box">
         <Cards headless>

@@ -4,7 +4,7 @@ const router = express.Router();
 
 router.get('/getMachineList', dashboardCtrl.getMachineList);
 router.get('/getSiteIDs', dashboardCtrl.getSiteIDs);
-router.post('/getTotalData', dashboardCtrl.getTotalData);
+router.post('/getPriceData', dashboardCtrl.getPriceData);
 router.post('/getDetail', dashboardCtrl.getDetail);
 router.post('/getTodayData', dashboardCtrl.getTodayData);
 

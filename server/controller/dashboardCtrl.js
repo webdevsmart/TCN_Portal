@@ -3,36 +3,54 @@ const Transaction = require('../models/transactionModel.js');
 const vendMachine = require('../models/vendMachineModel.js');
 const Utility = require('../utility/utility.js');
 
-const getTotalData = async (req, res) => {
-    let result = {};
-    totalPrice = await Transaction.aggregate([
+const getPriceData = async (req, res) => {
+    let retData = {
+        totalPrice: 0,
+        cardPriceState: {
+            totalPrice: 0,
+            masterPrice: 0,
+            visaPrice: 0,
+        },
+        cashPriceState: {
+            totalPrice: 0,
+            coinPrice: 0,
+            billPrice: 0,
+        }
+    };
+    const filter = req.body.filter;
+    let condition = {
+        "status" : "success", 
+        "time": {
+            $gte: new Date(filter.date[0]),
+            $lte: new Date(filter.date[1])
+        }
+    }
+
+    if ( filter.siteID.length > 0 ) {
+        condition["$or"] = [];
+        filter.siteID.map(item => {
+            condition["$or"].push({"siteID" : item})
+        });
+    }
+
+    let totalPrice = await Transaction.aggregate([
         {
-            $match: {
-                "status" : "success", 
-                "time": {
-                    $gte: new Date(req.body.data.startDate),
-                    $lte: new Date(req.body.data.endDate)
-                }
-            },
+            $match: condition,
         },
         {
             $group : {
                 _id : null, 
                 sum : {$sum : '$product.price'},
                 refund : {$sum : '$refund'},
+                fee : {$sum : {$toDouble: '$fee'}},
             }   
         }
     ]);
-    cardPrice = await Transaction.aggregate([
+    console.log(totalPrice)
+    condition['type'] = 'CARD';
+    let cardPrice = await Transaction.aggregate([
         {
-            $match: {
-                "status" : "success", 
-                "type" : "CARD",
-                "time": {
-                    $gte: new Date(req.body.data.startDate),
-                    $lte: new Date(req.body.data.endDate)
-                }
-            }
+            $match: condition
         },
         {
             $group : {
@@ -41,16 +59,39 @@ const getTotalData = async (req, res) => {
             }   
         }
     ]);
-    cashPrice = await Transaction.aggregate([
+
+    condition['subType'] = 'VISA';
+    visaPrice = await Transaction.aggregate([
         {
-            $match: {
-                "status" : "success", 
-                "type" : "CASH",
-                "time": {
-                    $gte: new Date(req.body.data.startDate),
-                    $lte: new Date(req.body.data.endDate)
-                }
-            }
+            $match: condition
+        },
+        {
+            $group : {
+                _id : null, 
+                sum : {$sum : '$product.price'}
+            }   
+        }
+    ]);
+
+    condition['subType'] = 'MASTERCARD';
+    masterPrice = await Transaction.aggregate([
+        {
+            $match: condition
+        },
+        {
+            $group : {
+                _id : null, 
+                sum : {$sum : '$product.price'}
+            }   
+        }
+    ]);
+
+    delete condition.subType;
+    condition.type = 'CASH';
+    // console.log(cardPrice);return;
+    let cashPrice = await Transaction.aggregate([
+        {
+            $match: condition
         },
         {
             $group : {
@@ -60,12 +101,42 @@ const getTotalData = async (req, res) => {
         }
     ]);
 
-    result.totalPrice = totalPrice.length > 0 ? Math.round(totalPrice[0].sum / 100, 2).toLocaleString(undefined, {maximumFractionDigits:2}) : 0;
-    result.refundPrice = totalPrice.length > 0 ? Math.round(totalPrice[0].refund / 100, 2).toLocaleString(undefined, {maximumFractionDigits:2}) : 0;
-    result.cardPrice = cardPrice.length > 0 ? Math.round(cardPrice[0].sum / 100, 2).toLocaleString(undefined, {maximumFractionDigits:2}): 0;
-    result.cashPrice = cashPrice.length > 0 ? Math.round(cashPrice[0].sum / 100, 2).toLocaleString(undefined, {maximumFractionDigits:2}) : 0;
+    condition.subType = 'BILL';
+    billPrice = await Transaction.aggregate([
+        {
+            $match: condition
+        },
+        {
+            $group : {
+                _id : null,
+                sum : {$sum : '$product.price'}
+            }   
+        }
+    ]);
 
-    res.json({status : "success", data: result})
+    condition.subType = 'COIN';
+    coinPrice = await Transaction.aggregate([
+        {
+            $match: condition
+        },
+        {
+            $group : {
+                _id : null,
+                sum : {$sum : '$product.price'}
+            }   
+        }
+    ]);
+    retData.totalPrice = totalPrice.length > 0 ? Utility.numberWithCommas(Math.round(totalPrice[0].sum) / 100) : 0;
+    retData.refundPrice = totalPrice.length > 0 ? Utility.numberWithCommas(Math.round(totalPrice[0].refund) / 100) : 0;
+    retData.feePrice = totalPrice.length > 0 ? Utility.numberWithCommas(Math.round(totalPrice[0].fee) / 100) : 0;
+    retData.cardPriceState.totalPrice = cardPrice.length > 0 ? Utility.numberWithCommas(Math.round(cardPrice[0].sum) / 100): 0;
+    retData.cardPriceState.visaPrice = visaPrice.length > 0 ? Utility.numberWithCommas(Math.round(visaPrice[0].sum) / 100): 0;
+    retData.cardPriceState.masterPrice = masterPrice.length > 0 ? Utility.numberWithCommas(Math.round(masterPrice[0].sum) / 100): 0;
+    retData.cashPriceState.totalPrice = cashPrice.length > 0 ? Utility.numberWithCommas(Math.round(cashPrice[0].sum) / 100) : 0;
+    retData.cashPriceState.coinPrice = coinPrice.length > 0 ? Utility.numberWithCommas(Math.round(coinPrice[0].sum) / 100) : 0;
+    retData.cashPriceState.billPrice = billPrice.length > 0 ? Utility.numberWithCommas(Math.round(billPrice[0].sum) / 100) : 0;
+
+    res.json({status : "success", data: retData})
 }
 
 const getMachineList = async(req, res) => {
@@ -172,7 +243,6 @@ const getTodayData = async (req, res) => {
         siteID.map(item => {
             condition["$or"].push({"siteID" : item})
         });
-        console.log(condition)
     }
 
     // get total transaction count
@@ -201,8 +271,8 @@ const getTodayData = async (req, res) => {
     condition['time'] = {
         $gte: todayStart,
         $lte: todayEnd
-    },
-    totalPrice = await Transaction.aggregate([
+    };
+    let totalPrice = await Transaction.aggregate([
         {
             $match: condition
         },
@@ -215,7 +285,7 @@ const getTodayData = async (req, res) => {
     ]);
     retData.cardRate.totalPrice = totalPrice.length > 0 ? Utility.numberWithCommas(Math.round(totalPrice[0].sum) / 100) : 0;
     condition['type'] = 'CARD';
-    cardPrice = await Transaction.aggregate([
+    let cardPrice = await Transaction.aggregate([
         {
             $match: condition
         },
@@ -262,4 +332,4 @@ const getTodayData = async (req, res) => {
     res.json({status : "success", data: retData})
 }
 
-module.exports = {getTotalData, getMachineList, getDetail, getSiteIDs, getTodayData};
+module.exports = {getPriceData, getMachineList, getDetail, getSiteIDs, getTodayData};
