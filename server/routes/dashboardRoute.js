@@ -7,5 +7,6 @@ router.get('/getSiteIDs', dashboardCtrl.getSiteIDs);
 router.post('/getPriceData', dashboardCtrl.getPriceData);
 router.post('/getDetail', dashboardCtrl.getDetail);
 router.post('/getTodayData', dashboardCtrl.getTodayData);
+router.post('/getChartData', dashboardCtrl.getChartData);
 
 module.exports = router;

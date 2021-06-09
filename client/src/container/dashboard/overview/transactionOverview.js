@@ -8,46 +8,20 @@ import { Cards } from '../../../components/cards/frame/cards-frame';
 import Heading from '../../../components/heading/heading';
 import { ChartjsAreaChart } from '../../../components/charts/chartjs';
 import { chartLinearGradient, customTooltips } from '../../../components/utilities/utilities';
-import { performanceFilterData, performanceGetData, setIsLoading } from '../../../redux/chartContent/actionCreator';
+import { setIsLoading } from '../../../redux/chartContent/actionCreator';
 import Axios from 'axios';
-
-const moreContent = (
-  <>
-    <NavLink to="#">
-      <FeatherIcon size={16} icon="printer" />
-      <span>Printer</span>
-    </NavLink>
-    <NavLink to="#">
-      <FeatherIcon size={16} icon="book-open" />
-      <span>PDF</span>
-    </NavLink>
-    <NavLink to="#">
-      <FeatherIcon size={16} icon="file-text" />
-      <span>Google Sheets</span>
-    </NavLink>
-    <NavLink to="#">
-      <FeatherIcon size={16} icon="x" />
-      <span>Excel (XLSX)</span>
-    </NavLink>
-    <NavLink to="#">
-      <FeatherIcon size={16} icon="file" />
-      <span>CSV</span>
-    </NavLink>
-  </>
-);
 
 const TransactionOverview = () => {
   const dispatch = useDispatch();
-  const { filter, performanceState, preIsLoading } = useSelector(state => {
+  const { filter, preIsLoading } = useSelector(state => {
     return {
-      performanceState: state.chartContent.performanceData,
       preIsLoading: state.chartContent.perLoading,
       filter: state.filterDashboard.data
     };
   });
+
   const [state, setState] = useState({
-    performance: 'year',
-    performanceTab: 'users',
+    performanceTab: 'totalPrice',
     totalPrice: 0,
     refundPrice: 0,
     feePrice: 0,
@@ -63,11 +37,12 @@ const TransactionOverview = () => {
     }
   });
 
-  // const [state, setState] = useState({
-    
-  // });
+  const [chartData, setChartData] = useState({
+    labels: ["1", "2", "3", "4", "5", "6", "7", "8"],
+    data: [],
+  })
 
-  const { performance, performanceTab, cardPriceState, cashPriceState, totalPrice, refundPrice, feePrice } = state;
+  const { performanceTab, cardPriceState, cashPriceState, totalPrice, refundPrice, feePrice } = state;
 
   const getPriceData = () => {
     Axios.post("/api/dashboard/getPriceData", {filter})
@@ -80,7 +55,7 @@ const TransactionOverview = () => {
           feePrice: res.data.data.feePrice,
           cardPriceState: res.data.data.cardPriceState,
           cashPriceState: res.data.data.cashPriceState
-        })
+        });
       } else {
         notification['warning']({
           message: 'Warning!',
@@ -98,24 +73,35 @@ const TransactionOverview = () => {
     });
   }
 
-  // getPriceData()
   useEffect(() => {
     getPriceData();
   }, [filter.siteID, filter.date])
 
-  useEffect(() => {
-    if (performanceGetData) {
-      dispatch(performanceGetData());
-    }
-  }, [dispatch]);
-
-  const handleActiveChangePerformance = value => {
-    setState({
-      ...state,
-      performance: value,
+  const getChartData = () => {
+    Axios.post("/api/dashboard/getChartData", {filter: filter, tab: performanceTab})
+    .then( res => {
+      if ( res.data.status === 'success') {
+        setChartData(res.data.data)
+      } else {
+        notification['warning']({
+          message: 'Warning!',
+          description: 
+            "Server Error!"
+        })
+      }
+    })
+    .catch( err => {
+      notification['warning']({
+        message: 'Warning!',
+        description: 
+          "Server Error!"
+      })
     });
-    dispatch(performanceFilterData(value));
-  };
+  }
+
+  useEffect(() => {
+    getChartData()
+  }, [filter.siteID, filter.date, preIsLoading]);
 
   const onPerformanceTab = value => {
     setState({
@@ -125,9 +111,9 @@ const TransactionOverview = () => {
     return dispatch(setIsLoading());
   };
 
-  const performanceDatasets = performanceState !== null && [
+  const performanceDatasets = chartData !== null && [
     {
-      data: performanceState[performanceTab][1],
+      data: chartData.data,
       borderColor: '#5F63F2',
       borderWidth: 4,
       fill: true,
@@ -148,15 +134,15 @@ const TransactionOverview = () => {
 
   return (
     <PerformanceChartWrapper>
-      {performanceState !== null && (
+      {chartData !== null && (
         <Cards
           title="Range Transaction Prices"
           size="large"
         >
           <Pstates>
             <div
-              onClick={() => onPerformanceTab('users')}
-              className={`growth-upward ${performanceTab === 'users' && 'active'}`}
+              onClick={() => onPerformanceTab('totalPrice')}
+              className={`growth-upward ${performanceTab === 'totalPrice' && 'active'}`}
               role="button"
               onKeyPress={() => {}}
               tabIndex="0"
@@ -167,8 +153,8 @@ const TransactionOverview = () => {
               </Heading>
             </div>
             <div
-              onClick={() => onPerformanceTab('sessions')}
-              className={`growth-upward ${performanceTab === 'sessions' && 'active'}`}
+              onClick={() => onPerformanceTab('cardPrice')}
+              className={`growth-upward ${performanceTab === 'cardPrice' && 'active'}`}
               role="button"
               onKeyPress={() => {}}
               tabIndex="0"
@@ -179,8 +165,8 @@ const TransactionOverview = () => {
               </Heading>
             </div>
             <div
-              onClick={() => onPerformanceTab('bounce')}
-              className={`growth-downward ${performanceTab === 'bounce' && 'active'}`}
+              onClick={() => onPerformanceTab('cashPrice')}
+              className={`growth-downward ${performanceTab === 'cashPrice' && 'active'}`}
               role="button"
               onKeyPress={() => {}}
               tabIndex="0"
@@ -191,8 +177,8 @@ const TransactionOverview = () => {
               </Heading>
             </div>
             <div
-              onClick={() => onPerformanceTab('duration')}
-              className={`growth-upward ${performanceTab === 'duration' && 'active'}`}
+              onClick={() => onPerformanceTab('fee')}
+              className={`growth-upward ${performanceTab === 'fee' && 'active'}`}
               role="button"
               onKeyPress={() => {}}
               tabIndex="0"
@@ -211,10 +197,15 @@ const TransactionOverview = () => {
             <div className="performance-lineChart">
               <ChartjsAreaChart
                 id="performance"
-                labels={performanceState.labels}
+                labels={chartData.labels}
                 datasets={performanceDatasets}
                 options={{
                   maintainAspectRatio: true,
+                  onClick: function(evt, element) {
+                    if (element.length > 0) {
+                      console.log(element);
+                    }
+                  },
                   elements: {
                     z: 9999,
                   },
@@ -238,7 +229,7 @@ const TransactionOverview = () => {
                       },
                       label(t, d) {
                         const { yLabel, datasetIndex } = t;
-                        return `<span class="chart-data">${yLabel}k</span> <span class="data-label">${d.datasets[datasetIndex].label}</span>`;
+                        return `<span class="chart-data" onclick='clickHandle'>${yLabel}$</span> <span class="data-label">${d.datasets[datasetIndex].label}</span>`;
                       },
                     },
                   },
@@ -256,10 +247,10 @@ const TransactionOverview = () => {
                           beginAtZero: true,
                           fontSize: 13,
                           fontColor: '#182b49',
-                          max: 80,
-                          stepSize: 20,
+                          max: Math.round(Math.max(...chartData.data) / 10) * 10 + 50,
+                          stepSize: (Math.round(Math.max(...chartData.data) / 10) * 10 + 50) / 10,
                           callback(label) {
-                            return `${label}k`;
+                            return `${label}`;
                           },
                         },
                       },

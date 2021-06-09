@@ -43,10 +43,10 @@ const getPriceData = async (req, res) => {
                 sum : {$sum : '$product.price'},
                 refund : {$sum : '$refund'},
                 fee : {$sum : {$toDouble: '$fee'}},
-            }   
+            }
         }
     ]);
-    console.log(totalPrice)
+
     condition['type'] = 'CARD';
     let cardPrice = await Transaction.aggregate([
         {
@@ -332,4 +332,59 @@ const getTodayData = async (req, res) => {
     res.json({status : "success", data: retData})
 }
 
-module.exports = {getPriceData, getMachineList, getDetail, getSiteIDs, getTodayData};
+const getChartData = async ( req, res ) => {
+    let retData = {
+        labels: [],
+        data: []
+    }
+    const filter = req.body.filter;
+    const tab = req.body.tab;
+    let condition = {
+        'status' : 'success',
+        'time' : {
+            $gte: new Date(filter.date[0]),
+            $lte: new Date(filter.date[1])
+        }
+    }
+    
+    if ( filter.siteID.length > 0 ) {
+        condition["$or"] = [];
+        filter.siteID.map(item => {
+            condition["$or"].push({"siteID" : item})
+        });
+    }
+
+    if ( tab == 'cardPrice' ) {
+        condition.type = "CARD";
+    } else if ( tab == 'cashPrice' ) {
+        condition.type = "CASH";
+    }
+
+    Transaction.aggregate([
+        {
+            "$match" : condition,
+        },
+        {
+            "$group" : {
+                "_id" : { $dateToString: { format: "%m-%d", date: "$time" } },
+                "totalPrice": {"$sum" : "$product.price"},
+            }
+        },
+        {
+            "$sort" : { _id: 1 }
+        }
+    ])
+    .then( result => {
+        result.map( item => {
+            retData.labels.push(item._id);
+            retData.data.push(Math.round(item.totalPrice) / 100);
+        })
+        res.json({status : "success", data: retData});
+    })
+    .catch( err => {
+        return res.json({status : "error", "message": "Server Error!"});
+    });
+
+}
+
+module.exports = {getPriceData, getMachineList, getDetail, getSiteIDs, getTodayData, getChartData};

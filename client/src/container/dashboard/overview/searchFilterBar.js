@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Row, Col, Form, Input, Select, DatePicker, notification } from 'antd';
+import { Row, Col, Space, Input, Select, DatePicker, notification } from 'antd';
 import moment from 'moment';
 import { BasicFormWrapper } from '../../styled';
 import { Cards } from '../../../components/cards/frame/cards-frame';
@@ -71,6 +71,7 @@ const FilterBar = () => {
                   filter.siteID = values
                   dispatch(setDashBoardFilter(filter))
                 }}
+                maxTagCount={3}
                 >
                 {
                   siteList.map( (item, index) => {
