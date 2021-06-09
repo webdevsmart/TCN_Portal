@@ -267,10 +267,110 @@ const Pstates = Styled.div`
     }
 `;
 
+const SessionChartWrapper = Styled.div`
+    min-height: 510px;
+    background: #fff;
+    border-radius: 10px;
+    @media only screen and (max-width: 1599px){
+        min-height: 440px;
+    }
+    @media only screen and (max-width: 991px){
+        min-height: auto;
+    }
+    .session-chart-inner{
+        ul{
+            display: flex;
+            max-width: 365px;
+            margin: 40px auto 6px auto;
+            li{
+                width: 33.33%;
+                text-align: center;
+                position: relative;
+                .doughnutLabelColor{
+                    position: absolute;
+                    display: block;
+                    height: 8px;
+                    width: 8px;
+                    border-radius: 50%;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    ${({ theme }) => (theme.rtl ? 'right' : 'left')}: 14px;
+                    @media only screen and (max-width: 1400px){
+                        ${({ theme }) => (theme.rtl ? 'right' : 'left')}: 5px;
+                    }
+                    @media only screen and (max-width: 1300px){
+                        ${({ theme }) => (theme.rtl ? 'right' : 'left')}: 0;
+                    }
+                    @media only screen and (max-width: 1199px){
+                        ${({ theme }) => (theme.rtl ? 'right' : 'left')}: 15px;
+                    }
+                    @media only screen and (max-width: 379px){
+                        ${({ theme }) => (theme.rtl ? 'right' : 'left')}: 0;
+                    }
+                }
+                .doughnutLabe{
+                    color: ${({ theme }) => theme['gray-color']};
+                }
+            }
+        }
+        p{
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            text-align: center;
+            width: 200px;
+            margin-bottom: 0;
+            display: inline-block;
+            transform: translate(-50%, -50%);
+            span{
+                font-size: 24px;
+                display: block;
+                font-weight: 600;
+            }
+        }
+    }
+`;
+
+const SessionState = Styled.div`
+    /* // margin: 0 0 15px -15px; */
+    max-width: 365px;
+    margin: 42px auto auto;
+    >div{
+        width: 33.33%;
+        text-align: center;
+        span{
+            font-size: 18px;
+            font-weight: 600;
+            display: inline-block;
+            @media only screen and (max-width: 1300px){
+                display: block;
+            }
+            @media only screen and (max-width: 1199px){
+                display: inline-block;
+            }
+            @media only screen and (max-width: 379px){
+                display: block;
+            }
+        }
+        sub{
+            bottom: 0;
+            ${({ theme }) => (theme.rtl ? 'right' : 'left')}: 5px;
+            font-size: 13px;
+            color: ${({ theme }) => theme['light-gray-color']};
+        }
+    }
+
+    .session-single{
+        text-align: center;
+    }
+`;
+
 export {
     FilterStyle,
     OverviewCard,
     ChartContainer,
     PerformanceChartWrapper,
-    Pstates
+    Pstates,
+    SessionChartWrapper,
+    SessionState
 }

@@ -7,6 +7,7 @@ import { Cards } from '../../components/cards/frame/cards-frame';
 const FilterBar = lazy(() => import('./overview/searchFilterBar'));
 const DailyOverview = lazy(() => import('./overview/dailyOverview'));
 const TransactionOverview = lazy(() => import('./overview/transactionOverview'));
+const DetailOverview = lazy(() => import('./overview/detailOverview'));
 
 const Dashboard = () => {
   return (
@@ -40,6 +41,28 @@ const Dashboard = () => {
               }
             >
               <TransactionOverview />
+            </Suspense>
+          </Col>
+          <Col xxl={12} xl={12} lg={12} xs={24}>
+            <Suspense
+              fallback={
+                <Cards headless>
+                  <Skeleton active />
+                </Cards>
+              }
+            >
+              <DetailOverview type="Card" />
+            </Suspense>
+          </Col>
+          <Col xxl={12} xl={12} lg={12} xs={24}>
+            <Suspense
+              fallback={
+                <Cards headless>
+                  <Skeleton active />
+                </Cards>
+              }
+            >
+              <DetailOverview type="Cash" />
             </Suspense>
           </Col>
         </Row>

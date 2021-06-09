@@ -26,11 +26,13 @@ const getPriceData = async (req, res) => {
         }
     }
 
+    condition["$or"] = [];
     if ( filter.siteID.length > 0 ) {
-        condition["$or"] = [];
         filter.siteID.map(item => {
             condition["$or"].push({"siteID" : item})
         });
+    } else {
+        condition["$or"].push({"siteID" : 'none'})
     }
 
     let totalPrice = await Transaction.aggregate([
@@ -238,11 +240,13 @@ const getTodayData = async (req, res) => {
     }
     const siteID = req.body.siteID;
     let condition = {};
+    condition["$or"] = [];
     if ( siteID.length > 0 ) {
-        condition["$or"] = [];
         siteID.map(item => {
             condition["$or"].push({"siteID" : item})
         });
+    } else {
+        condition["$or"].push({"siteID" : 'none'})
     }
 
     // get total transaction count
@@ -347,43 +351,73 @@ const getChartData = async ( req, res ) => {
         }
     }
     
+    condition["$or"] = [];
     if ( filter.siteID.length > 0 ) {
-        condition["$or"] = [];
         filter.siteID.map(item => {
             condition["$or"].push({"siteID" : item})
         });
+    } else {
+        condition["$or"].push({"siteID" : 'none'})
     }
 
     if ( tab == 'cardPrice' ) {
         condition.type = "CARD";
     } else if ( tab == 'cashPrice' ) {
         condition.type = "CASH";
-    }
+    } 
 
-    Transaction.aggregate([
-        {
-            "$match" : condition,
-        },
-        {
-            "$group" : {
-                "_id" : { $dateToString: { format: "%m-%d", date: "$time" } },
-                "totalPrice": {"$sum" : "$product.price"},
+    if (tab !== 'fee') {
+        Transaction.aggregate([
+            {
+                "$match" : condition,
+            },
+            {
+                "$group" : {
+                    "_id" : { $dateToString: { format: "%m-%d", date: "$time" } },
+                    "totalPrice": {"$sum" : "$product.price"},
+                }
+            },
+            {
+                "$sort" : { _id: 1 }
             }
-        },
-        {
-            "$sort" : { _id: 1 }
-        }
-    ])
-    .then( result => {
-        result.map( item => {
-            retData.labels.push(item._id);
-            retData.data.push(Math.round(item.totalPrice) / 100);
+        ])
+        .then( result => {
+            result.map( item => {
+                retData.labels.push(item._id);
+                retData.data.push(Math.round(item.totalPrice) / 100);
+            })
+            res.json({status : "success", data: retData});
         })
-        res.json({status : "success", data: retData});
-    })
-    .catch( err => {
-        return res.json({status : "error", "message": "Server Error!"});
-    });
+        .catch( err => {
+            return res.json({status : "error", "message": "Server Error!"});
+        });
+    } else {
+        delete condition.type;
+        Transaction.aggregate([
+            {
+                "$match" : condition,
+            },
+            {
+                "$group" : {
+                    "_id" : { $dateToString: { format: "%m-%d", date: "$time" } },
+                    "totalPrice": {"$sum" : {"$toDouble" : "$fee"}},
+                }
+            },
+            {
+                "$sort" : { _id: 1 }
+            }
+        ])
+        .then( result => {
+            result.map( item => {
+                retData.labels.push(item._id);
+                retData.data.push(Math.round(item.totalPrice) / 100);
+            })
+            res.json({status : "success", data: retData});
+        })
+        .catch( err => {
+            return res.json({status : "error", "message": "Server Error!"});
+        });
+    }
 
 }
 

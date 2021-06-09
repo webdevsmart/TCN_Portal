@@ -15,6 +15,9 @@ const FilterBar = () => {
   const filter = useSelector(state => state.filterDashboard.data) 
   const [companyList, setCompanyList] = useState([])
   const [siteList, setSiteList] = useState([])
+  const [state, setState] = useState({
+    "siteID": filter.siteID,
+  })
 
   useEffect(() => {
     Axios.get("/api/dashboard/getSiteIDs")
@@ -36,7 +39,21 @@ const FilterBar = () => {
           "Server Error!"
       })
     })
-  }, [])
+  }, []);
+
+  useEffect(() => {
+    if ( siteList.length > 0 ) {
+      filter.siteID = [];
+      siteList.map( item => {
+        filter.siteID.push(item)
+      });
+      setState({
+        ...state,
+        siteID: filter.siteID
+      });
+    }
+    console.log(siteList)
+  }, [ siteList ]);
 
   return (
     <>
@@ -44,35 +61,32 @@ const FilterBar = () => {
         <Cards headless>
           <Row gutter="25">
             <Col md={6} sm={12} xs={24}>
-              <span>Company Id: </span>
-              <Select
-                mode="multiple"
-                style={{ width: '100%', minHeight: '49px' }}
-                defaultValue={filter.companyID}
-                optionLabelProp="label" 
-                >
-                {
-                  companyList.map(item => {
-                    return (
-                      <Select.Option value="category">Project Category</Select.Option>
-                    );
-                  })
-                }
-              </Select>
-            </Col>
-            <Col md={6} sm={12} xs={24}>
               <span>Site Id: </span>
               <Select 
                 mode="multiple"
                 style={{ width: '100%', minHeight: '49px' }}
-                defaultValue={filter.siteID}
+                defaultValue={state.siteID}
                 optionLabelProp="label"
                 onChange={values => {
-                  filter.siteID = values
+                  if (values && values.length && values.includes("all")) {
+                    if (filter.siteID.length == siteList.length) {
+                      filter.siteID = [];
+                    } else {
+                      filter.siteID = [];
+                      siteList.map(item => {
+                        filter.siteID.push(item)
+                      })
+                    }
+                  } else {
+                    filter.siteID = values
+                  }
+                  console.log(filter)
                   dispatch(setDashBoardFilter(filter))
                 }}
-                maxTagCount={3}
+                maxTagCount={2}
+                value={filter.siteID}
                 >
+                  <Select.Option key="all" value="all">---SELECT ALL---</Select.Option>
                 {
                   siteList.map( (item, index) => {
                     return (
