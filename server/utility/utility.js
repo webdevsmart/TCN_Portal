@@ -1,6 +1,10 @@
 const fs = require('fs');
 const VendMachine = require('../models/vendMachineModel');
 
+const numberWithCommas = x => {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
 const anaylseLog = (path, machineUID, devName) => {
     fs.readFileSync(path, 'utf-8').split(/\r?\n/).forEach(async function(line, index) {
         let timeString = line.slice(0, 23);
@@ -33,5 +37,6 @@ const anaylseLog = (path, machineUID, devName) => {
 }
 
 module.exports = {
-    anaylseLog
+    anaylseLog,
+    numberWithCommas
 }

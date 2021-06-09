@@ -8,7 +8,7 @@ const vendMachineSchema = mongoose.Schema({
         unique: true,
         required: true
     },
-    siteId: {
+    siteID: {
         type: String
     },
     status: {

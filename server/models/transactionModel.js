@@ -34,7 +34,7 @@ const transactionSchema = mongoose.Schema({
         default: "failed"
     },
     product: {
-        productId: {
+        productID: {
             type: ObjectId,
             required: true,
             unique: true,

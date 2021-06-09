@@ -1,5 +1,7 @@
+const moment = require('moment');
 const Transaction = require('../models/transactionModel.js');
 const vendMachine = require('../models/vendMachineModel.js');
+const Utility = require('../utility/utility.js');
 
 const getTotalData = async (req, res) => {
     let result = {};
@@ -129,4 +131,134 @@ const getDetail = async(req, res) => {
     res.json({status : "success", data: detailList})
 }
 
-module.exports = {getTotalData, getMachineList, getDetail};
+const getSiteIDs = async (req, res) => {
+    vendMachine.distinct("siteID")
+    .then( result => {
+        res.json({status : "success", data: result})
+    })
+    .catch( err => {
+        res.json({status : "error", message: "Server Error"})
+    })
+}
+
+const getTodayData = async (req, res) => {
+    todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0)
+    todayEnd = new Date();
+    todayEnd.setHours(23, 59, 59, 999)
+    yesterdayStart = new Date(moment().subtract(1, 'days'));
+    yesterdayStart.setHours(0, 0, 0, 0)
+    yesterdayEnd = new Date(moment().subtract(1, 'days'));
+    yesterdayEnd.setHours(23, 59, 59, 999)
+
+    let retData = {
+        transactions: {
+            totalCount: 0,
+            successCount: 0,
+            lastRate: 0,
+            currentRate: 0
+        },
+        cardRate: {
+            totalPrice: 0,
+            cardPrice: 0,
+            lastRate: 0,
+            currentRate: 0
+        }
+    }
+    const siteID = req.body.siteID;
+    let condition = {};
+    if ( siteID.length > 0 ) {
+        condition["$or"] = [];
+        siteID.map(item => {
+            condition["$or"].push({"siteID" : item})
+        });
+    }
+
+    // get total transaction count
+    condition['time'] = {
+        $gte: todayStart,
+        $lte: todayEnd
+    },
+    retData.transactions.totalCount = await Transaction.countDocuments(condition)
+    condition['status'] = 'success'
+    retData.transactions.successCount = await Transaction.countDocuments(condition)
+    retData.transactions.currentRate = retData.transactions.totalCount == 0 ? 0 : Math.round((retData.transactions.successCount / retData.transactions.totalCount) * 100)
+    
+    // get success transaction count
+    condition['time'] = {
+        $gte: yesterdayStart,
+        $lte: yesterdayEnd
+    }
+    delete condition.status;
+    yesterdayTotalCount = await Transaction.countDocuments(condition)
+    condition['status'] = 'success'
+    yesterdaySuccessCount = await Transaction.countDocuments(condition)
+    // calculate yesterdays rate
+    retData.transactions.lastRate = yesterdayTotalCount === 0 ? 0 : Math.round((yesterdaySuccessCount / yesterdayTotalCount) * 100)
+
+    // get card Rate
+    condition['time'] = {
+        $gte: todayStart,
+        $lte: todayEnd
+    },
+    totalPrice = await Transaction.aggregate([
+        {
+            $match: condition
+        },
+        {
+            $group : {
+                _id : null, 
+                sum : {$sum : '$product.price'}
+            }   
+        }
+    ]);
+    retData.cardRate.totalPrice = totalPrice.length > 0 ? Utility.numberWithCommas(Math.round(totalPrice[0].sum) / 100) : 0;
+    condition['type'] = 'CARD';
+    cardPrice = await Transaction.aggregate([
+        {
+            $match: condition
+        },
+        {
+            $group : {
+                _id : null, 
+                sum : {$sum : '$product.price'}
+            }   
+        }
+    ]);
+    retData.cardRate.cardPrice = cardPrice.length > 0 ? Utility.numberWithCommas(Math.round(cardPrice[0].sum) / 100) : 0;
+    retData.cardRate.currentRate = totalPrice.length == 0 ? 0 : (totalPrice[0].sum == 0 ? 0 : Math.round((cardPrice[0].sum / totalPrice[0].sum) * 100));
+    condition['time'] = {
+        $gte: yesterdayStart,
+        $lte: yesterdayEnd
+    };
+    delete condition.type;
+    totalPrice = await Transaction.aggregate([
+        {
+            $match: condition
+        },
+        {
+            $group : {
+                _id : null, 
+                sum : {$sum : '$product.price'}
+            }   
+        }
+    ]);
+    condition['type'] = 'CARD';
+    cardPrice = await Transaction.aggregate([
+        {
+            $match: condition
+        },
+        {
+            $group : {
+                _id : null, 
+                sum : {$sum : '$product.price'}
+            }   
+        }
+    ]);
+    retData.cardRate.lastRate = totalPrice.length == 0 ? 0 : (totalPrice[0].sum === 0 ? 0 : Math.round( ( cardPrice[0].sum / totalPrice[0].sum) * 100 ));
+    // 
+
+    res.json({status : "success", data: retData})
+}
+
+module.exports = {getTotalData, getMachineList, getDetail, getSiteIDs, getTodayData};

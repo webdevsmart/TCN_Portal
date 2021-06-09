@@ -2,8 +2,10 @@ const express = require('express');
 const dashboardCtrl = require('../controller/dashboardCtrl.js');
 const router = express.Router();
 
-router.post('/getTotalData', dashboardCtrl.getTotalData);
 router.get('/getMachineList', dashboardCtrl.getMachineList);
+router.get('/getSiteIDs', dashboardCtrl.getSiteIDs);
+router.post('/getTotalData', dashboardCtrl.getTotalData);
 router.post('/getDetail', dashboardCtrl.getDetail);
+router.post('/getTodayData', dashboardCtrl.getTodayData);
 
 module.exports = router;

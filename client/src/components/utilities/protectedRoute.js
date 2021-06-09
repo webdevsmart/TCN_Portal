@@ -3,6 +3,7 @@ import { Route, Redirect, Switch } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Spin } from 'antd';
 import withAdminLayout from '../../layout/withAdminLayout';
+import Dashboard from '../../routes/dashboard';
 import Admin from '../../routes/admin';
 import Stock from '../../routes/stock';
 import Machine from '../../routes/machine';
@@ -18,7 +19,7 @@ const ProtectedRoute = () => {
           </div>
         }
         >
-        <Route path={`/`} component={Admin} />
+        <Route path={`/`} component={Dashboard} />
         <Route path={`/admin`} component={Admin} />
         <Route path={`/stock`} component={Stock} />
         <Route path={`/machine`} component={Machine} />
