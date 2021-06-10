@@ -6,7 +6,6 @@ import { numberWithCommas } from '../../../utility/utility';
 import { useDispatch, useSelector } from 'react-redux';
 import { SessionChartWrapper, SessionState } from '../style';
 import { Cards } from '../../../components/cards/frame/cards-frame';
-import { ChartjsDonutChart } from '../../../components/charts/chartjs';
 
 const DetailOverview = ({ type, data }) => {
   const { ref } = useChartData();
@@ -56,7 +55,7 @@ const DetailOverview = ({ type, data }) => {
             <div className="session-chart-inner">
               <div style={{ position: 'relative' }}>
                 <p>
-                  <span>$ {numberWithCommas( parseFloat(datasets[0].data.reduce((a, b) => a + b, 0)) )}</span>
+                  <span>$ {numberWithCommas( parseFloat(Math.round( datasets[0].data.reduce((a, b) => a + b, 0) * 10 ) / 10) )}</span>
                   Transaction Amount
                 </p>
                 <Doughnut 

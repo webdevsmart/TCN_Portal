@@ -105,8 +105,9 @@ const TransactionOverview = ({ updatePriceData }) => {
   }
 
   useEffect(() => {
-    getChartData()
-  }, [filter.siteID, filter.date, preIsLoading]);
+    getChartData();
+    dispatch(setIsLoading());
+  }, [filter.siteID, filter.date, performanceTab]);
 
   const onPerformanceTab = value => {
     setState({

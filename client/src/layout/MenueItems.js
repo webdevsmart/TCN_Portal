@@ -79,11 +79,11 @@ const MenuItems = ({ darkMode, toggleCollapsed, topMenu }) => {
             Card Sales
           </NavLink>
         </Menu.Item>
-        <Menu.Item key="refund">
+        <Menu.Item key="fee">
           <NavLink
             to="#"
           >
-            Refunds
+            Fee
           </NavLink>
         </Menu.Item>
       </SubMenu>
