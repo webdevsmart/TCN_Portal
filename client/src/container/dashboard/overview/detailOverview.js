@@ -56,7 +56,7 @@ const DetailOverview = ({ type, data }) => {
             <div className="session-chart-inner">
               <div style={{ position: 'relative' }}>
                 <p>
-                  <span>$ {numberWithCommas( datasets[0].data.reduce((a, b) => a + b, 0) )}</span>
+                  <span>$ {numberWithCommas( parseFloat(datasets[0].data.reduce((a, b) => a + b, 0)) )}</span>
                   Transaction Amount
                 </p>
                 <Doughnut 
