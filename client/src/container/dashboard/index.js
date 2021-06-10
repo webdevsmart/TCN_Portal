@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from 'react';
+import React, { lazy, Suspense, useState } from 'react';
 import { Row, Col, Skeleton } from 'antd';
 import { PageHeader } from '../../components/page-headers/page-headers';
 import { Main } from '../styled';
@@ -10,6 +10,23 @@ const TransactionOverview = lazy(() => import('./overview/transactionOverview'))
 const DetailOverview = lazy(() => import('./overview/detailOverview'));
 
 const Dashboard = () => {
+  const [state, setstate] = useState({
+    cardPrice: [ 0, 0 ],
+    cashPrice: [ 0, 0 ]
+  });
+
+  const updatePriceData = ( card, cash) => {
+    const masterPrice = card.masterPrice;
+    const visaPrice = card.visaPrice;
+    const coinPrice = cash.coinPrice;
+    const billPrice = cash.billPrice;
+    setstate({
+      ...state,
+      cardPrice: [ masterPrice, visaPrice ],
+      cashPrice: [ coinPrice, billPrice ]
+    })
+  }
+
   return (
     <>
       <PageHeader
@@ -40,7 +57,7 @@ const Dashboard = () => {
                 </Cards>
               }
             >
-              <TransactionOverview />
+              <TransactionOverview updatePriceData={updatePriceData} />
             </Suspense>
           </Col>
           <Col xxl={12} xl={12} lg={12} xs={24}>
@@ -51,7 +68,7 @@ const Dashboard = () => {
                 </Cards>
               }
             >
-              <DetailOverview type="Card" />
+              <DetailOverview type="Card" data={state.cardPrice}/>
             </Suspense>
           </Col>
           <Col xxl={12} xl={12} lg={12} xs={24}>
@@ -62,7 +79,7 @@ const Dashboard = () => {
                 </Cards>
               }
             >
-              <DetailOverview type="Cash" />
+              <DetailOverview type="Cash" data={state.cashPrice} />
             </Suspense>
           </Col>
         </Row>

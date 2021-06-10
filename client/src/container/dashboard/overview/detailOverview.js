@@ -1,52 +1,49 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Spin } from 'antd';
-import { Link } from 'react-router-dom';
-
+import { Doughnut } from 'react-chartjs-2';
+import useChartData from '../../../hooks/useChartData';
+import { numberWithCommas } from '../../../utility/utility';
 import { useDispatch, useSelector } from 'react-redux';
 import { SessionChartWrapper, SessionState } from '../style';
 import { Cards } from '../../../components/cards/frame/cards-frame';
 import { ChartjsDonutChart } from '../../../components/charts/chartjs';
 
-import { deviceFilterData, deviceGetData } from '../../../redux/chartContent/actionCreator';
-
-const DetailOverview = ({ type }) => {
+const DetailOverview = ({ type, data }) => {
+  const { ref } = useChartData();
   let subType = [];
   if ( type == 'Card' ) {
-    subType =["MasterCard", "Visa"]
+    subType =["MasterCard", "Visa"];
   } else {
-
+    subType =["Coin", "Bill"];
   }
   const dispatch = useDispatch();
   const { deviceState, dvIsLoading } = useSelector(state => {
     return {
-      deviceState: state.chartContent.deviceData,
+      deviceState: data,
       dvIsLoading: state.chartContent.dvLoading,
     };
   });
-
-
 
   const [state, setState] = useState({
     device: 'year',
   });
 
-  useEffect(() => {
-    if (deviceGetData) {
-      dispatch(deviceGetData());
-    }
-  }, [dispatch]);
+  const datasets = deviceState.length > 0 && [
+    {
+      data: deviceState,
+      backgroundColor: ['#20C997', '#5F63F2', '#FA8B0C'],
+      total: '9,283',
+    },
+  ]
 
-  const handleActiveChangeDevice = value => {
-    setState({
-      ...state,
-      device: value,
-    });
-    dispatch(deviceFilterData(value));
+  const chartData = deviceState.length > 0 && {
+    labels : subType,
+    datasets
   };
 
   return (
     <SessionChartWrapper>
-      {deviceState !== null && (
+      {deviceState.length > 0 && (
         <Cards
           title={`${type} Transaction`}
           size="large"
@@ -57,41 +54,47 @@ const DetailOverview = ({ type }) => {
             </div>
           ) : (
             <div className="session-chart-inner">
-              <ChartjsDonutChart
-                labels={['Desktop', 'Mobiles', 'Tablets']}
-                datasets={[
-                  {
-                    data: deviceState,
-                    backgroundColor: ['#20C997', '#5F63F2', '#FA8B0C'],
-                    total: '9,283',
-                  },
-                ]}
-              />
+              <div style={{ position: 'relative' }}>
+                <p>
+                  <span>$ {numberWithCommas( datasets[0].data.reduce((a, b) => a + b, 0) )}</span>
+                  Transaction Amount
+                </p>
+                <Doughnut 
+                  ref={ref} 
+                  data={chartData}
+                  options={{
+                    cutoutPercentage: 70,
+                    maintainAspectRatio: true,
+                    responsive: true,
+                    legend: {
+                      display: false,
+                      position: 'bottom',
+                    },
+                    animation: {
+                      animateScale: true,
+                      animateRotate: true,
+                    },
+                  }}
+                  height = {200}
+                />
+              </div>
 
               <SessionState className="session-wrap d-flex justify-content-center">
                 <div className="session-single">
                   <div className="chart-label">
                     <span className="label-dot dot-success" />
-                    Desktop
+                    { subType[0] }
                   </div>
-                  <span>{deviceState[0]}</span>
-                  <sub>45%</sub>
+                  <span>$ {numberWithCommas( deviceState[0] )}</span>
+                  <sub>{ data[0] + data[1] === 0 ? 0 : Math.round(data[0] * 100 / (data[0] + data[1])) }%</sub>
                 </div>
                 <div className="session-single">
                   <div className="chart-label">
                     <span className="label-dot dot-info" />
-                    Mobile
+                    { subType[1] }
                   </div>
-                  <span>{deviceState[1]}</span>
-                  <sub>30%</sub>
-                </div>
-                <div className="session-single">
-                  <div className="chart-label">
-                    <span className="label-dot dot-warning" />
-                    Tablets
-                  </div>
-                  <span>{deviceState[1]}</span>
-                  <sub>25%</sub>
+                  <span>$ {numberWithCommas( deviceState[1] )}</span>
+                  <sub>{ data[0] + data[1] === 0 ? 0 : Math.round(data[1] * 100 / (data[0] + data[1])) }%</sub>
                 </div>
               </SessionState>
             </div>

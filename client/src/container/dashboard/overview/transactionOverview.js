@@ -3,15 +3,16 @@ import { Spin, notification } from 'antd';
 import { NavLink, Link } from 'react-router-dom';
 import FeatherIcon from 'feather-icons-react';
 import { useDispatch, useSelector } from 'react-redux';
+import Axios from 'axios';
+import { numberWithCommas } from '../../../utility/utility';
 import { PerformanceChartWrapper, Pstates } from '../style';
 import { Cards } from '../../../components/cards/frame/cards-frame';
 import Heading from '../../../components/heading/heading';
 import { ChartjsAreaChart } from '../../../components/charts/chartjs';
 import { chartLinearGradient, customTooltips } from '../../../components/utilities/utilities';
 import { setIsLoading } from '../../../redux/chartContent/actionCreator';
-import Axios from 'axios';
 
-const TransactionOverview = () => {
+const TransactionOverview = ({ updatePriceData }) => {
   const dispatch = useDispatch();
   const { filter, preIsLoading } = useSelector(state => {
     return {
@@ -28,7 +29,7 @@ const TransactionOverview = () => {
     cardPriceState: {
       totalPrice: 0,
       masterPrice: 0,
-      VisaPrice: 0,
+      visaPrice: 0,
     },
     cashPriceState: {
       totalPrice: 0,
@@ -40,7 +41,7 @@ const TransactionOverview = () => {
   const [chartData, setChartData] = useState({
     labels: ["1", "2", "3", "4", "5", "6", "7", "8"],
     data: [],
-  })
+  });
 
   const { performanceTab, cardPriceState, cashPriceState, totalPrice, refundPrice, feePrice } = state;
 
@@ -75,7 +76,11 @@ const TransactionOverview = () => {
 
   useEffect(() => {
     getPriceData();
-  }, [filter.siteID, filter.date])
+  }, [filter.siteID, filter.date]);
+
+  useEffect(() => {
+    updatePriceData( cardPriceState, cashPriceState );
+  }, [ cardPriceState, cashPriceState ]);
 
   const getChartData = () => {
     Axios.post("/api/dashboard/getChartData", {filter: filter, tab: performanceTab})
@@ -149,7 +154,7 @@ const TransactionOverview = () => {
             >
               <p>Total</p>
               <Heading as="h1">
-                $ {totalPrice}
+                $ {numberWithCommas( totalPrice )}
               </Heading>
             </div>
             <div
@@ -161,7 +166,7 @@ const TransactionOverview = () => {
             >
               <p>Card</p>
               <Heading as="h1">
-                $ { cardPriceState.totalPrice }
+                $ { numberWithCommas( cardPriceState.totalPrice ) }
               </Heading>
             </div>
             <div
@@ -173,7 +178,7 @@ const TransactionOverview = () => {
             >
               <p>Cash</p>
               <Heading as="h1">
-                $ { cashPriceState.totalPrice }
+                $ { numberWithCommas( cashPriceState.totalPrice ) }
               </Heading>
             </div>
             <div
@@ -185,7 +190,7 @@ const TransactionOverview = () => {
             >
               <p>Fee</p>
               <Heading as="h1">
-                $ { feePrice }
+                $ { numberWithCommas( feePrice ) }
               </Heading>
             </div>
           </Pstates>
@@ -229,7 +234,7 @@ const TransactionOverview = () => {
                       },
                       label(t, d) {
                         const { yLabel, datasetIndex } = t;
-                        return `<span class="chart-data" onclick='clickHandle'>${yLabel}$</span> <span class="data-label">${d.datasets[datasetIndex].label}</span>`;
+                        return `<span class="chart-data" onclick='clickHandle'>${yLabel}$</span>`;
                       },
                     },
                   },

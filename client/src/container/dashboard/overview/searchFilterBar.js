@@ -52,7 +52,6 @@ const FilterBar = () => {
         siteID: filter.siteID
       });
     }
-    console.log(siteList)
   }, [ siteList ]);
 
   return (

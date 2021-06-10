@@ -128,15 +128,15 @@ const getPriceData = async (req, res) => {
             }   
         }
     ]);
-    retData.totalPrice = totalPrice.length > 0 ? Utility.numberWithCommas(Math.round(totalPrice[0].sum) / 100) : 0;
-    retData.refundPrice = totalPrice.length > 0 ? Utility.numberWithCommas(Math.round(totalPrice[0].refund) / 100) : 0;
-    retData.feePrice = totalPrice.length > 0 ? Utility.numberWithCommas(Math.round(totalPrice[0].fee) / 100) : 0;
-    retData.cardPriceState.totalPrice = cardPrice.length > 0 ? Utility.numberWithCommas(Math.round(cardPrice[0].sum) / 100): 0;
-    retData.cardPriceState.visaPrice = visaPrice.length > 0 ? Utility.numberWithCommas(Math.round(visaPrice[0].sum) / 100): 0;
-    retData.cardPriceState.masterPrice = masterPrice.length > 0 ? Utility.numberWithCommas(Math.round(masterPrice[0].sum) / 100): 0;
-    retData.cashPriceState.totalPrice = cashPrice.length > 0 ? Utility.numberWithCommas(Math.round(cashPrice[0].sum) / 100) : 0;
-    retData.cashPriceState.coinPrice = coinPrice.length > 0 ? Utility.numberWithCommas(Math.round(coinPrice[0].sum) / 100) : 0;
-    retData.cashPriceState.billPrice = billPrice.length > 0 ? Utility.numberWithCommas(Math.round(billPrice[0].sum) / 100) : 0;
+    retData.totalPrice = totalPrice.length > 0 ? Math.round(totalPrice[0].sum) / 100 : 0;
+    retData.refundPrice = totalPrice.length > 0 ? Math.round(totalPrice[0].refund) / 100 : 0;
+    retData.feePrice = totalPrice.length > 0 ? Math.round(totalPrice[0].fee) / 100 : 0;
+    retData.cardPriceState.totalPrice = cardPrice.length > 0 ? Math.round(cardPrice[0].sum) / 100: 0;
+    retData.cardPriceState.visaPrice = visaPrice.length > 0 ? Math.round(visaPrice[0].sum) / 100: 0;
+    retData.cardPriceState.masterPrice = masterPrice.length > 0 ? Math.round(masterPrice[0].sum) / 100: 0;
+    retData.cashPriceState.totalPrice = cashPrice.length > 0 ? Math.round(cashPrice[0].sum) / 100 : 0;
+    retData.cashPriceState.coinPrice = coinPrice.length > 0 ? Math.round(coinPrice[0].sum) / 100 : 0;
+    retData.cashPriceState.billPrice = billPrice.length > 0 ? Math.round(billPrice[0].sum) / 100 : 0;
 
     res.json({status : "success", data: retData})
 }

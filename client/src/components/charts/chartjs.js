@@ -674,7 +674,7 @@ const ChartjsDonutChart = props => {
     labels,
     datasets,
   };
-
+  console.log(options)
   return (
     <div style={{ position: 'relative' }}>
       <p>
