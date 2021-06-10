@@ -60,30 +60,23 @@ const MenuItems = ({ darkMode, toggleCollapsed, topMenu }) => {
       <SubMenu key="sale" icon={!topMenu && <FeatherIcon icon="dollar-sign" />} title="Sales">
         <Menu.Item key="total">
           <NavLink
-            to="#"
+            to={`/sale/total`}
           >
             Total Sales
           </NavLink>
         </Menu.Item>
         <Menu.Item key="cash">
           <NavLink
-            to="#"
-          >
-            Cash Sales
-          </NavLink>
-        </Menu.Item>
-        <Menu.Item key="card">
-          <NavLink
-            to="#"
+            to={`/sale/card`}
           >
             Card Sales
           </NavLink>
         </Menu.Item>
-        <Menu.Item key="fee">
+        <Menu.Item key="card">
           <NavLink
-            to="#"
+            to={`/sale/cash`}
           >
-            Fee
+            Cash Sales
           </NavLink>
         </Menu.Item>
       </SubMenu>
@@ -113,13 +106,6 @@ const MenuItems = ({ darkMode, toggleCollapsed, topMenu }) => {
         </Menu.Item>
       </SubMenu>
       <SubMenu key="setting" icon={!topMenu && <FeatherIcon icon="settings" />} title="Settings">
-        <Menu.Item key="setting">
-          <NavLink
-            to={`${path}/settings/logMng`}
-          >
-            Log Management
-          </NavLink>
-        </Menu.Item>
       </SubMenu>
     </Menu>
   );

@@ -7,6 +7,7 @@ require('dotenv').config();
 
 const userRoute = require('./routes/usersRoute.js');
 const authRoute = require('./routes/authRoute.js');
+const saleRoute = require('./routes/saleRoute.js');
 const settingsRoute = require('./routes/settingsRoute.js');
 const dashboardRoute = require('./routes/dashboardRoute.js');
 const stockRoute = require('./routes/stockRoute.js');
@@ -54,6 +55,7 @@ global.appRoot = path.resolve(__dirname);
 // routing
 app.use('/api/users', userRoute);
 app.use('/api/dashboard', dashboardRoute);
+app.use('/api/sale', saleRoute);
 app.use('/api/auth', authRoute);
 app.use('/api/settings', settingsRoute);
 app.use('/api/stock', stockRoute);

@@ -254,7 +254,7 @@ const TransactionOverview = ({ updatePriceData }) => {
                           fontSize: 13,
                           fontColor: '#182b49',
                           max: Math.round(Math.max(...chartData.data) / 10) * 10 + 20,
-                          stepSize: (Math.round(Math.max(...chartData.data) / 10) * 10 + 20) / 10,
+                          stepSize: (Math.round(Math.max(...chartData.data) / 10) * 10 + 20) / 5,
                           callback(label) {
                             return `${label}`;
                           },

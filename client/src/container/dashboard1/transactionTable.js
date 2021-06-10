@@ -143,7 +143,7 @@ const TransactionTable = ( dateRange ) => {
 				</Select>
 			</Col>
 			<Col xs={24}>
-				<Cards title="Basic Usage">
+				<Cards headless>
 					<Table className="table-responsive" 
 						pagination={{
               defaultPageSize: state.length,

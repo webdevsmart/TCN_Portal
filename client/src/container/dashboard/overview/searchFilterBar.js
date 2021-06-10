@@ -95,7 +95,7 @@ const FilterBar = () => {
                 }
               </Select>
             </Col>
-            <Col md={12} sm={12} xs={24}>
+            <Col md={8} sm={8} xs={24}>
               <span>Date Range:</span>
               <RangePicker
                 style={{ width: '100%' }}

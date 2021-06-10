@@ -7,6 +7,7 @@ import Dashboard from '../../routes/dashboard';
 import Admin from '../../routes/admin';
 import Stock from '../../routes/stock';
 import Machine from '../../routes/machine';
+import Sale from '../../routes/sale';
 
 const ProtectedRoute = () => {
   const isLoggedIn = useSelector(state => state.auth.login);
@@ -23,6 +24,7 @@ const ProtectedRoute = () => {
         <Route path={`/admin`} component={Admin} />
         <Route path={`/stock`} component={Stock} />
         <Route path={`/machine`} component={Machine} />
+        <Route path={`/sale`} component={Sale} />
       </Suspense>
       {/* <Redirect to="/admin" /> */}
       </Switch>)

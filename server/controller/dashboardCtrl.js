@@ -196,18 +196,13 @@ const getDetail = async(req, res) => {
     else
         detailList.list = await Transaction.find(query).limit(condition.length).skip(condition.start).sort(mysort);
     
-    // }
-    // else {
-    //     detailList.totalSize = await Transaction.find().estimatedDocumentCount();
-    //     detailList.list = await Transaction.find().limit(condition.length).skip(condition.start).sort(mysort);
-    // } 
     res.json({status : "success", data: detailList})
 }
 
 const getSiteIDs = async (req, res) => {
     vendMachine.distinct("siteID")
     .then( result => {
-        res.json({status : "success", data: result})
+        res.json({status : "success", data: result.sort()})
     })
     .catch( err => {
         res.json({status : "error", message: "Server Error"})
