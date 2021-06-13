@@ -3,12 +3,15 @@ const productCategoryCtrl = require('../controller/stock/productCategoryCtrl');
 const productCtrl = require('../controller/stock/productCtrl');
 const router = express.Router();
 
+// product category
 router.post('/productCategory/addCategory', productCategoryCtrl.addCategory);
 router.post('/productCategory/getCategoryList', productCategoryCtrl.getCategoryList);
 router.get('/productCategory/getTotalCategory', productCategoryCtrl.getTotalCategory);
 router.post('/productCategory/getCategoryById', productCategoryCtrl.getCategoryById);
 router.post('/productCategory/deleteCategory', productCategoryCtrl.deleteCategory);
+router.post('/productCategory/uploadSheet', productCategoryCtrl.uploadSheet);
 
+// product
 router.post('/product/getProduct', productCtrl.getProduct);
 router.post('/product/getProductList', productCtrl.getProductList);
 router.post('/product/uploadProductImage', productCtrl.uploadProductImage);

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { AutoComplete } from '../../../components/autoComplete/autoComplete';
 import { PageHeader } from '../../../components/page-headers/page-headers';
+import { ExportButtonPageHeader } from './ExportButton';
 import { Button } from '../../../components/buttons/buttons';
 import { Main, CardToolbox } from '../../styled';
 import CreateCategory from './createCategory';
@@ -62,9 +63,12 @@ const Category = () => {
             </>
           }
           buttons={[
-            <Button className="btn-add_new" size="default" type="primary" key="1" onClick={() => showModal("")}>
-              + Add New Category
-            </Button>,
+            <div key="6" className="page-header-actions">
+              <ExportButtonPageHeader key="2" />
+              <Button className="btn-add_new" size="default" type="primary" key="1" onClick={() => showModal("")}>
+                + Add New Category
+              </Button>
+            </div>
           ]}
         />
       </CardToolbox>

@@ -4,12 +4,10 @@ const {YES, NO} = require('../../constants.js');
 const productCategorySchema = mongoose.Schema({
   code: {
       type: String,
-      unique: true,
       required: true,
   },
   name: {
     type: String,
-    unique: true,
     required: true,
   },
   imageUrl: {

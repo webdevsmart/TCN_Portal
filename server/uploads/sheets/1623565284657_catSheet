@@ -1,0 +1,50 @@
+aisle_id,product_id,aisle_capacity,aisle_tag,aisle_row,aisle_column ,product_name,product_cost
+55,25,10,1,10,10,Doritos,2.2
+56,26,10,3,10,10,Smith Original,2.2
+57,27,10,5,10,10,Smith Chicken,2.2
+58,28,10,7,10,10,Smith Salt & Vinegar,2.2
+59,29,10,9,10,10,Smith Cheese & Onion,2.2
+60,30,10,11,10,10,Sweet Chilli,2.5
+61,31,10,13,10,10,Honey Soy,2.5
+62,32,10,15,10,10,Tuna Cracker,3.5
+63,33,10,17,10,10,Peanuts,3
+64,34,10,19,10,10,Cookie,3
+65,35,10,21,10,10,Chokito,2.2
+66,36,10,22,10,10,M&Ms,2.2
+67,37,10,23,10,10,KitKat,2.2
+68,38,10,24,10,10,Dream,2.2
+69,39,10,25,10,10,Twix,2.2
+70,41,10,26,10,10,Dark Choc Museli Bar,3
+71,42,10,27,10,10,Fruit & Nut Museli Bar,3
+72,43,10,28,10,10,Low Carb Bar,3
+73,44,10,29,10,10,Rancho Mix,3
+74,10,10,31,10,10,Red Bull,3.5
+75,9,10,32,10,10,V Energy,3.5
+76,45,10,33,10,10,Kombucha,3.5
+77,45,10,34,10,10,Kombucha,3.5
+78,46,10,35,10,10,Protein Shake,4
+79,47,10,36,10,10,Powerade,4
+80,2,10,37,10,10,Sparkling Water,2.5
+81,2,10,38,10,10,Sparkling Water,2.5
+82,1,10,39,10,10,Water,2.2
+83,1,10,40,10,10,Water,2.2
+84,24,10,41,10,10,Coke No Sugar,1.8
+85,24,10,42,10,10,Coke No Sugar,1.8
+86,24,10,43,10,10,Coke No Sugar,1.8
+87,24,10,44,10,10,Coke No Sugar,1.8
+88,24,10,45,10,10,Coke No Sugar,1.8
+89,24,10,46,10,10,Coke No Sugar,1.8
+90,24,10,47,10,10,Coke No Sugar,1.8
+91,24,10,48,10,10,Coke No Sugar,1.8
+92,14,10,49,10,10,Diet Coke,1.8
+93,14,10,50,10,10,Diet Coke,1.8
+94,22,10,51,10,10,Mt Franklin Lime,1.8
+95,23,10,52,10,10,Mt Franklin Raspberry,1.8
+96,17,10,53,10,10,Pepsi Max,1.8
+97,21,10,54,10,10,Coke,1.8
+98,21,10,55,10,10,Coke,1.8
+99,20,10,56,10,10,Mountain Dew,1.8
+100,16,10,57,10,10,Solo,1.8
+101,18,10,58,10,10,Fanta,1.8
+102,15,10,59,10,10,Sprite,1.8
+103,19,10,59,10,10,Ginger Beer,1.8
