@@ -413,7 +413,7 @@ const getChartData = async ( req, res ) => {
             },
             {
                 "$group" : {
-                    "_id" : { $dateToString: { format: "%m-%d", date: "$time" } },
+                    "_id" : { $dateToString: { format: "%Y-%m-%d", date: "$time" } },
                     "totalPrice": {"$sum" : "$product.price"},
                 }
             },
@@ -439,7 +439,7 @@ const getChartData = async ( req, res ) => {
             },
             {
                 "$group" : {
-                    "_id" : { $dateToString: { format: "%m-%d", date: "$time" } },
+                    "_id" : { $dateToString: { format: "%Y-%m-%d", date: "$time" } },
                     "totalPrice": {"$sum" : {"$toDouble" : "$fee"}},
                 }
             },

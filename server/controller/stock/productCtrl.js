@@ -146,18 +146,18 @@ const uploadSheet = async ( req, res ) => {
                 }
                 data.push(item)
             }
-            ProductModel.insertMany(data)
+            ProductModel.insertMany(data, {ordered: false, dropDups: true})
             .then( result => {
                 res.json({ status: "success", file: files.productSheet.name });
             })
             .catch( err => {
-                console.log(err)
-                let message = "";
+                let message = "Server Error";
+                if (err.code == 11000) {
+                    message = err.writeErrors[0].err.errmsg;
+                }
                 if ( err._message === 'productCategory validation failed' ) {
                     message = 'Unavailable file style';
-                } else {
-                    message = 'Server Error!';
-                }
+                } 
                 res.json({ message: message, status: "fail", file: files.productSheet.name }).status(500);
             });
         });        

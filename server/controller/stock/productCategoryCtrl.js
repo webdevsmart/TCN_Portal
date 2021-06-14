@@ -2,9 +2,6 @@ const formidable = require('formidable');
 const csv = require('csv-parser');
 const fs_ex = require('fs-extra'); 
 const fs = require('fs');
-const mime = require('mime');
-const json2csv = require('json2csv').parse;
-const Downloader = require('nodejs-file-downloader');
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 
 const ProductCategoryModel = require('../../models/stock/categoryModel.js');
@@ -120,6 +117,7 @@ const uploadSheet = async ( req, res ) => {
                     res.json({ status: "success", file: files.categorySheet.name });
                 })
                 .catch( err => {
+                    console.log(err)
                     let message = "";
                     if ( err._message === 'productCategory validation failed' ) {
                         message = 'Unavailable file style';

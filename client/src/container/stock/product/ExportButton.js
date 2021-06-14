@@ -45,17 +45,7 @@ const ExportButtonPageHeader = ({ setTableRefresh }) => {
       responseType: 'blob'
     })
     .then( res => {
-      console.log(res)
       FileDownload(res.data, 'report.csv');
-      if ( res.data.status === 'success' ) {
-        console.log(res.data.data)
-      } else {
-        notification["warning"] ({
-          message: 'Warning',
-          description: 
-          res.data.message,
-        });
-      }
     })
     .catch( err => {
       notification["warning"] ({

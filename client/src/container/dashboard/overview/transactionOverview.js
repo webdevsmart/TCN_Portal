@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Spin, notification } from 'antd';
-import { NavLink, Link } from 'react-router-dom';
-import FeatherIcon from 'feather-icons-react';
 import { useDispatch, useSelector } from 'react-redux';
 import Axios from 'axios';
+import { useHistory } from 'react-router';
+import moment from 'moment';
+
 import { numberWithCommas } from '../../../utility/utility';
 import { PerformanceChartWrapper, Pstates } from '../style';
 import { Cards } from '../../../components/cards/frame/cards-frame';
@@ -11,9 +12,11 @@ import Heading from '../../../components/heading/heading';
 import { ChartjsAreaChart } from '../../../components/charts/chartjs';
 import { chartLinearGradient, customTooltips } from '../../../components/utilities/utilities';
 import { setIsLoading } from '../../../redux/chartContent/actionCreator';
+import { setDashBoardFilter } from '../../../redux/filter/actionCreator';
 
 const TransactionOverview = ({ updatePriceData }) => {
   const dispatch = useDispatch();
+  const routerHistory = useHistory();
   const { filter, preIsLoading } = useSelector(state => {
     return {
       preIsLoading: state.chartContent.perLoading,
@@ -117,7 +120,7 @@ const TransactionOverview = ({ updatePriceData }) => {
     return dispatch(setIsLoading());
   };
 
-  const performanceDatasets = chartData !== null && [
+  const transactionDatasets = chartData !== null && [
     {
       data: chartData.data,
       borderColor: '#5F63F2',
@@ -204,12 +207,21 @@ const TransactionOverview = ({ updatePriceData }) => {
               <ChartjsAreaChart
                 id="performance"
                 labels={chartData.labels}
-                datasets={performanceDatasets}
+                datasets={transactionDatasets}
                 options={{
                   maintainAspectRatio: true,
                   onClick: function(evt, element) {
                     if (element.length > 0) {
-                      console.log(element);
+                      let index = element[0]._index;
+                      filter.date = [ moment(chartData.labels[index] + ' 00:00:00'), moment(chartData.labels[index] + ' 23:59:59') ];
+                      dispatch(setDashBoardFilter(filter))
+                      if ( performanceTab === 'totalPrice' ) {
+                        routerHistory.push('/sale/total')
+                      } else if ( performanceTab === 'cardPrice' ) {
+                        routerHistory.push("sale/card");
+                      } else if ( performanceTab === 'cashPrice' ) {
+                        routerHistory.push("sale/cash");
+                      }
                     }
                   },
                   elements: {
@@ -234,8 +246,8 @@ const TransactionOverview = ({ updatePriceData }) => {
                         return performanceTab;
                       },
                       label(t, d) {
-                        const { yLabel, datasetIndex } = t;
-                        return `<span class="chart-data" onclick='clickHandle'>${yLabel}$</span>`;
+                        const { yLabel, xLabel, datasetIndex } = t;
+                        return `<span class="chart-data">${yLabel}$ (${xLabel}) </span> `;
                       },
                     },
                   },
@@ -281,8 +293,8 @@ const TransactionOverview = ({ updatePriceData }) => {
                 height={window.innerWidth <= 575 ? 200 : 86}
               />
               <ul>
-                {performanceDatasets &&
-                  performanceDatasets.map((item, index) => {
+                {transactionDatasets &&
+                  transactionDatasets.map((item, index) => {
                     return (
                       <li key={index + 1} className="custom-label">
                         <span

@@ -4,10 +4,12 @@ import FeatherIcon from 'feather-icons-react';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import Axios from 'axios';
+
 import Heading from '../../../../components/heading/heading';
 import { Button } from '../../../../components/buttons/buttons';
 import { ProductCard } from '../../style';
-import Axios from 'axios';
+import { setRefresh } from '../../../../redux/product/actionCreator';
 import SampleImage from '../../../../static/img/sample-product.png';
 
 const confirm = Modal.confirm;
@@ -29,7 +31,7 @@ const ProductCards = ({ product, showEditModal }) => {
               description: 
               'Successfully Done!',
             });
-            getCategoryList();
+            dispatch(setRefresh(true));
           } else {
             notification["warning"]({
               message: 'Warning',
@@ -38,13 +40,6 @@ const ProductCards = ({ product, showEditModal }) => {
             });
           }
         })
-        .catch (err => {
-          notification["warning"]({
-            message: 'Warning',
-            description: 
-            'Server Error',
-          });
-        });
 			},
 			onCancel() {},
     });

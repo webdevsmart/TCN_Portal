@@ -46,6 +46,7 @@ const Grid = ({ showModal }) => {
         }
       })
       .catch(err => {
+        console.log(err)
         notification["warning"]({
           message: 'Warning',
           description: 

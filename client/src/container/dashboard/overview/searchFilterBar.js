@@ -21,6 +21,7 @@ const FilterBar = ({ paymentType }) => {
   const [state, setState] = useState({
     "siteID": filter.siteID,
     "productID": filter.productID,
+    "date" : filter.date
   })
 
   useEffect(() => {
@@ -44,11 +45,16 @@ const FilterBar = ({ paymentType }) => {
       })
     });
     filter.paymentType = 'all';
-    console.log("tstea")
   }, []);
 
   // change the filter values on the only homepage
   if (location.pathname == '/') {
+    state.date = [
+        moment().startOf('month'),
+        moment().endOf('month')
+    ];
+    // filter.date = [
+    // ];
     useEffect(() => {
       if ( siteList.length > 0 ) {
         filter.siteID = [];
@@ -60,6 +66,10 @@ const FilterBar = ({ paymentType }) => {
           siteID: filter.siteID
         });
       }
+      filter.date = [
+        moment().startOf('month'),
+        moment().endOf('month')
+      ];
     }, [ siteList ]);
   }
 
@@ -217,7 +227,7 @@ const FilterBar = ({ paymentType }) => {
                   filter.date = date;
                   dispatch(setDashBoardFilter(filter))
                 }}
-                defaultValue={filter.date}
+                defaultValue={state.date}
               />
             </Col>
           </Row>
