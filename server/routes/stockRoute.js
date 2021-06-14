@@ -10,6 +10,7 @@ router.get('/productCategory/getTotalCategory', productCategoryCtrl.getTotalCate
 router.post('/productCategory/getCategoryById', productCategoryCtrl.getCategoryById);
 router.post('/productCategory/deleteCategory', productCategoryCtrl.deleteCategory);
 router.post('/productCategory/uploadSheet', productCategoryCtrl.uploadSheet);
+router.get('/productCategory/downloadSheet', productCategoryCtrl.downloadSheet);
 
 // product
 router.post('/product/getProduct', productCtrl.getProduct);
@@ -19,5 +20,7 @@ router.post('/product/addProduct', productCtrl.addProduct);
 router.post('/product/getProductByCategory', productCtrl.getProductByCategory);
 router.post('/product/getProductById', productCtrl.getProductById);
 router.post('/product/deleteProduct', productCtrl.deleteProduct);
+router.post('/product/uploadSheet', productCtrl.uploadSheet);
+router.get('/product/downloadSheet', productCtrl.downloadSheet);
 
 module.exports = router;

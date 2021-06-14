@@ -64,7 +64,7 @@ const Category = () => {
           }
           buttons={[
             <div key="6" className="page-header-actions">
-              <ExportButtonPageHeader key="2" />
+              <ExportButtonPageHeader key="2" setTableRefresh={setTableRefresh} />
               <Button className="btn-add_new" size="default" type="primary" key="1" onClick={() => showModal("")}>
                 + Add New Category
               </Button>

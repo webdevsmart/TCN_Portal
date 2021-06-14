@@ -19,15 +19,18 @@
         "bcryptjs": "^2.4.3",
         "body-parser": "^1.18.2",
         "csv-parser": "^3.0.0",
+        "csv-writer": "^1.6.0",
         "directory-tree": "^2.2.9",
         "dotenv": "^6.1.0",
         "express": "^4.16.3",
         "formidable": "^1.2.2",
         "fs-extra": "^10.0.0",
         "ftp": "^0.3.10",
+        "json2csv": "^5.0.6",
         "jsonwebtoken": "^8.3.0",
         "mongoose": "^5.7.5",
-        "node-cron": "^3.0.0"
+        "node-cron": "^3.0.0",
+        "nodejs-file-downloader": "^4.6.0"
     },
     "devDependencies": {
         "nodemon": "^1.19.4"

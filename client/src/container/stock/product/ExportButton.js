@@ -1,18 +1,20 @@
 import React, { useState } from 'react';
-import { Upload, message, notification } from 'antd';
+import { useDispatch } from 'react-redux';
 import Axios from 'axios';
+import FileDownload from 'js-file-download';
+import { Upload, message, notification } from 'antd';
 import { NavLink } from 'react-router-dom';
 import FeatherIcon from 'feather-icons-react';
 import { Popover } from '../../../components/popup/popup';
 import { Button } from '../../../components/buttons/buttons';
-import FileDownload from 'js-file-download';
 
 const ExportButtonPageHeader = ({ setTableRefresh }) => {
   const [files, setFiles] = useState([]);
+  const dispatch = useDispatch();
 
   const props = {
-    name: 'categorySheet',
-    action: '/api/stock/productCategory/uploadSheet',
+    name: 'productSheet',
+    action: '/api/stock/product/uploadSheet',
     headers: {
       authorization: 'authorization-text',
     },
@@ -27,7 +29,7 @@ const ExportButtonPageHeader = ({ setTableRefresh }) => {
       if ( info.file.status === 'done' ) {
         if (info.file.response.status === 'success') {
           message.success(`${info.file.name} file uploaded successfully`);
-          setTableRefresh();
+          dispatch(setRefresh(true));
         } else if (info.file.response.status === 'fail') {
           message.error(`${info.file.response.message}`);
         }
@@ -36,9 +38,9 @@ const ExportButtonPageHeader = ({ setTableRefresh }) => {
     showUploadList: false
   };
 
-  const downloadCategory = () => {
+  const downloadSheet = () => {
     Axios({
-      url: "/api/stock/productCategory/downloadSheet",
+      url: "/api/stock/product/downloadSheet",
       method: "get",
       responseType: 'blob'
     })
@@ -62,7 +64,8 @@ const ExportButtonPageHeader = ({ setTableRefresh }) => {
         'Server Error',
       });
     })
-  }
+  };
+
 
   const content = (
     <>
@@ -74,13 +77,14 @@ const ExportButtonPageHeader = ({ setTableRefresh }) => {
         </Upload>
       </div>
       <div>
-        <Button className="btn-outlined" size="default" transparented type="success" outlined onClick={downloadCategory}>
+        <Button className="btn-outlined" size="default" transparented type="success" outlined onClick={downloadSheet}>
             <FeatherIcon size={16} icon="download" /> Download
         </Button>
       </div>
     </>
   );
 
+  
   return (
     <Popover placement="bottomLeft" content={content} trigger="click">
       <Button size="small" type="white">

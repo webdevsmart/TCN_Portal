@@ -103,7 +103,7 @@ const TransactionTable = (  ) => {
 		}
     console.log("ok")
 		getTransactionList();
-	}, [ filter.siteID, filter.date, state ]);
+	}, [ filter.siteID, filter.date, filter.productID, filter.paymentType, state ]);
 
 	const onChange = (pagination, filters, sorter, extra) => {
 		setState({...state, start: (pagination.current - 1) * pagination.pageSize, length: pagination.pageSize, sort: sorter.field, sortDir: sorter.order});

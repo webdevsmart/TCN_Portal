@@ -76,7 +76,7 @@ const TransactionOverview = ({ updatePriceData }) => {
 
   useEffect(() => {
     getPriceData();
-  }, [filter.siteID, filter.date]);
+  }, [ filter.siteID, filter.date, filter.productID ]);
 
   useEffect(() => {
     updatePriceData( cardPriceState, cashPriceState );
@@ -107,7 +107,7 @@ const TransactionOverview = ({ updatePriceData }) => {
   useEffect(() => {
     getChartData();
     dispatch(setIsLoading());
-  }, [filter.siteID, filter.date, performanceTab]);
+  }, [filter.siteID, filter.date, filter.productID, performanceTab]);
 
   const onPerformanceTab = value => {
     setState({

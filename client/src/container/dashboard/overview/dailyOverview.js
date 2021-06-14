@@ -35,7 +35,7 @@ const DailyOverview = () => {
   useEffect(() => {
     // console.log(filter)
     const getTodayData = () => {
-      Axios.post('/api/dashboard/getTodayData', {siteID: filter.siteID})
+      Axios.post('/api/dashboard/getTodayData', { siteID: filter.siteID, productID: filter.productID })
       .then( res => {
         if ( res.data.status === 'success' ) {
           setstate(res.data.data)
@@ -56,7 +56,7 @@ const DailyOverview = () => {
       })
     }
     getTodayData();
-  }, [filter.siteID]);
+  }, [ filter.siteID, filter.productID ]);
 
   return (
     <OverviewCard>

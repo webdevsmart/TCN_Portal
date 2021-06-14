@@ -43,7 +43,6 @@ const productSchema = mongoose.Schema({
     },
     imageFile: {
         type: String,
-        required: true,
     },
     isDelete: {
         type: String,

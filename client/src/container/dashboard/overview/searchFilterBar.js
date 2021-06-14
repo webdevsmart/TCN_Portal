@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom'
 import { Row, Col, Space, Input, Select, DatePicker, notification } from 'antd';
 import moment from 'moment';
 import { BasicFormWrapper } from '../../styled';
@@ -10,13 +11,17 @@ import Axios from 'axios';
 
 const { RangePicker } = DatePicker;
 
-const FilterBar = () => {
+const FilterBar = ({ paymentType }) => {
+  const location = useLocation();
+  console.log(location.pathname);
   const dispatch = useDispatch();
-  const filter = useSelector(state => state.filterDashboard.data) 
-  const [companyList, setCompanyList] = useState([])
+  const filter = useSelector(state => state.filterDashboard.data)
+  // const [companyList, setCompanyList] = useState([])
   const [siteList, setSiteList] = useState([])
+  const [productList, setProductList] = useState([])
   const [state, setState] = useState({
     "siteID": filter.siteID,
+    "productID": filter.productID,
   })
 
   useEffect(() => {
@@ -38,7 +43,7 @@ const FilterBar = () => {
         description: 
           "Server Error!"
       })
-    })
+    });
   }, []);
 
   useEffect(() => {
@@ -54,12 +59,55 @@ const FilterBar = () => {
     }
   }, [ siteList ]);
 
+  const onSearchProduct = ( keyword ) => {
+    Axios.post("/api/dashboard/getProductList", { keyword })
+    .then( res => {
+      if ( res.data.status == 'success' ) {
+        setProductList(res.data.data);
+      } else {
+        notification['warning']({
+          message: 'Warning!',
+          description: 
+            res.data.message
+        })  
+      }
+    })
+    .catch( err => {
+      notification['warning']({
+        message: 'Warning!',
+        description: 
+          "Serever Error!"
+      })
+    })
+  }
+
+  const onFocusProduct = () => {
+    setProductList([]);
+  }
+
+  const onChangeProduct = (values, key) => {
+    if (values && values.length && values.includes("all")) {
+      filter.productID = ["all"];
+      setState({
+        ...state,
+        productID: ["all"]
+      })
+    } else {
+      filter.productID = values;
+      setState({
+        ...state,
+        productID: values
+      })
+    }
+    dispatch(setDashBoardFilter(filter))
+  }
+
   return (
     <>
       <FilterStyle>
         <Cards headless>
           <Row gutter="25">
-            <Col md={6} sm={12} xs={24}>
+            <Col md={5} sm={12} xs={24}>
               <span>Site Id: </span>
               <Select 
                 mode="multiple"
@@ -79,7 +127,6 @@ const FilterBar = () => {
                   } else {
                     filter.siteID = values
                   }
-                  console.log(filter)
                   dispatch(setDashBoardFilter(filter))
                 }}
                 maxTagCount={2}
@@ -95,7 +142,64 @@ const FilterBar = () => {
                 }
               </Select>
             </Col>
-            <Col md={8} sm={8} xs={24}>
+            <Col md={5} sm={12} xs={24}>
+              <span>Product: </span>
+              <Select 
+                mode="multiple"
+                style={{ width: '100%', minHeight: '49px' }}
+                defaultValue={state.productID}
+                optionLabelProp="label"
+                onChange={onChangeProduct}
+                showArrow={false}
+                filterOption={false}
+                onSearch={onSearchProduct}
+                onFocus={onFocusProduct}
+                maxTagCount={2}
+                value={state.productID}
+                >
+                  <Select.Option key="all" value="all">---SELECT ALL---</Select.Option>
+                  {
+                    productList.map( (item, index) => {
+                      return (
+                        <Select.Option value={item.id} key={item.id} label={item.name}>{item.name}</Select.Option>
+                      );
+                    })
+                  }
+              </Select>
+            </Col>
+            
+              { location.pathname !== '/' ? 
+              
+                <Col md={5} sm={12} xs={24}>
+                  <span>Payment Type: </span>
+                  <Select 
+                    style={{ width: '100%', minHeight: '49px' }}
+                    defaultValue={state.paymentType}
+                    optionLabelProp="label"
+                    size="default"
+                    onChange={values => {
+                      if (values && values.length && values.includes("all")) {
+                        filter.paymentType = ['all'];
+                      } else {
+                        filter.paymentType = values
+                      }
+                      console.log(filter)
+                      dispatch(setDashBoardFilter(filter))
+                    }}
+                    value={filter.paymentType}
+                    >
+                      <Select.Option key="all" value="all" style={{ paddingTop: '5px'}}>---SELECT ALL---</Select.Option>
+                    {
+                      paymentType.map( (item, index) => {
+                        return (
+                          <Select.Option value={item} key={index}>{item}</Select.Option>
+                        );
+                      })
+                    }
+                  </Select>
+                </Col> : ""
+            }
+            <Col md={9} sm={12} xs={24}>
               <span>Date Range:</span>
               <RangePicker
                 style={{ width: '100%' }}

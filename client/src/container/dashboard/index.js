@@ -25,7 +25,7 @@ const Dashboard = () => {
       cardPrice: [ masterPrice, visaPrice ],
       cashPrice: [ coinPrice, billPrice ]
     })
-  }
+  };
 
   return (
     <>

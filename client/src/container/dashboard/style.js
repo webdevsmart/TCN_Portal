@@ -7,6 +7,9 @@ const FilterStyle = Styled.div`
     .ant-select-selector {
         min-height: 47px;
     }
+    .ant-select-single .ant-select-selection-item {
+        padding-top: 5px !important;
+    }
 `;
 
 const OverviewCard = Styled.div`

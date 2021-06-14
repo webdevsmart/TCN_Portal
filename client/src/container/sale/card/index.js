@@ -8,7 +8,7 @@ const FilterBar = lazy(() => import('../../dashboard/overview/searchFilterBar'))
 const TransactionTable = lazy(() => import('./overview/transactionTable'));
 
 const CardSale = () => {
-
+  const paymentType = ['MASTERCARD', 'VISA'];
   return (
     <>
       <PageHeader
@@ -18,7 +18,7 @@ const CardSale = () => {
       <Main>
         <Row gutter={25} justify="center">
           <Col xxl={24} md={24} sm={24} xs={24}>
-            <FilterBar />
+            <FilterBar paymentType={paymentType}  />
           </Col>
           <Col xxl={24} md={24} sm={24} xs={24}>
             <TransactionTable />

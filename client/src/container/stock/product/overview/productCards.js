@@ -8,6 +8,7 @@ import Heading from '../../../../components/heading/heading';
 import { Button } from '../../../../components/buttons/buttons';
 import { ProductCard } from '../../style';
 import Axios from 'axios';
+import SampleImage from '../../../../static/img/sample-product.png';
 
 const confirm = Modal.confirm;
 
@@ -52,11 +53,11 @@ const ProductCards = ({ product, showEditModal }) => {
   return (
       <ProductCard style={{ marginBottom: 30 }}>
         <figure>
-          <img src={`/uploads/products/${imageFile}`} alt={`img${_id}`} />
+          <img src={imageFile === undefined ? SampleImage : `/uploads/products/${imageFile}`} alt={`img${_id}`} />
         </figure>
         <figcaption>
           <Heading className="product-single-title" as="h5">
-            <h4>{name}</h4>
+            {name}
           </Heading>
           <p className="product-single-price">
             <span className="product-single-price__new">AUD$ {price} </span>

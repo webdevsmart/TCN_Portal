@@ -16,6 +16,7 @@
     "date-fns": "^2.9.0",
     "feather-icons-react": "^0.4.1",
     "js-cookie": "^2.2.1",
+    "js-file-download": "^0.4.12",
     "peity-react": "0.0.7",
     "prop-types": "^15.7.2",
     "react": "^16.12.0",

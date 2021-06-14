@@ -5,7 +5,8 @@ const initialDashboard = {
   data: {
     companyID: [],
     siteID: [],
-    productID: [],
+    productID: ["all"],
+    paymentType: ["all"],
     date: [
       moment().startOf('month'),
       moment().endOf('month')

@@ -1,12 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import { Table, notification, Modal } from 'antd';
+import Axios from 'axios';
 import { format } from 'date-fns';
 import FeatherIcon from 'feather-icons-react';
 import { Cards } from '../../../components/cards/frame/cards-frame';
 import { Button } from '../../../components/buttons/buttons';
 import { TableStyleWrapper } from '../style';
 import { TableWrapper } from '../../styled';
-import Axios from 'axios';
+import SampleImage from '../../../static/img/sample-product.png';
 
 const confirm = Modal.confirm;
 
@@ -102,9 +103,9 @@ const CategoryTable = ({refresh, showModal, keyword}) => {
 		createdAt: format(time, 'yyyy/MM/dd kk:mm:ss'),
 		code,
 		imageUrl: (
-      <figure>
-        <img src={`/uploads/products/${imageUrl}`} alt={`img`} style={{ maxWidth: '120px' }} />
-      </figure>
+		<figure>
+			<img src={imageUrl === undefined ? SampleImage : `/uploads/products/${imageUrl}`} alt={`img`} style={{ maxWidth: '120px' }} />
+		</figure>
     ),
 		name,
 		action: (

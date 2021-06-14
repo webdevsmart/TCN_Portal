@@ -5,6 +5,7 @@ const productCategorySchema = mongoose.Schema({
   code: {
       type: String,
       required: true,
+      unique: true,
   },
   name: {
     type: String,

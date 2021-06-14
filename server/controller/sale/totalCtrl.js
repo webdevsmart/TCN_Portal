@@ -15,17 +15,37 @@ const getTransactionList = async ( req, res ) => {
         }
     }
     
-    query["$or"] = [];
+    query["$and"] = [];
+    let $or = {"$or" : []};
     if ( filter.siteID.length > 0 ) {
         filter.siteID.map(item => {
-            query["$or"].push({"siteID" : item})
+            $or['$or'].push({"siteID" : item});
         });
+        query['$and'].push($or);
     } else {
-        query["$or"].push({"siteID" : 'none'})
+        $or['$or'][0] = {"siteID" : "none"};
+        query['$and'].push($or);
+    }
+
+    $or = {"$or" : []};
+    if ( filter.productID != "all" &&  filter.productID.length > 0) {
+        filter.productID.map(item => {
+            $or['$or'].push({"product.productID" : item});
+        });
+        query['$and'].push($or);
+    } else if (filter.productID.length == 0) {
+        $or['$or'][0] = {"productID" : "none"};
+        query['$and'].push($or);
     }
 
     if ( type == 'CARD' || type == 'CASH' ) {
         query['type'] = type;
+    }
+    
+    if (filter.paymentType == 'CARD' || filter.paymentType == 'CASH') {
+        query['type'] = filter.paymentType;
+    } else if (filter.paymentType != 'all') {
+        query['subType'] = filter.paymentType;
     }
 
     let mysort = {};

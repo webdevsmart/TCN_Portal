@@ -8,6 +8,7 @@ import { Button } from '../../../components/buttons/buttons';
 import { Main, CardToolbox } from '../../styled';
 import { TopToolBox } from '../style';
 import ProductForm from './productForm';
+import { ExportButtonPageHeader } from './ExportButton';
 
 const Grid = lazy(() => import('./overview/grid'));
 // const List = lazy(() => import('./overview/List'));
@@ -46,9 +47,12 @@ const Product = () => {
         <PageHeader
           title="Product Category"
           buttons={[
-            <Button className="btn-add_new" size="default" type="primary" key="1" onClick={() => showModal("")}>
-              + Add New Product
-            </Button>,
+            <div key="6" className="page-header-actions">
+              <ExportButtonPageHeader key="2" />
+              <Button className="btn-add_new" size="default" type="primary" key="1" onClick={() => showModal("")}>
+                + Add New Product
+              </Button>
+            </div>
           ]}
         />
       </CardToolbox>

@@ -1,6 +1,7 @@
 const moment = require('moment');
 const Transaction = require('../models/transactionModel.js');
 const vendMachine = require('../models/vendMachineModel.js');
+const Product = require('../models/stock/productModel');
 const Utility = require('../utility/utility.js');
 
 const getPriceData = async (req, res) => {
@@ -26,13 +27,27 @@ const getPriceData = async (req, res) => {
         }
     }
 
-    condition["$or"] = [];
+    condition["$and"] = [];
+    let $or = {"$or" : []};
     if ( filter.siteID.length > 0 ) {
         filter.siteID.map(item => {
-            condition["$or"].push({"siteID" : item})
+            $or['$or'].push({"siteID" : item});
         });
+        condition['$and'].push($or);
     } else {
-        condition["$or"].push({"siteID" : 'none'})
+        $or['$or'][0] = {"siteID" : "none"};
+        condition['$and'].push($or);
+    }
+
+    $or = {"$or" : []};
+    if ( filter.productID != "all" &&  filter.productID.length > 0) {
+        filter.productID.map(item => {
+            $or['$or'].push({"product.productID" : item});
+        });
+        condition['$and'].push($or);
+    } else if (filter.productID.length == 0) {
+        $or['$or'][0] = {"productID" : "none"};
+        condition['$and'].push($or);
     }
 
     let totalPrice = await Transaction.aggregate([
@@ -234,16 +249,31 @@ const getTodayData = async (req, res) => {
         }
     }
     const siteID = req.body.siteID;
+    const productID = req.body.productID;
+    
     let condition = {};
-    condition["$or"] = [];
+    condition["$and"] = [];
+    let $or = {"$or" : []};
     if ( siteID.length > 0 ) {
         siteID.map(item => {
-            condition["$or"].push({"siteID" : item})
+            $or['$or'].push({"siteID" : item});
         });
+        condition['$and'].push($or);
     } else {
-        condition["$or"].push({"siteID" : 'none'})
+        $or['$or'][0] = {"siteID" : "none"};
+        condition['$and'].push($or);
     }
 
+    $or = {"$or" : []};
+    if ( productID != "all" &&  productID.length > 0) {
+        productID.map(item => {
+            $or['$or'].push({"product.productID" : item});
+        });
+        condition['$and'].push($or);
+    } else if (productID.length == 0) {
+        $or['$or'][0] = {"productID" : "none"};
+        condition['$and'].push($or);
+    }
     // get total transaction count
     condition['time'] = {
         $gte: todayStart,
@@ -346,13 +376,28 @@ const getChartData = async ( req, res ) => {
         }
     }
     
-    condition["$or"] = [];
+    
+    condition["$and"] = [];
+    let $or = {"$or" : []};
     if ( filter.siteID.length > 0 ) {
         filter.siteID.map(item => {
-            condition["$or"].push({"siteID" : item})
+            $or['$or'].push({"siteID" : item});
         });
+        condition['$and'].push($or);
     } else {
-        condition["$or"].push({"siteID" : 'none'})
+        $or['$or'][0] = {"siteID" : "none"};
+        condition['$and'].push($or);
+    }
+
+    $or = {"$or" : []};
+    if ( filter.productID != "all" &&  filter.productID.length > 0) {
+        filter.productID.map(item => {
+            $or['$or'].push({"product.productID" : item});
+        });
+        condition['$and'].push($or);
+    } else if (filter.productID.length == 0) {
+        $or['$or'][0] = {"productID" : "none"};
+        condition['$and'].push($or);
     }
 
     if ( tab == 'cardPrice' ) {
@@ -416,4 +461,28 @@ const getChartData = async ( req, res ) => {
 
 }
 
-module.exports = {getPriceData, getMachineList, getDetail, getSiteIDs, getTodayData, getChartData};
+const getProductList = ( req, res ) => {
+    let retData = [];
+    let query = {
+        "$or" : [
+            {name: { $regex: req.body.keyword }},
+            // {code: { $regex: req.body.keyword }},
+        ]
+    }
+    Product.find(query)
+    .then( result => {
+        // console.log(result)
+        result.map( item => {
+            retData.push({
+                'id' : item._id,
+                'name' : item.name
+            })
+        })
+        res.json({status : "success", data: retData});
+    })
+    .catch( err => {
+        return res.json({status : "error", "message": "Server Error!"});
+    })
+}
+
+module.exports = {getPriceData, getMachineList, getDetail, getSiteIDs, getTodayData, getChartData, getProductList};

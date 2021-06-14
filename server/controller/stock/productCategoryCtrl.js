@@ -2,10 +2,14 @@ const formidable = require('formidable');
 const csv = require('csv-parser');
 const fs_ex = require('fs-extra'); 
 const fs = require('fs');
+const mime = require('mime');
+const json2csv = require('json2csv').parse;
+const Downloader = require('nodejs-file-downloader');
+const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 
 const ProductCategoryModel = require('../../models/stock/categoryModel.js');
 const {YES, NO} = require('../../constants.js');
-const productCategory = require('../../models/stock/categoryModel.js');
+// const productCategory = require('../../models/stock/categoryModel.js');
 const { exit } = require('process');
 
 const getCategoryList = async (req, res) => {
@@ -95,32 +99,62 @@ const deleteCategory = async ( req, res ) => {
 
 const uploadSheet = async ( req, res ) => {
     // upload csv file into server.
+    let data = [];
     const form = new formidable.IncomingForm();
     form.parse(req, function(err, fields, files) {
         const time = new Date().getTime();
         const filename = time + "_catSheet";
         fs_ex.move(files.categorySheet.path, appRoot + '/uploads/sheets/' + filename, (err) => {
             if (err) return console.log(err);
-            res.json({status : 'success', filename: filename});
             fs.createReadStream(appRoot + '/uploads/sheets/' + filename)
             .pipe(csv())
             .on('data', async ( row ) => {
-                const productCategory = new ProductCategoryModel({ ...row });
-                try {
-                    await productCategory.save();
-                }
-                catch {
-                    console.log("catch error")
-                    res.json({ message: "Server Error", status: "fail" });
-                    exit();
-                }
+                let item = {};
+                item.code = row[Object.keys(row)[0]].trim();
+                item.name = row[Object.keys(row)[1]].trim();
+                data.push(item);
             })
             .on('end', () => {
-                console.log('CSV file successfully processed');
+                productCategory.insertMany(data)
+                .then( result => {
+                    res.json({ status: "success", file: files.categorySheet.name });
+                })
+                .catch( err => {
+                    let message = "";
+                    if ( err._message === 'productCategory validation failed' ) {
+                        message = 'Unavailable file style';
+                    } else {
+                        message = 'Server Error!';
+                    }
+                    res.json({ message: message, status: "fail", file: files.categorySheet.name }).status(500);
+                });
             });
         });
-        
     });
 }
 
-module.exports = { addCategory, getCategoryList, getTotalCategory, getCategoryById, deleteCategory, uploadSheet };
+const downloadSheet = ( req, res ) => {
+    ProductCategoryModel.find({}, async (err, data) => {
+        if(err){res.json(err)}
+        else {
+            const path = 'downloads/file' + Date.now() + '.csv';
+            const csvWriter = createCsvWriter({
+                path: path,
+                header: [
+                    {id: 'code', title: 'Code'},
+                    {id: 'name', title: 'Name'},
+                ]
+              });
+            csvWriter
+            .writeRecords(data)
+            .then(()=> {
+                res.setHeader('Content-Disposition', "attachment;filename=report.csv")
+                res.setHeader('Content-Type', "application/octet-stream")
+                res.download(path)
+            });
+        }
+
+      });
+}
+
+module.exports = { addCategory, getCategoryList, getTotalCategory, getCategoryById, deleteCategory, uploadSheet, downloadSheet };
