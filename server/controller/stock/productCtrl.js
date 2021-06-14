@@ -165,7 +165,7 @@ const uploadSheet = async ( req, res ) => {
 }
 
 const downloadSheet = ( req, res ) => {
-    ProductModel.find({}, async (err, data) => {
+    ProductModel.find({"isDelete" : NO}, async (err, data) => {
         if(err){res.json(err)}
         else {
             const path = 'downloads/file' + Date.now() + '.csv';
