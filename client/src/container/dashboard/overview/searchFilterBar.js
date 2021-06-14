@@ -13,7 +13,6 @@ const { RangePicker } = DatePicker;
 
 const FilterBar = ({ paymentType }) => {
   const location = useLocation();
-  console.log(location.pathname);
   const dispatch = useDispatch();
   const filter = useSelector(state => state.filterDashboard.data)
   // const [companyList, setCompanyList] = useState([])
@@ -44,20 +43,25 @@ const FilterBar = ({ paymentType }) => {
           "Server Error!"
       })
     });
+    filter.paymentType = 'all';
+    console.log("tstea")
   }, []);
 
-  useEffect(() => {
-    if ( siteList.length > 0 ) {
-      filter.siteID = [];
-      siteList.map( item => {
-        filter.siteID.push(item)
-      });
-      setState({
-        ...state,
-        siteID: filter.siteID
-      });
-    }
-  }, [ siteList ]);
+  // change the filter values on the only homepage
+  if (location.pathname == '/') {
+    useEffect(() => {
+      if ( siteList.length > 0 ) {
+        filter.siteID = [];
+        siteList.map( item => {
+          filter.siteID.push(item)
+        });
+        setState({
+          ...state,
+          siteID: filter.siteID
+        });
+      }
+    }, [ siteList ]);
+  }
 
   const onSearchProduct = ( keyword ) => {
     Axios.post("/api/dashboard/getProductList", { keyword })
@@ -174,7 +178,7 @@ const FilterBar = ({ paymentType }) => {
                   <span>Payment Type: </span>
                   <Select 
                     style={{ width: '100%', minHeight: '49px' }}
-                    defaultValue={state.paymentType}
+                    defaultValue={['all']}
                     optionLabelProp="label"
                     size="default"
                     onChange={values => {

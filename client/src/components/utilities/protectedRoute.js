@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { Spin } from 'antd';
 import withAdminLayout from '../../layout/withAdminLayout';
 import Dashboard from '../../routes/dashboard';
-import Admin from '../../routes/admin';
+// import Admin from '../../routes/admin';
 import Stock from '../../routes/stock';
 import Machine from '../../routes/machine';
 import Sale from '../../routes/sale';
@@ -21,7 +21,7 @@ const ProtectedRoute = () => {
         }
         >
         <Route path={`/`} component={Dashboard} />
-        <Route path={`/admin`} component={Admin} />
+        {/* <Route path={`/admin`} component={Admin} /> */}
         <Route path={`/stock`} component={Stock} />
         <Route path={`/machine`} component={Machine} />
         <Route path={`/sale`} component={Sale} />

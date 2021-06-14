@@ -115,7 +115,7 @@ const uploadSheet = async ( req, res ) => {
                 data.push(item);
             })
             .on('end', () => {
-                productCategory.insertMany(data)
+                ProductCategoryModel.insertMany(data)
                 .then( result => {
                     res.json({ status: "success", file: files.categorySheet.name });
                 })
@@ -134,7 +134,7 @@ const uploadSheet = async ( req, res ) => {
 }
 
 const downloadSheet = ( req, res ) => {
-    ProductCategoryModel.find({}, async (err, data) => {
+    ProductCategoryModel.find({"isDelete" : NO}, async (err, data) => {
         if(err){res.json(err)}
         else {
             const path = 'downloads/file' + Date.now() + '.csv';

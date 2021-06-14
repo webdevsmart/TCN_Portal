@@ -12,8 +12,6 @@ const TransactionTable = (  ) => {
     };
   });
   
-  console.log("tset")
-
 	const [state, setState] = useState({
 		start: 0,
 		length: 10,
@@ -101,7 +99,6 @@ const TransactionTable = (  ) => {
   			setTransactionList(res.data.data);
 			})
 		}
-    console.log("ok")
 		getTransactionList();
 	}, [ filter.siteID, filter.date, filter.productID, filter.paymentType, state ]);
 
