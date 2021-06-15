@@ -8,12 +8,12 @@ const FilterBar = lazy(() => import('../../dashboard/overview/searchFilterBar'))
 const TransactionTable = lazy(() => import('./overview/transactionTable'));
 
 const TotalSale = () => {
-  const paymentType = ['CARD', 'CASH']
+  const paymentType = ['CREDIT', 'CASH', 'MASTERCARD', 'VISA', 'BILL', 'COIN']
   return (
     <>
       <PageHeader
         ghost
-        title="Total Sale"
+        title="Total Sales"
       />
       <Main>
         <Row gutter={25} justify="center">

@@ -14,8 +14,8 @@ const { RangePicker } = DatePicker;
 const FilterBar = ({ paymentType }) => {
   const location = useLocation();
   const dispatch = useDispatch();
+  
   const filter = useSelector(state => state.filterDashboard.data)
-  // const [companyList, setCompanyList] = useState([])
   const [siteList, setSiteList] = useState([])
   const [productList, setProductList] = useState([])
   const [state, setState] = useState({
@@ -23,7 +23,7 @@ const FilterBar = ({ paymentType }) => {
     "productID": filter.productID,
     "date" : filter.date
   })
-
+  // const paymentType = ['MASTERCARD']
   useEffect(() => {
     Axios.get("/api/dashboard/getSiteIDs")
     .then( res => {
@@ -44,20 +44,14 @@ const FilterBar = ({ paymentType }) => {
           "Server Error!"
       })
     });
-    filter.paymentType = 'all';
+    // filter.paymentType = 'all';
   }, []);
 
   // change the filter values on the only homepage
   if (location.pathname == '/') {
-    state.date = [
-        moment().startOf('month'),
-        moment().endOf('month')
-    ];
-    // filter.date = [
-    // ];
     useEffect(() => {
-      if ( siteList.length > 0 ) {
-        filter.siteID = [];
+      if ( siteList.length > 0 && filter.siteID.length === 0 ) {
+        filter.siteID = []; 
         siteList.map( item => {
           filter.siteID.push(item)
         });
@@ -66,10 +60,6 @@ const FilterBar = ({ paymentType }) => {
           siteID: filter.siteID
         });
       }
-      filter.date = [
-        moment().startOf('month'),
-        moment().endOf('month')
-      ];
     }, [ siteList ]);
   }
 

@@ -79,11 +79,11 @@ const TransactionTable = (  ) => {
       subType,
       product: product.productID,
       price: (
-        "$ " + Math.round(product.price) / 100
+        "$ " + (Math.round(product.price) / 100).toFixed(2)
       ),
 			realStatus: status,
 			realPrice: product.price,
-			fee: "$ " + fee / 100,
+			fee: "$ " + (fee / 100).toFixed(2),
     });
   });
 	

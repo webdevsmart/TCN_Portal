@@ -1,25 +1,30 @@
 import React, { useState } from 'react';
 import { Spin } from 'antd';
 import { Doughnut } from 'react-chartjs-2';
+import { useHistory } from 'react-router';
+
 import useChartData from '../../../hooks/useChartData';
 import { numberWithCommas } from '../../../utility/utility';
 import { useDispatch, useSelector } from 'react-redux';
 import { SessionChartWrapper, SessionState } from '../style';
 import { Cards } from '../../../components/cards/frame/cards-frame';
+import { setDashBoardFilter } from '../../../redux/filter/actionCreator';
 
 const DetailOverview = ({ type, data }) => {
   const { ref } = useChartData();
+  const routerHistory = useHistory();
+  const dispatch = useDispatch();
   let subType = [];
   if ( type == 'Card' ) {
     subType =["MasterCard", "Visa"];
   } else {
     subType =["Coin", "Bill"];
   }
-  const dispatch = useDispatch();
-  const { deviceState, dvIsLoading } = useSelector(state => {
+  const { deviceState, dvIsLoading, filter } = useSelector(state => {
     return {
       deviceState: data,
       dvIsLoading: state.chartContent.dvLoading,
+      filter: state.filterDashboard.data,
     };
   });
 
@@ -73,6 +78,17 @@ const DetailOverview = ({ type, data }) => {
                       animateScale: true,
                       animateRotate: true,
                     },
+                    onClick: (evt, element) => {
+                      const index = element[0]._index;
+                      filter.paymentType = subType[index].toUpperCase();
+                      dispatch(setDashBoardFilter(filter));
+
+                      if ( subType[index] === 'MasterCard' || subType[index] === 'Visa' ) {
+                        routerHistory.push("/sale/total");
+                      } else {
+                        routerHistory.push("/sale/cash");
+                      }
+                    }
                   }}
                   height = {200}
                 />
