@@ -3,6 +3,7 @@ import FeatherIcon from 'feather-icons-react';
 import { Link, useRouteMatch } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { Col, Row } from 'antd';
+import { useHistory } from 'react-router';
 import { MachineCard } from '../../style';
 import Heading from '../../../../components/heading/heading';
 import { Cards } from '../../../../components/cards/frame/cards-frame';
@@ -10,11 +11,14 @@ import { Button } from '../../../../components/buttons/buttons';
 import SampleImage from '../../../../static/img/sample-machine.png';
 
 const MachineCardStyle = ({ machine, showModal }) => {
+  const routerHistory = useHistory();
   const { path } = useRouteMatch();
   const { config } = machine;
 
   const editMachine = () => {
-    showModal(machine);
+    routerHistory.push(`/machine/detail/${machine._id}`);
+    // console.log(machine)
+    // showModal(machine);
   }
 
   return (

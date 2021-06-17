@@ -26,11 +26,13 @@
         "formidable": "^1.2.2",
         "fs-extra": "^10.0.0",
         "ftp": "^0.3.10",
+        "image-to-base64": "^2.2.0",
         "json2csv": "^5.0.6",
         "jsonwebtoken": "^8.3.0",
         "mongoose": "^5.7.5",
         "node-cron": "^3.0.0",
-        "nodejs-file-downloader": "^4.6.0"
+        "nodejs-file-downloader": "^4.6.0",
+        "request": "^2.88.2"
     },
     "devDependencies": {
         "nodemon": "^1.19.4"

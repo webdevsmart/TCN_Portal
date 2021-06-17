@@ -5,11 +5,9 @@ const csv = require('csv-parser');
 const path = require('path');    
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 
-const { YES, NO } = require('../../constants');
-const product = require('../../models/stock/productModel');
+const { YES, NO, IMAGE_UPLOAD_URL } = require('../../constants');
 const ProductModel = require('../../models/stock/productModel');
 const ProductCategory = require('../../models/stock/categoryModel');
-const productCategory = require('../../models/stock/categoryModel');
 const { exit } = require('process');
 
 const uploadProductImage = (req, res) => {
@@ -17,7 +15,7 @@ const uploadProductImage = (req, res) => {
     form.parse(req, function(err, fields, files) {
         const time = new Date().getTime();
         const filename = Buffer.from(time + "_" + files.ImageFile.name, 'utf8').toString('hex');
-        fs_ex.move(files.ImageFile.path, appRoot + '/uploads/products/' + filename, (err) => {
+        fs_ex.move(files.ImageFile.path, appRoot + IMAGE_UPLOAD_URL + filename, (err) => {
             if (err) return console.log(err);
             res.json({status : 'success', filename: filename});
         });

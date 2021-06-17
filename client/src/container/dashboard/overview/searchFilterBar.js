@@ -44,6 +44,9 @@ const FilterBar = ({ paymentType }) => {
           "Server Error!"
       })
     });
+    if ( location.pathname == '/sale/card' && filter.paymentType  ) {
+
+    }
     // filter.paymentType = 'all';
   }, []);
 

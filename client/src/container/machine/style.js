@@ -751,9 +751,21 @@ const EditAisleForm = Styled.div`
     }
 `;
 
+const DetailStyleWrapper = Styled.div`
+  .ant-upload.ant-upload-select.ant-upload-select-picture-card {
+    width: 60%;
+    height: auto;
+  }
+
+  .upload-wrapper {
+    padding-left: 20%;
+  }
+`;
+
 export {
     TopToolBox,
     MachineCard,
     MachineCardWrapper,
-    EditAisleForm
+    EditAisleForm,
+    DetailStyleWrapper
 };

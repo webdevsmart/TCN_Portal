@@ -4,10 +4,12 @@ const ROLE_OWNER = 'Owner';
 const ROLE_ADMIN = 'Admin';
 
 const STATUS_ACTIVE = 'Active'; 
-const STATUS_DEACTIVE = 'Deactive'; 
+const STATUS_DEACTIVE = 'Inactive'; 
 
 const YES = 'Y'; 
 const NO = 'N'; 
+
+const IMAGE_UPLOAD_URL = '/uploads/images/';
 
 module.exports = { 
     ROLE_MEMBER, 
@@ -17,5 +19,6 @@ module.exports = {
     STATUS_ACTIVE,
     STATUS_DEACTIVE,
     YES,
-    NO
+    NO,
+    IMAGE_UPLOAD_URL
 };

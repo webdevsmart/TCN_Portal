@@ -101,7 +101,7 @@ const MenuItems = ({ darkMode, toggleCollapsed, topMenu }) => {
           <NavLink
             to={`/machine`}
           >
-            Machine Management
+            Machines
           </NavLink>
         </Menu.Item>
       </SubMenu>

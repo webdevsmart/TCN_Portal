@@ -159,12 +159,6 @@ const ProductForm = ({ visible, selectedProduct, onCancel}) => {
     })
   };
 
-  // const updateProduct = (event) => {
-  //   this.setProduct({
-  //     [event.target.name]: event.target.value
-  //   });
-  // }
-
   return (
     <Modal
       type={state.modalType}
