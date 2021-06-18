@@ -11,7 +11,7 @@ const RELEASE_TYPE = [
     'Conveyor',
     'Claw',
     'Other'
-];
+]
 
 const LENGTH_UNIT = [
     'cms', 'm'

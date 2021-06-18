@@ -67,7 +67,7 @@ const BasicInfo = ({ machineID }) => {
     reqData.machineId = machineID;
     Axios.post("/api/machine/detail/saveBasicData", { ...reqData })
     .then( res => {
-      if ( res === 'success' ) {
+      if ( res.data.status === 'success' ) {
         notification["success"]({
           message: 'Success',
           description: 

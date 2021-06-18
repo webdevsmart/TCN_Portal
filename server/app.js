@@ -67,12 +67,12 @@ app.use('/uploads', express.static('uploads'));
 
 // for production mode
 // app.get('*', (req, res) => {
-//     res.sendFile(path.join(__dirname, '/client/build/index.html'));
+//     res.sendFile(path.join(__dirname, '../client/build/index.html'));
 // });
 // end for production mode
 
 // setting for cron jobs for getting log.txt data
-Cron.setCron();
+// Cron.setCron();
 // end setting for cron jobs
 
 app.listen(PORT, () => {

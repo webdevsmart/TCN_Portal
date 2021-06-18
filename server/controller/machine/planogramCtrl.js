@@ -85,33 +85,7 @@ const addAisle = async ( rowId, values ) => {
     })
   }
   
-  const deleteAisle = async ( req, res ) => {
-    const planogram = await PlanogramModel.findOne({ 'rows.aisles._id': req.body.aisleId });
-    let rowIndex = -1;
-    let aisleIndex = -1;
-    if (planogram !== null) {
-      await planogram.rows.map( ( row, index ) => {
-        if ( row._id == req.body.rowId ) {
-          rowIndex = index;
-            }
-        });
-        planogram.rows[rowIndex].aisles.map ( (aisle, index) => {
-            if ( aisle._id == req.body.aisleId ) {
-                aisleIndex = index;
-            }
-        });
-        planogram.rows[rowIndex].aisles.splice(aisleIndex, 1);
-        planogram.save()
-        .then( result => {
-            res.json({ 'status': 'success'});
-        })
-        .catch( err => {
-            res.json({ 'status': 'fail', 'message': 'Server Error!' });
-        })
-    } else {
-        res.json({ 'status': 'fail', 'message': 'Server Error!' });
-    }
-}
+  
 
 const getAisle = async ( req, res ) => {
     const planogram = await PlanogramModel.findOne({ 'rows.aisles._id': req.body.selectedAisle.aisleId });
@@ -180,4 +154,4 @@ const setAisle = async ( req, res ) => {
     }
 }
 
-module.exports = { makeCabinet, getPlanogram, addAisle, deleteAisle, getAisle, setAisle };
+module.exports = { makeCabinet, getPlanogram, addAisle, getAisle, setAisle };

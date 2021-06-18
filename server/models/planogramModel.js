@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const ObjectId = mongoose.Schema.Types.ObjectId;
+const { RELEASE_TYPE, YES, NO } = require('../constants');
 
 const planogramModel = mongoose.Schema({
     machineId: {
@@ -13,11 +14,24 @@ const planogramModel = mongoose.Schema({
         require: true
     },
     rows: [{
-        rowCode: String,
+        rowLabel: String,
+        maxHeight: String,
+        aisleNumber: Number,
         aisles: [{
             aisleNum: Number,
-            width: String,
-            height: String,
+            minWeight: String,
+            minWidth: String,
+            useConveyorBelt: {
+                type: String,
+                enum: [YES, NO],
+                default: YES
+            },
+            releaseType: {
+                type: String,
+                enum: RELEASE_TYPE,
+                default: RELEASE_TYPE[0],
+            },
+            releaseSize: String,
             maxQty: {
                 type: Number,
                 default: 10
