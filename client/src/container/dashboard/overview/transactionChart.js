@@ -70,109 +70,112 @@ const TransactionChart = () => {
   ];
   return (
     <div className="performance-lineChart">
-      <ChartjsAreaChart
-        id="performance"
-        labels={chartData.labels}
-        datasets={transactionDatasets}
-        options={{
-          maintainAspectRatio: true,
-          onClick: function(evt, element) {
-            if (element.length > 0) {
-              let index = element[0]._index;
-              filter.date = [ moment(chartData.labels[index] + ' 00:00:00'), moment(chartData.labels[index] + ' 23:59:59') ];
-              dispatch(setDashBoardFilter(filter))
-              if ( filter.paymentType === 'totalPrice' ) {
-                routerHistory.push('/sale/total')
-              } else if ( filter.paymentType === 'cardPrice' ) {
-                routerHistory.push("sale/card");
-              } else if ( filter.paymentType === 'cashPrice' ) {
-                routerHistory.push("sale/cash");
+      {chartData.data.length > 0 ? 
+      <>
+        <ChartjsAreaChart
+          id="performance"
+          labels={chartData.labels}
+          datasets={transactionDatasets}
+          options={{
+            maintainAspectRatio: true,
+            onClick: function(evt, element) {
+              if (element.length > 0) {
+                let index = element[0]._index;
+                filter.date = [ moment(chartData.labels[index] + ' 00:00:00'), moment(chartData.labels[index] + ' 23:59:59') ];
+                dispatch(setDashBoardFilter(filter))
+                if ( filter.paymentType === 'totalPrice' ) {
+                  routerHistory.push('/sale/total')
+                } else if ( filter.paymentType === 'cardPrice' ) {
+                  routerHistory.push("sale/card");
+                } else if ( filter.paymentType === 'cashPrice' ) {
+                  routerHistory.push("sale/cash");
+                }
               }
-            }
-          },
-          elements: {
-            z: 9999,
-          },
-          legend: {
-            display: false,
-          },
-          hover: {
-            mode: 'index',
-            intersect: false,
-          },
-          tooltips: {
-            mode: 'label',
-            intersect: false,
-            backgroundColor: '#ffffff',
-            position: 'average',
-            enabled: false,
-            custom: customTooltips,
-            callbacks: {
-              title() {
-                return filter.paymentType;
-              },
-              label(t, d) {
-                const { yLabel, xLabel, datasetIndex } = t;
-                return `<span class="chart-data">${yLabel}$ (${xLabel}) </span> `;
+            },
+            elements: {
+              z: 9999,
+            },
+            legend: {
+              display: false,
+            },
+            hover: {
+              mode: 'index',
+              intersect: false,
+            },
+            tooltips: {
+              mode: 'label',
+              intersect: false,
+              backgroundColor: '#ffffff',
+              position: 'average',
+              enabled: false,
+              custom: customTooltips,
+              callbacks: {
+                title() {
+                  return filter.paymentType;
+                },
+                label(t, d) {
+                  const { yLabel, xLabel, datasetIndex } = t;
+                  return `<span class="chart-data">${yLabel}$ (${xLabel}) </span> `;
+                },
               },
             },
-          },
-          scales: {
-            yAxes: [
-              {
-                gridLines: {
-                  color: '#e5e9f2',
-                  borderDash: [3, 3],
-                  zeroLineColor: '#e5e9f2',
-                  zeroLineWidth: 1,
-                  zeroLineBorderDash: [3, 3],
-                },
-                ticks: {
-                  beginAtZero: true,
-                  fontSize: 13,
-                  fontColor: '#182b49',
-                  max: Math.round(Math.max(...chartData.data) / 10) * 10 + 20,
-                  stepSize: (Math.round(Math.max(...chartData.data) / 10) * 10 + 20) / 5,
-                  callback(label) {
-                    return `${label}`;
+            scales: {
+              yAxes: [
+                {
+                  gridLines: {
+                    color: '#e5e9f2',
+                    borderDash: [3, 3],
+                    zeroLineColor: '#e5e9f2',
+                    zeroLineWidth: 1,
+                    zeroLineBorderDash: [3, 3],
+                  },
+                  ticks: {
+                    beginAtZero: true,
+                    fontSize: 13,
+                    fontColor: '#182b49',
+                    max: Math.round(Math.max(...chartData.data) / 10) * 10 + 20,
+                    stepSize: (Math.round(Math.max(...chartData.data) / 10) * 10 + 20) / 5,
+                    callback(label) {
+                      return `${label}`;
+                    },
                   },
                 },
-              },
-            ],
-            xAxes: [
-              {
-                gridLines: {
-                  display: true,
-                  zeroLineWidth: 2,
-                  zeroLineColor: 'transparent',
-                  color: 'transparent',
-                  z: 1,
-                  tickMarkLength: 0,
+              ],
+              xAxes: [
+                {
+                  gridLines: {
+                    display: true,
+                    zeroLineWidth: 2,
+                    zeroLineColor: 'transparent',
+                    color: 'transparent',
+                    z: 1,
+                    tickMarkLength: 0,
+                  },
+                  ticks: {
+                    padding: 10,
+                  },
                 },
-                ticks: {
-                  padding: 10,
-                },
-              },
-            ],
-          },
-        }}
-        height={window.innerWidth <= 575 ? 200 : 86}
-      />
-      <ul>
-        {transactionDatasets &&
-          transactionDatasets.map((item, index) => {
-            return (
-              <li key={index + 1} className="custom-label">
-                <span
-                  style={{
-                    backgroundColor: item.borderColor,
-                  }}
-                />
-                {item.label}
-              </li>
-            );
-          })}
-      </ul>
+              ],
+            },
+          }}
+          height={window.innerWidth <= 575 ? 200 : 86}
+        />
+        <ul>
+          {transactionDatasets &&
+            transactionDatasets.map((item, index) => {
+              return (
+                <li key={index + 1} className="custom-label">
+                  <span
+                    style={{
+                      backgroundColor: item.borderColor,
+                    }}
+                  />
+                  {item.label}
+                </li>
+              );
+            })}
+        </ul> 
+      </> : ''}
     </div>
   )
 }
