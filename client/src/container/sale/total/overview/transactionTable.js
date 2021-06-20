@@ -107,19 +107,16 @@ const TransactionTable = (  ) => {
 	}
 
 	return (
-		<Cards title="Transaction Detail">
-			<Col xs={24}>
-        <Table className="table-responsive" 
-          pagination={{
-          defaultPageSize: state.length,
-          total: transactionList.totalSize,
-          showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`,
-          }}
-          dataSource={transactionDataSource}
-          columns={columns} 
-          onChange={onChange}/>
-			</Col>
-		</Cards>
+		
+    <Table className="table-responsive" 
+      pagination={{
+      defaultPageSize: state.length,
+      total: transactionList.totalSize,
+      showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`,
+      }}
+      dataSource={transactionDataSource}
+      columns={columns} 
+      onChange={onChange}/>
 	);
 }
 

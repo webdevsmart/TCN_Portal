@@ -50,6 +50,10 @@ const FilterBar = ({ paymentType }) => {
     // filter.paymentType = 'all';
   }, []);
 
+  useEffect(() => {
+    setState({date: filter.date})
+  }, [filter.date]);
+
   // change the filter values on the only homepage
   if (location.pathname == '/') {
     useEffect(() => {
@@ -184,7 +188,7 @@ const FilterBar = ({ paymentType }) => {
                     defaultValue={['all']}
                     optionLabelProp="label"
                     size="default"
-                    onChange={values => {
+                    onChange={(values) => {
                       if (values && values.length && values.includes("all")) {
                         filter.paymentType = ['all'];
                       } else {
@@ -195,11 +199,10 @@ const FilterBar = ({ paymentType }) => {
                     }}
                     value={filter.paymentType}
                     >
-                      <Select.Option key="all" value="all" style={{ paddingTop: '5px'}}>---SELECT ALL---</Select.Option>
                     {
                       paymentType.map( (item, index) => {
                         return (
-                          <Select.Option value={item} key={index}>{item}</Select.Option>
+                          <Select.Option value={item.key} key={index} label={item.label}>{item.label}</Select.Option>
                         );
                       })
                     }
@@ -220,7 +223,7 @@ const FilterBar = ({ paymentType }) => {
                   filter.date = date;
                   dispatch(setDashBoardFilter(filter))
                 }}
-                defaultValue={state.date}
+                value={state.date}
               />
             </Col>
           </Row>

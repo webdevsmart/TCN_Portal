@@ -19,8 +19,10 @@ const getBasicData = async ( req, res ) => {
         let imageUrl = "";
         if ( result.imageUrl != undefined ) {
             const file = appRoot + IMAGE_UPLOAD_URL + result.imageUrl;
-            const bitmap = fs.readFileSync(file);
-            imageUrl = bitmap.toString('base64');
+            if ( fs.existsSync(file) ) {
+                const bitmap = fs.readFileSync(file);
+                imageUrl = bitmap.toString('base64');
+            }
         } 
         retData = {
             machineName: result.machineName,

@@ -19,8 +19,12 @@ const planogramModel = mongoose.Schema({
         aisleNumber: Number,
         aisles: [{
             aisleNum: Number,
-            minWeight: String,
-            minWidth: String,
+            minWeight: { 
+                type: String 
+            },
+            minWidth: {
+                type: String
+            },
             useConveyorBelt: {
                 type: String,
                 enum: [YES, NO],
@@ -36,12 +40,16 @@ const planogramModel = mongoose.Schema({
                 type: Number,
                 default: 10
             },
-            productId: {
-                type: ObjectId,
-                ref: 'product'
-            },
-            price: String,
-            qty: Number,
+            products: [{
+                productId: {
+                    type: ObjectId,
+                    ref: 'product'
+                },
+                price: String,
+                height: String,
+                weight: String,
+                qty: Number,
+            }],
             imageUrl: String
         }]
     }]

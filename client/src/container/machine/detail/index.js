@@ -9,12 +9,13 @@ import { DetailStyleWrapper } from '../style';
 const BasicInfo = lazy(() => import('./basicInfo'));
 const ConfigInfo = lazy(() => import('./configInfo'));
 const CabinetLayout = lazy(() => import('./cabinetLayout'));
+const Planogram = lazy(() => import('./planogram'));
 
 const MachineDetail = (data) => {
   const machineID = data.match.params.id;
   const [state, setState] = useState({
     current: 'mail',
-    pageType: 'CabinetLayout'
+    pageType: 'Planogram'
   });
 
   const { machine, pageType } = state;
@@ -46,6 +47,9 @@ const MachineDetail = (data) => {
                   <Menu.Item key="CabinetLayout">
                     Cabinet Layout
                   </Menu.Item>
+                  <Menu.Item key="Planogram">
+                    Planogram
+                  </Menu.Item>
                 </Menu>
               </Col>
             </Row>
@@ -55,17 +59,21 @@ const MachineDetail = (data) => {
       
                   switch (pageType) {
                     case 'Basic':
-                        return (
-                          <BasicInfo machineID={machineID}/>
-                        )
+                      return (
+                        <BasicInfo machineID={machineID}/>
+                      )
                     case 'Config':
-                        return (
-                          <ConfigInfo machineID={machineID}/>
-                        )
+                      return (
+                        <ConfigInfo machineID={machineID}/>
+                      )
                     case 'CabinetLayout':
-                        return (
-                          <CabinetLayout machineID={machineID}/>
-                        )
+                      return (
+                        <CabinetLayout machineID={machineID}/>
+                      )
+                    case 'Planogram':
+                      return (
+                        <Planogram machineID={machineID}/>
+                      )
                     default:
                       return (
                         <BasicInfo machineID={machineID} />

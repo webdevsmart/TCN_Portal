@@ -400,11 +400,11 @@ const getChartData = async ( req, res ) => {
         condition['$and'].push($or);
     }
 
-    if ( tab == 'cardPrice' ) {
-        condition.type = "CARD";
-    } else if ( tab == 'cashPrice' ) {
-        condition.type = "CASH";
-    } 
+    if (filter.paymentType == 'CARD' || filter.paymentType == 'CASH') {
+        condition['type'] = filter.paymentType;
+    } else if (filter.paymentType != 'all') {
+        condition['subType'] = filter.paymentType;
+    }
 
     if (tab !== 'fee') {
         Transaction.aggregate([

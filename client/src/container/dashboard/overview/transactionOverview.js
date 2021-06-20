@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy } from 'react';
 import { Spin, notification } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import Axios from 'axios';
-import { useHistory } from 'react-router';
-import moment from 'moment';
+
 
 import { numberWithCommas } from '../../../utility/utility';
 import { PerformanceChartWrapper, Pstates } from '../style';
@@ -14,9 +13,11 @@ import { chartLinearGradient, customTooltips } from '../../../components/utiliti
 import { setIsLoading } from '../../../redux/chartContent/actionCreator';
 import { setDashBoardFilter } from '../../../redux/filter/actionCreator';
 
+const TransactionChart = lazy(() => import('./transactionChart'));
+
 const TransactionOverview = ({ updatePriceData }) => {
   const dispatch = useDispatch();
-  const routerHistory = useHistory();
+  
   const { filter, preIsLoading } = useSelector(state => {
     return {
       preIsLoading: state.chartContent.perLoading,
@@ -39,11 +40,6 @@ const TransactionOverview = ({ updatePriceData }) => {
       coinPrice: 0,
       billPrice: 0,
     }
-  });
-
-  const [chartData, setChartData] = useState({
-    labels: ["1", "2", "3", "4", "5", "6", "7", "8"],
-    data: [],
   });
 
   const { performanceTab, cardPriceState, cashPriceState, totalPrice, refundPrice, feePrice } = state;
@@ -82,79 +78,36 @@ const TransactionOverview = ({ updatePriceData }) => {
   }, [ filter.siteID, filter.date, filter.productID ]);
 
   useEffect(() => {
-    updatePriceData( cardPriceState, cashPriceState );
+    if ( updatePriceData ) {
+      updatePriceData( cardPriceState, cashPriceState );
+    }
   }, [ cardPriceState, cashPriceState ]);
-
-  const getChartData = () => {
-    Axios.post("/api/dashboard/getChartData", {filter: filter, tab: performanceTab})
-    .then( res => {
-      if ( res.data.status === 'success') {
-        setChartData(res.data.data)
-      } else {
-        notification['warning']({
-          message: 'Warning!',
-          description: 
-            "Server Error!"
-        })
-      }
-    })
-    .catch( err => {
-      notification['warning']({
-        message: 'Warning!',
-        description: 
-          "Server Error!"
-      })
-    });
-  }
-
-  useEffect(() => {
-    getChartData();
-    dispatch(setIsLoading());
-  }, [filter.siteID, filter.date, filter.productID, performanceTab]);
 
   const onPerformanceTab = value => {
     setState({
       ...state,
       performanceTab: value,
     });
+    filter.paymentType = value;
+    dispatch( setDashBoardFilter(filter) );
     return dispatch(setIsLoading());
   };
 
-  const transactionDatasets = chartData !== null && [
-    {
-      data: chartData.data,
-      borderColor: '#5F63F2',
-      borderWidth: 4,
-      fill: true,
-      backgroundColor: () =>
-        chartLinearGradient(document.getElementById('performance'), 300, {
-          start: '#5F63F230',
-          end: '#ffffff05',
-        }),
-      label: 'Current period',
-      pointStyle: 'circle',
-      pointRadius: '0',
-      hoverRadius: '9',
-      pointBorderColor: '#fff',
-      pointBackgroundColor: '#5F63F2',
-      hoverBorderWidth: 5,
-    }
-  ];
-
   return (
     <PerformanceChartWrapper>
-      {chartData !== null && (
+      {totalPrice !== null && (
         <Cards
           title="Range Transaction Prices"
           size="large"
         >
-          <Pstates>
+          <Pstates style={{ flexFlow: 'wrap' }}>
             <div
-              onClick={() => onPerformanceTab('totalPrice')}
+              onClick={() => onPerformanceTab('all')}
               className={`growth-upward ${performanceTab === 'totalPrice' && 'active'}`}
               role="button"
               onKeyPress={() => {}}
               tabIndex="0"
+              style={{ flex: '25% 0' }}
             >
               <p>Total</p>
               <Heading as="h1">
@@ -162,11 +115,12 @@ const TransactionOverview = ({ updatePriceData }) => {
               </Heading>
             </div>
             <div
-              onClick={() => onPerformanceTab('cardPrice')}
+              onClick={() => onPerformanceTab('CARD')}
               className={`growth-upward ${performanceTab === 'cardPrice' && 'active'}`}
               role="button"
               onKeyPress={() => {}}
               tabIndex="0"
+              style={{ flex: '25% 0' }}
             >
               <p>Card</p>
               <Heading as="h1">
@@ -174,11 +128,12 @@ const TransactionOverview = ({ updatePriceData }) => {
               </Heading>
             </div>
             <div
-              onClick={() => onPerformanceTab('cashPrice')}
+              onClick={() => onPerformanceTab('CASH')}
               className={`growth-downward ${performanceTab === 'cashPrice' && 'active'}`}
               role="button"
               onKeyPress={() => {}}
               tabIndex="0"
+              style={{ flex: '25% 0' }}
             >
               <p>Cash</p>
               <Heading as="h1">
@@ -191,6 +146,7 @@ const TransactionOverview = ({ updatePriceData }) => {
               role="button"
               onKeyPress={() => {}}
               tabIndex="0"
+              style={{ flex: '25% 0' }}
             >
               <p>Fee</p>
               <Heading as="h1">
@@ -203,111 +159,7 @@ const TransactionOverview = ({ updatePriceData }) => {
               <Spin />
             </div>
           ) : (
-            <div className="performance-lineChart">
-              <ChartjsAreaChart
-                id="performance"
-                labels={chartData.labels}
-                datasets={transactionDatasets}
-                options={{
-                  maintainAspectRatio: true,
-                  onClick: function(evt, element) {
-                    if (element.length > 0) {
-                      let index = element[0]._index;
-                      filter.date = [ moment(chartData.labels[index] + ' 00:00:00'), moment(chartData.labels[index] + ' 23:59:59') ];
-                      dispatch(setDashBoardFilter(filter))
-                      if ( performanceTab === 'totalPrice' ) {
-                        routerHistory.push('/sale/total')
-                      } else if ( performanceTab === 'cardPrice' ) {
-                        routerHistory.push("sale/card");
-                      } else if ( performanceTab === 'cashPrice' ) {
-                        routerHistory.push("sale/cash");
-                      }
-                    }
-                  },
-                  elements: {
-                    z: 9999,
-                  },
-                  legend: {
-                    display: false,
-                  },
-                  hover: {
-                    mode: 'index',
-                    intersect: false,
-                  },
-                  tooltips: {
-                    mode: 'label',
-                    intersect: false,
-                    backgroundColor: '#ffffff',
-                    position: 'average',
-                    enabled: false,
-                    custom: customTooltips,
-                    callbacks: {
-                      title() {
-                        return performanceTab;
-                      },
-                      label(t, d) {
-                        const { yLabel, xLabel, datasetIndex } = t;
-                        return `<span class="chart-data">${yLabel}$ (${xLabel}) </span> `;
-                      },
-                    },
-                  },
-                  scales: {
-                    yAxes: [
-                      {
-                        gridLines: {
-                          color: '#e5e9f2',
-                          borderDash: [3, 3],
-                          zeroLineColor: '#e5e9f2',
-                          zeroLineWidth: 1,
-                          zeroLineBorderDash: [3, 3],
-                        },
-                        ticks: {
-                          beginAtZero: true,
-                          fontSize: 13,
-                          fontColor: '#182b49',
-                          max: Math.round(Math.max(...chartData.data) / 10) * 10 + 20,
-                          stepSize: (Math.round(Math.max(...chartData.data) / 10) * 10 + 20) / 5,
-                          callback(label) {
-                            return `${label}`;
-                          },
-                        },
-                      },
-                    ],
-                    xAxes: [
-                      {
-                        gridLines: {
-                          display: true,
-                          zeroLineWidth: 2,
-                          zeroLineColor: 'transparent',
-                          color: 'transparent',
-                          z: 1,
-                          tickMarkLength: 0,
-                        },
-                        ticks: {
-                          padding: 10,
-                        },
-                      },
-                    ],
-                  },
-                }}
-                height={window.innerWidth <= 575 ? 200 : 86}
-              />
-              <ul>
-                {transactionDatasets &&
-                  transactionDatasets.map((item, index) => {
-                    return (
-                      <li key={index + 1} className="custom-label">
-                        <span
-                          style={{
-                            backgroundColor: item.borderColor,
-                          }}
-                        />
-                        {item.label}
-                      </li>
-                    );
-                  })}
-              </ul>
-            </div>
+            <TransactionChart />
           )}
         </Cards>
       )}

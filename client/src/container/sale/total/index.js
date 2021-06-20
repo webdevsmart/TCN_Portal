@@ -6,9 +6,18 @@ import { Cards } from '../../../components/cards/frame/cards-frame';
 
 const FilterBar = lazy(() => import('../../dashboard/overview/searchFilterBar'));
 const TransactionTable = lazy(() => import('./overview/transactionTable'));
+const TransactionChart = lazy(() => import('../../dashboard/overview/transactionChart'));
 
 const TotalSale = () => {
-  const paymentType = ['CREDIT', 'CASH', 'MASTERCARD', 'VISA', 'BILL', 'COIN']
+  const paymentType = [
+    {'key': 'all', 'label': 'Total'},
+    {'key': 'CARD', 'label': 'Credit'},
+    {'key': 'CASH', 'label': 'Cash'},
+    {'key': 'MASTERCARD', 'label': 'MasterCard'},
+    {'key': 'VISA', 'label': 'Visa'},
+    {'key': 'BILL', 'label': 'Bill'},
+    {'key': 'COIN', 'label': 'Coin'},
+  ];
   return (
     <>
       <PageHeader
@@ -20,9 +29,16 @@ const TotalSale = () => {
           <Col xxl={24} md={24} sm={24} xs={24}>
             <FilterBar paymentType={paymentType} />
           </Col>
-          <Col xxl={24} md={24} sm={24} xs={24}>
-            <TransactionTable />
-          </Col>
+          <Cards title="Transaction Detail">
+            <Col xs={24}>
+              <Col xxl={24} md={24} sm={24} xs={24}>
+                <TransactionChart />
+              </Col>
+              <Col xxl={24} md={24} sm={24} xs={24}>
+                <TransactionTable />
+              </Col>
+            </Col>
+          </Cards>
         </Row>
       </Main>
     </>

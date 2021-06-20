@@ -109,49 +109,62 @@ const getAisle = async ( req, res ) => {
 }
 
 const setAisle = async ( req, res ) => {
-    let isAdd = false;
-    let planogram = await PlanogramModel.findOne({ 'rows.aisles._id': req.body.selectedAisle.aisleId });
-    if ( planogram === null ) {
-        planogram = await PlanogramModel.findOne({ 'rows._id': req.body.selectedAisle.rowId });
-        isAdd = true;
+    let setQuery = {
+        "rows.$[i].aisles.$[j].products": req.body.values.products,
+    };
+    if ( req.body.values.imageUrl ) {
+        setQuery['rows.$[i].aisles.$[j].imageUrl'] = req.body.values.imageUrl;
     }
-    const vendMachine = await vendMachineModel.findById( planogram.machineId );
-    let rowIndex = -1;
-    let aisleIndex = -1;
-
-    if (planogram !== null) {
-        await planogram.rows.map( ( row, index ) => {
-            if ( row._id == req.body.selectedAisle.rowId ) {
-                rowIndex = index;
-            }
-        });
-        let sameAisleNum = false;
-        await planogram.rows[rowIndex].aisles.map ( ( aisle, index ) => {
-            if ( aisle._id == req.body.selectedAisle.aisleId ) {
-                aisleIndex = index;
-            } else if ( aisle.aisleNum == req.body.values.aisleNum ) {
-                sameAisleNum = true;
-            }
-        });
-        if ( sameAisleNum ) {
-            return res.json({ 'status': 'fail', 'message': 'Same Asile Number exist!' });
-        }
-        if ( isAdd ) {
-            planogram.rows[rowIndex].aisles.push({ ...req.body.values });
-        } else {
-            planogram.rows[rowIndex].aisles[aisleIndex] = { ...req.body.values };
-        }
-        planogram.save()
-        .then( result => {
-            res.json({ 'status': 'success'});
-        })
-        .catch( err => {
-            console.log(err)
-            res.json({ 'status': 'fail', 'message': 'Server Error!' });
-        })
-    } else {
+    if ( req.body.values.products )  {
+        setQuery['rows.$[i].aisles.$[j].products'] = req.body.values.products;
+    }
+    PlanogramModel.updateOne(
+        { },
+        {
+            $set: setQuery
+        },
+        {arrayFilters: [{"i._id": req.body.selectedAisle.rowId}, {"j._id": req.body.selectedAisle.aisleId}]}
+    )
+    .then( result => {
+        res.json({ 'status': 'success'});
+    })
+    .catch( err => {
+        console.log(err)
         res.json({ 'status': 'fail', 'message': 'Server Error!' });
-    }
+    })
+    // let planogram = await PlanogramModel.findOne({ 'rows.aisles._id': req.body.selectedAisle.aisleId });
+    // if ( planogram === null ) {
+    //     res.json({ 'status': 'fail', 'message': 'Not Found!' });
+    // }
+    // const vendMachine = await vendMachineModel.findById( planogram.machineId );
+    // let rowIndex = -1;
+    // let aisleIndex = -1;
+
+    // if (planogram !== null) {
+    //     await planogram.rows.map( ( row, index ) => {
+    //         if ( row._id == req.body.selectedAisle.rowId ) {
+    //             rowIndex = index;
+    //         }
+    //     });
+    //     await planogram.rows[rowIndex].aisles.map ( ( aisle, index ) => {
+    //         if ( aisle._id == req.body.selectedAisle.aisleId ) {
+    //             aisleIndex = index;
+    //         }
+    //     });
+    //     console.log(planogram.rows[rowIndex].aisles[aisleIndex])
+    //     planogram.rows[rowIndex].aisles[aisleIndex] = { ...req.body.values };
+    //     console.log(planogram.rows[rowIndex].aisles[aisleIndex])
+    //     planogram.save()
+    //     .then( result => {
+    //         res.json({ 'status': 'success'});
+    //     })
+    //     .catch( err => {
+    //         console.log(err)
+    //         res.json({ 'status': 'fail', 'message': 'Server Error!' });
+    //     })
+    // } else {
+    //     res.json({ 'status': 'fail', 'message': 'Server Error!' });
+    // }
 }
 
 module.exports = { makeCabinet, getPlanogram, addAisle, getAisle, setAisle };

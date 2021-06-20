@@ -163,7 +163,7 @@ const CabinetGrid = ({ machineId, refreshGrid, setRefreshGrid }) => {
                       style={{ width: `${100 / aisleCount}%`, textAlign: 'center', padding: 0, paddingTop: 24, paddingBottom: 24, position: 'relative' }}
                       >
                         <figure>
-                          <img src={aisle.imageUrl === undefined ? SampleProduct : `/uploads/products/${aisle.imageUrl}`} alt="" style={{ width: '90%', maxWidth: '200px' }}/>
+                          <img src={aisle.imageUrl === undefined ? SampleProduct : `/uploads/images/${aisle.imageUrl}`} alt="" style={{ width: '90%', maxWidth: '200px' }}/>
                         </figure>
                         <h4>
                           {aisle.aisleNum}

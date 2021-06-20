@@ -9,7 +9,7 @@ import { AutoComplete } from '../../../components/autoComplete/autoComplete';
 import { Main, CardToolbox } from '../../styled';
 import { TopToolBox, MachineCardWrapper } from '../style';
 import { Cards } from '../../../components/cards/frame/cards-frame';
-import AisleForm from './aisleForm';
+import AisleForm from '../detail/aisleForm';
 import SampleProduct from '../../../static/img/sample-product.png'
 
 const confirm = Modal.confirm;
@@ -151,7 +151,7 @@ const Product = ({ match }) => {
       />
     </CardToolbox>
     <Main>
-      <AisleForm onCancel={onCancel} visible={visible} selectedAisle={state.selectedAisle} />
+      
       <Row gutter={15}>
         <Col xs={24}>
           <div className="card-grid-wrap">

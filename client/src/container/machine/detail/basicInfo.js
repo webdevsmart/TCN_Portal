@@ -11,7 +11,6 @@ import { BasicFormWrapper } from '../../styled';
 const BasicInfo = ({ machineID }) => {
   const [form] = Form.useForm();
   const { TextArea } = Input;
-  const { Dragger } = Upload;
 
   const [state, setState] = useState({
     loading: false,
@@ -90,6 +89,7 @@ const BasicInfo = ({ machineID }) => {
     })
   };
 
+  // handle file
   const handleChange = info => {
     if (info.file.status === 'uploading') {
       setState({ loading: true });
@@ -124,11 +124,9 @@ const BasicInfo = ({ machineID }) => {
   }
 
   const getBase64 = (img, callback) => {
-    console.log(img)
     const reader = new FileReader();
     reader.addEventListener('load', () => callback(reader.result));
     reader.readAsDataURL(img);
-    console.log(img)
   }
 
   const uploadButton = (
@@ -137,6 +135,7 @@ const BasicInfo = ({ machineID }) => {
       <div style={{ marginTop: 8 }}>Upload</div>
     </div>
   );
+  // end handel file
 
   return (
     <>

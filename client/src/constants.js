@@ -14,11 +14,15 @@ const RELEASE_TYPE = [
 ]
 
 const LENGTH_UNIT = [
-    'cms', 'm'
+    'cms', 'mms'
 ];
 
 const WEIGHT_UNIT = [
-    'gms', 'kg'
+    'gms', 'kgs'
+];
+
+const PRICE_UNIT = [
+    'AUD$', 'USD$'
 ];
 
 const YES = 'Yes'; 
@@ -38,5 +42,6 @@ module.exports = {
     NO,
     IMAGE_UPLOAD_URL,
     LENGTH_UNIT,
-    WEIGHT_UNIT
+    WEIGHT_UNIT,
+    PRICE_UNIT
 };

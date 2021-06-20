@@ -1,8 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import { useSelector } from 'react-redux';
-import { Col, Badge, Table } from 'antd';
+import { Badge, Table } from 'antd';
 import axios from 'axios';
-import { Cards } from '../../../../components/cards/frame/cards-frame';
 import { format } from 'date-fns';
 
 const TransactionTable = (  ) => {
@@ -108,19 +107,16 @@ const TransactionTable = (  ) => {
 	}
 
 	return (
-		<Cards title="Transaction Detail">
-			<Col xs={24}>
-        <Table className="table-responsive" 
-          pagination={{
-          defaultPageSize: state.length,
-          total: transactionList.totalSize,
-          showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`,
-          }}
-          dataSource={transactionDataSource}
-          columns={columns} 
-          onChange={onChange}/>
-			</Col>
-		</Cards>
+		
+    <Table className="table-responsive" 
+      pagination={{
+      defaultPageSize: state.length,
+      total: transactionList.totalSize,
+      showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`,
+      }}
+      dataSource={transactionDataSource}
+      columns={columns} 
+      onChange={onChange}/>
 	);
 }
 
