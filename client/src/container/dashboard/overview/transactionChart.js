@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Axios from 'axios';
 import { useHistory } from 'react-router';
 import moment from 'moment';
+import { format } from 'date-fns';
 
 import { ChartjsAreaChart } from '../../../components/charts/chartjs';
 import { chartLinearGradient, customTooltips } from '../../../components/utilities/utilities';
@@ -121,7 +122,8 @@ const TransactionChart = () => {
                 },
                 label(t, d) {
                   const { yLabel, xLabel, datasetIndex } = t;
-                  return `<span class="chart-data">${yLabel}$ (${xLabel}) </span> `;
+                  let time = format(new Date(xLabel), 'yyyy-MM-dd HH:mm:ss');
+                  return `<span class="chart-data">${yLabel}$ (${time}) </span> `;
                 },
               },
             },

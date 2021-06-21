@@ -73,7 +73,7 @@ const TransactionTable = (  ) => {
     const {time, status, siteID, subType, product, refund } = value;
     return transactionDataSource.push({
       key: index,
-      time: format(new Date(time), 'yyyy-MM-dd hh:mm:ss'),
+      time: format(new Date(time), 'yyyy-MM-dd HH:mm:ss'),
       status: status === "success" ? <Badge count={status}  style={{ backgroundColor: '#20C997' }}/> : <Badge count={status} />,
       siteID,
       subType,

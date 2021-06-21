@@ -302,6 +302,10 @@ const getTodayData = async (req, res) => {
     retData.transactions.lastRate = yesterdayTotalCount === 0 ? 0 : Math.round((yesterdaySuccessCount / yesterdayTotalCount) * 100)
 
     // get card Rate
+    // delete condition.type;
+    if ( paymentType == 'CARD' || paymentType == 'CASH' ) {
+        condition['type'] = paymentType;
+    } 
     condition['time'] = {
         $gte: todayStart,
         $lte: todayEnd
@@ -319,8 +323,10 @@ const getTodayData = async (req, res) => {
     ]);
     retData.cardRate.totalPrice = totalPrice.length > 0 ? Utility.numberWithCommas(Math.round(totalPrice[0].sum) / 100) : 0;
 
-    if ( paymentType == 'CARD' || paymentType == 'CASH' ) {
-        condition['type'] = paymentType;
+    if ( paymentType == 'CARD') {
+        condition['subType'] = 'MASTERCARD';
+    } else if ( paymentType == 'CASH') {
+        condition['subType'] = 'COIN';
     } else {
         condition['type'] = 'CARD';
     }
@@ -342,7 +348,8 @@ const getTodayData = async (req, res) => {
         $gte: yesterdayStart,
         $lte: yesterdayEnd
     };
-    delete condition.type;
+    // delete condition.type;
+    delete condition.subType;
     totalPrice = await Transaction.aggregate([
         {
             $match: condition
@@ -354,8 +361,10 @@ const getTodayData = async (req, res) => {
             }   
         }
     ]);
-    if ( paymentType == 'CARD' || paymentType == 'CASH' ) {
-        condition['type'] = paymentType;
+    if ( paymentType == 'CARD') {
+        condition['subType'] = 'MASTERCARD';
+    } else if ( paymentType == 'CASH') {
+        condition['subType'] = 'COIN';
     } else {
         condition['type'] = 'CARD';
     }
@@ -383,7 +392,6 @@ const getChartData = async ( req, res ) => {
     }
     const filter = req.body.filter;
     const tab = req.body.tab;
-    console.log(filter.date[0])
     const starttime = new Date(filter.date[0]);
     const endtime = new Date(filter.date[1]);
     let condition = {
