@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Row, Col, Form, Input, Select, notification, Upload, message, Checkbox } from 'antd';
+import { Row, Col, Form, Input, Select, notification, Checkbox } from 'antd';
 import propTypes from 'prop-types';
 import Axios from 'axios';
 
 import { Button } from '../../../components/buttons/buttons';
 import { Modal } from '../../../components/modals/antd-modals';
-import { Cards } from '../../../components/cards/frame/cards-frame';
-// import { Checkbox } from '../../../components/checkbox/checkbox';
 import { BasicFormWrapper } from '../../styled';
 import { EditAisleForm } from '../style';
 import { LENGTH_UNIT, WEIGHT_UNIT, RELEASE_TYPE, YES, NO } from '../../../constants';

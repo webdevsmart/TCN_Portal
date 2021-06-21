@@ -1,8 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import { useSelector } from 'react-redux';
-import { Col, Badge, Table } from 'antd';
+import { Badge, Table } from 'antd';
 import axios from 'axios';
-import { Cards } from '../../../../components/cards/frame/cards-frame';
 import { format } from 'date-fns';
 
 const TransactionTable = (  ) => {
@@ -70,7 +69,7 @@ const TransactionTable = (  ) => {
 
 	// set transaction datatable datasource
   transactionList.list.map((value, index) => {
-    const {time, status, siteID, type, subType, product, price } = value;
+    const {time, status, siteID, type, subType, product } = value;
     return transactionDataSource.push({
       key: index,
       time: format(new Date(time), 'yyyy-MM-dd hh:mm:ss'),

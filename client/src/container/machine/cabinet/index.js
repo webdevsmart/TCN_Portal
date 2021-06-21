@@ -1,15 +1,13 @@
-import React, { lazy, useState, Suspense, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Row, Col, notification, Card, Modal } from 'antd';
 import Axios from 'axios';
-import { Switch, NavLink, Route, useRouteMatch } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import FeatherIcon from 'feather-icons-react';
 import { PageHeader } from '../../../components/page-headers/page-headers';
 import { Button } from '../../../components/buttons/buttons';
-import { AutoComplete } from '../../../components/autoComplete/autoComplete';
+import {  } from '../../../components/autoComplete/autoComplete';
 import { Main, CardToolbox } from '../../styled';
-import { TopToolBox, MachineCardWrapper } from '../style';
 import { Cards } from '../../../components/cards/frame/cards-frame';
-import AisleForm from '../detail/aisleForm';
 import SampleProduct from '../../../static/img/sample-product.png'
 
 const confirm = Modal.confirm;

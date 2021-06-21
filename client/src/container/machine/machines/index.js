@@ -4,7 +4,6 @@ import { Switch, NavLink, Route, useRouteMatch } from 'react-router-dom';
 import FeatherIcon from 'feather-icons-react';
 import Axios from 'axios';
 import { PageHeader } from '../../../components/page-headers/page-headers';
-import { Button } from '../../../components/buttons/buttons';
 import { AutoComplete } from '../../../components/autoComplete/autoComplete';
 import { Main, CardToolbox } from '../../styled';
 import { TopToolBox, MachineCardWrapper } from '../style';

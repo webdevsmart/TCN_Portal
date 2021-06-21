@@ -8,8 +8,6 @@ import { numberWithCommas } from '../../../utility/utility';
 import { PerformanceChartWrapper, Pstates } from '../style';
 import { Cards } from '../../../components/cards/frame/cards-frame';
 import Heading from '../../../components/heading/heading';
-import { ChartjsAreaChart } from '../../../components/charts/chartjs';
-import { chartLinearGradient, customTooltips } from '../../../components/utilities/utilities';
 import { setIsLoading } from '../../../redux/chartContent/actionCreator';
 import { setDashBoardFilter } from '../../../redux/filter/actionCreator';
 

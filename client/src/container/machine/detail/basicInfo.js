@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Row, Col, notification, Form, Input, Upload, message, Radio } from 'antd';
 import Axios from 'axios';
-import FeatherIcon from 'feather-icons-react';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 
-import Heading from '../../../components/heading/heading';
 import { Button } from '../../../components/buttons/buttons';
 import { BasicFormWrapper } from '../../styled';
 
@@ -16,16 +14,9 @@ const BasicInfo = ({ machineID }) => {
     loading: false,
     previewImageUrl: '',
     imageUrl: '',
-    fileList: [
-      {
-        uid: '-1',
-        name: 'image.png',
-        status: 'done',
-        url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-      },
-    ]
+    
   });
-  const { loading, previewImageUrl, imageUrl, fileList } = state;
+  const { loading, previewImageUrl, imageUrl } = state;
 
   // get machine info
   const getData = () => {

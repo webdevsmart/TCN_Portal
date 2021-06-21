@@ -1,5 +1,5 @@
 import React, { lazy, useState, Suspense } from 'react';
-import { Row, Col, Radio, Spin, Skeleton } from 'antd';
+import { Row, Col, Spin } from 'antd';
 import { Switch, NavLink, Route, useRouteMatch } from 'react-router-dom';
 import FeatherIcon from 'feather-icons-react';
 import { PageHeader } from '../../../components/page-headers/page-headers';
@@ -11,7 +11,6 @@ import ProductForm from './productForm';
 import { ExportButtonPageHeader } from './ExportButton';
 
 const Grid = lazy(() => import('./overview/grid'));
-// const List = lazy(() => import('./overview/List'));
 
 const Product = () => {
   const { path } = useRouteMatch();

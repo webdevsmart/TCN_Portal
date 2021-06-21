@@ -1,8 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import { useSelector } from 'react-redux';
-import { Col, Badge, Table } from 'antd';
+import { Badge, Table } from 'antd';
 import axios from 'axios';
-import { Cards } from '../../../../components/cards/frame/cards-frame';
 import { format } from 'date-fns';
 
 const TransactionTable = (  ) => {

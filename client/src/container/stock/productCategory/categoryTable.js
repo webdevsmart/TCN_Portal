@@ -55,11 +55,6 @@ const CategoryTable = ({refresh, showModal, keyword}) => {
     },
   ];
 
-	const showEditModal = (key) => {
-		showModal(key);
-		
-	}
-
 	const deleteCategory = ( _id ) => {
 		confirm({
 			title: 'Delete this Category?',
@@ -144,10 +139,6 @@ const CategoryTable = ({refresh, showModal, keyword}) => {
 
 	const onChange = (pagination, sorter) => {
 		setState({...state, start: (pagination.current - 1) * pagination.pageSize, length: pagination.pageSize, sort: sorter.field, sortDir: sorter.order});
-	}
-
-	const updateFilter = ( event ) => {
-		setState({...state, [event.target.name]: event.target.value})
 	}
 
 	return (

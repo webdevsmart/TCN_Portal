@@ -15,7 +15,7 @@ const DetailOverview = ({ type, data }) => {
   const routerHistory = useHistory();
   const dispatch = useDispatch();
   let subType = [];
-  if ( type == 'Card' ) {
+  if ( type === 'Card' ) {
     subType =["MasterCard", "Visa"];
   } else {
     subType =["Coin", "Bill"];
@@ -28,9 +28,6 @@ const DetailOverview = ({ type, data }) => {
     };
   });
 
-  const [state, setState] = useState({
-    device: 'year',
-  });
 
   const datasets = deviceState.length > 0 && [
     {

@@ -1,5 +1,5 @@
 import React, { lazy, useState } from 'react';
-import { Row, Col, notification, Menu } from 'antd';
+import { Row, Col, Menu } from 'antd';
 
 import { PageHeader } from '../../../components/page-headers/page-headers';
 import { Cards } from '../../../components/cards/frame/cards-frame';
@@ -19,7 +19,7 @@ const MachineDetail = (data) => {
     pageType: 'SaleSequence'
   });
 
-  const { machine, pageType } = state;
+  const { pageType } = state;
 
   const handleClick = e => {
     setState({

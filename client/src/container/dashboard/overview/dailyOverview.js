@@ -5,8 +5,6 @@ import { useSelector } from 'react-redux';
 import { OverviewCard } from '../style';
 import { Cards } from '../../../components/cards/frame/cards-frame';
 import Heading from '../../../components/heading/heading';
-import { Button } from '../../../components/buttons/buttons';
-import { Dropdown } from '../../../components/dropdown/dropdown';
 import Axios from 'axios';
 
 const DailyOverview = () => {
@@ -99,11 +97,11 @@ const DailyOverview = () => {
               <Heading as="h2" className="color-info">
                 ${ state.cardRate.cardPrice }
               </Heading>
-              <p>{filter.paymentType === 'CASH' ? `Cash` : `Card`} Sales</p>
+              <p>{filter.paymentType === 'CARD' ? 'Mastercard' : (filter.paymentType === 'CASH' ? 'Coin' : 'Card')} Sales</p>
             </div>
             <div className="overview-box-single text-right">
               <Heading as="h2">${ state.cardRate.totalPrice }</Heading>
-              <p>Total Sales</p>
+              <p>{filter.paymentType === 'CARD' ? 'Card' : (filter.paymentType === 'CASH' ? 'Cash' : 'Total')} Sales</p>
             </div>
           </div>
           <Progress percent={ state.cardRate.currentRate } showInfo={false} />

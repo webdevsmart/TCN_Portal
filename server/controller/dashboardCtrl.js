@@ -226,9 +226,9 @@ const getSiteIDs = async (req, res) => {
 }
 
 const getTodayData = async (req, res) => {
-    todayStart = new Date();
+    todayStart = new Date('2021-06-04');
     todayStart.setHours(0, 0, 0, 0)
-    todayEnd = new Date();
+    todayEnd = new Date('2021-06-04');
     todayEnd.setHours(23, 59, 59, 999)
     yesterdayStart = new Date(moment().subtract(1, 'days'));
     yesterdayStart.setHours(0, 0, 0, 0)

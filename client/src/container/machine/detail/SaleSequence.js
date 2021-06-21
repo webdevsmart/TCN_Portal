@@ -1,18 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Row, Col, notification, Menu } from 'antd';
+import { Row, Col, notification } from 'antd';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import Axios from "axios";
 
 import { Cards } from '../../../components/cards/frame/cards-frame';
 import { Button } from '../../../components/buttons/buttons';
-
-// fake data generator
-const getItems = (count, offset = 0) => {
-  Array.from({ length: count }, (v, k) => k).map(k => ({
-    id: `item-${k + offset}-${new Date().getTime()}`,
-    content: `item ${k + offset}`
-  }));
-}
 
 const reorder = (list, startIndex, endIndex) => {
   const result = Array.from(list.sequence);
@@ -38,7 +30,6 @@ const move = (source, destination, droppableSource, droppableDestination) => {
   result[droppableDestination.droppableId] = destClone;
   return result;
 };
-const grid = 8;
 
 const SaleSequence = ({ machineID }) => {
   const [state, setState] = useState(
@@ -48,8 +39,6 @@ const SaleSequence = ({ machineID }) => {
       sequence: [],
     }]
   );
-
-  const { sequenceData } = state;
 
   const getSequenceData = () => {
     Axios.post("/api/machine/planogram/getSequenceData", { machineId: machineID })

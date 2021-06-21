@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Upload, message, notification } from 'antd';
 import Axios from 'axios';
-import { NavLink } from 'react-router-dom';
 import FeatherIcon from 'feather-icons-react';
 import { Popover } from '../../../components/popup/popup';
 import { Button } from '../../../components/buttons/buttons';

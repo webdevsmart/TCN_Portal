@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { notification, Card, Modal } from 'antd';
 import Axios from 'axios';
-import { NavLink } from 'react-router-dom';
 import FeatherIcon from 'feather-icons-react';
 import { Button } from '../../../components/buttons/buttons';
 import { Cards } from '../../../components/cards/frame/cards-frame';
@@ -54,43 +53,6 @@ const Planogram = ({ machineID }) => {
       setRefresh(false);
     }
   }, [refresh]);
-
-  const makeCabinet = () => {
-    Axios.post('/api/machine/planogram/makeCabinet', {machineId: state.machineId})
-    .then( res => {
-      if ( res.data.status === "success" ) {
-        notification["success"]({
-          message: 'Success',
-          description: 
-          'Successfully done!',
-        });
-        setRefresh(true);
-      }
-    })
-    .catch( err => {
-      notification["warning"]({
-        message: 'Warning',
-        description: 
-        'Server Error',
-      });
-    });
-  }
-
-  const addAisle = ( row ) => {
-    Axios.post('/api/machine/planogram/addAisle', { rowId: row })
-    .then( res => {
-      if ( res.data.status === 'success' ) {
-        setRefresh(true);
-      }
-    })
-    .catch( err => {
-      notification["warning"]({
-        message: 'Warning',
-        description: 
-        'Server Error',
-      });
-    })
-  }
 
   const deleteAisle = (aisle, row) => {
     confirm({
