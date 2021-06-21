@@ -45,7 +45,7 @@ const TransactionChart = () => {
     });
   }
   useEffect(() => {
-    getChartData();
+    [getChartData()];
   }, [filter.paymentType, filter.siteID, filter.productID, filter.date]);
 
   const transactionDatasets = chartData !== null && [
@@ -78,17 +78,23 @@ const TransactionChart = () => {
           datasets={transactionDatasets}
           options={{
             maintainAspectRatio: true,
-            onClick: function(evt, element) {
-              if (element.length > 0) {
+            onClick: async function(evt, element) {
+              let start = new Date(filter.date[0]);
+              let end = new Date(filter.date[1]);
+              let differentDays = (end.getTime() - start.getTime()) / (1000 * 3600 * 24);
+
+              if (element.length > 0 && differentDays > 2) {
                 let index = element[0]._index;
                 filter.date = [ moment(chartData.labels[index] + ' 00:00:00'), moment(chartData.labels[index] + ' 23:59:59') ];
-                dispatch(setDashBoardFilter(filter))
-                if ( filter.paymentType === 'totalPrice' ) {
+                await dispatch(setDashBoardFilter(filter))
+                console.log(filter.paymentType)
+
+                if ( filter.paymentType === 'all' ) {
                   routerHistory.push('/sale/total')
-                } else if ( filter.paymentType === 'cardPrice' ) {
-                  routerHistory.push("sale/card");
-                } else if ( filter.paymentType === 'cashPrice' ) {
-                  routerHistory.push("sale/cash");
+                } else if ( filter.paymentType === 'CARD' ) {
+                  routerHistory.push("/sale/card");
+                } else if ( filter.paymentType === 'CASH' ) {
+                  routerHistory.push("/sale/cash");
                 }
               }
             },

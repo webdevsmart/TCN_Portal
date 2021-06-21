@@ -23,7 +23,7 @@ const FilterBar = ({ paymentType }) => {
     "productID": filter.productID,
     "date" : filter.date
   })
-  // const paymentType = ['MASTERCARD']
+
   useEffect(() => {
     Axios.get("/api/dashboard/getSiteIDs")
     .then( res => {
@@ -143,7 +143,7 @@ const FilterBar = ({ paymentType }) => {
                 maxTagCount={2}
                 value={filter.siteID}
                 >
-                  <Select.Option key="all" value="all">---SELECT ALL---</Select.Option>
+                  <Select.Option key="all" value="all">---{filter.siteID.length !== siteList.length ? `SELECT` : 'DESELECT'} ALL---</Select.Option>
                 {
                   siteList.map( (item, index) => {
                     return (
@@ -158,7 +158,7 @@ const FilterBar = ({ paymentType }) => {
               <Select 
                 mode="multiple"
                 style={{ width: '100%', minHeight: '49px' }}
-                defaultValue={state.productID}
+                defaultValue={filter.productID}
                 optionLabelProp="label"
                 onChange={onChangeProduct}
                 showArrow={false}
@@ -166,9 +166,9 @@ const FilterBar = ({ paymentType }) => {
                 onSearch={onSearchProduct}
                 onFocus={onFocusProduct}
                 maxTagCount={2}
-                value={state.productID}
+                value={filter.productID}
                 >
-                  <Select.Option key="all" value="all">---SELECT ALL---</Select.Option>
+                  <Select.Option key="all" value="all">--- ALL---</Select.Option>
                   {
                     productList.map( (item, index) => {
                       return (
@@ -194,7 +194,6 @@ const FilterBar = ({ paymentType }) => {
                       } else {
                         filter.paymentType = values
                       }
-                      console.log(filter)
                       dispatch(setDashBoardFilter(filter))
                     }}
                     value={filter.paymentType}
@@ -214,8 +213,11 @@ const FilterBar = ({ paymentType }) => {
               <RangePicker
                 style={{ width: '100%' }}
                 ranges={{
-                  Today: [moment(), moment()],
+                  'Today': [moment().startOf('day'), moment().endOf('day')],
+                  'Yesterday': [moment().add( -1, 'days' ).startOf('day'), moment().add( -1, 'days' ).endOf('day')],
+                  'This Week': [moment().startOf('week'), moment().endOf('week')],
                   'This Month': [moment().startOf('month'), moment().endOf('month')],
+                  'This Year': [moment().startOf('year'), moment().endOf('year')],
                 }}
                 showTime
                 format="YYYY-MM-DD HH:mm:ss"

@@ -6,7 +6,7 @@ const initialDashboard = {
     companyID: [],
     siteID: [],
     productID: ["all"],
-    paymentType: ["all"],
+    paymentType: "all",
     date: [
       moment().startOf('month'),
       moment().endOf('month')

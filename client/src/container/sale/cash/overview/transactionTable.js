@@ -12,8 +12,6 @@ const TransactionTable = (  ) => {
     };
   });
   
-  console.log("tset")
-
 	const [state, setState] = useState({
 		start: 0,
 		length: 10,

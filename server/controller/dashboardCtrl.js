@@ -280,7 +280,10 @@ const getTodayData = async (req, res) => {
     condition['time'] = {
         $gte: todayStart,
         $lte: todayEnd
-    },
+    };
+    if ( paymentType == 'CARD' || paymentType == 'CASH' ) {
+        condition['type'] = paymentType;
+    } 
     retData.transactions.totalCount = await Transaction.countDocuments(condition)
     condition['status'] = 'success'
     retData.transactions.successCount = await Transaction.countDocuments(condition)
@@ -380,15 +383,17 @@ const getChartData = async ( req, res ) => {
     }
     const filter = req.body.filter;
     const tab = req.body.tab;
+    console.log(filter.date[0])
+    const starttime = new Date(filter.date[0]);
+    const endtime = new Date(filter.date[1]);
     let condition = {
         'status' : 'success',
         'time' : {
-            $gte: new Date(filter.date[0]),
-            $lte: new Date(filter.date[1])
+            $gte: starttime,
+            $lte: endtime
         }
     }
-    
-    
+
     condition["$and"] = [];
     let $or = {"$or" : []};
     if ( filter.siteID.length > 0 ) {
@@ -418,6 +423,15 @@ const getChartData = async ( req, res ) => {
         condition['subType'] = filter.paymentType;
     }
 
+    let differenceTimes = endtime.getTime() - starttime.getTime();
+    let differenceDays = differenceTimes / (1000 * 3600 * 24);
+    let groupQuery = {}
+    if ( differenceDays < 2) {
+        groupQuery = { $dateToString: { format: "%Y-%m-%d %H:%m", date: "$time" } }
+    } else {
+        groupQuery = { $dateToString: { format: "%Y-%m-%d", date: "$time" } }
+    }
+
     if (tab !== 'fee') {
         Transaction.aggregate([
             {
@@ -425,7 +439,7 @@ const getChartData = async ( req, res ) => {
             },
             {
                 "$group" : {
-                    "_id" : { $dateToString: { format: "%Y-%m-%d", date: "$time" } },
+                    "_id" : groupQuery,
                     "totalPrice": {"$sum" : "$product.price"},
                 }
             },

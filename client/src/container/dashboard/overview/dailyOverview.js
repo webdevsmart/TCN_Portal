@@ -68,9 +68,9 @@ const DailyOverview = () => {
           <div className="d-flex align-items-center justify-content-between">
             <div className="overview-box-single">
               <Heading as="h2" className="color-primary">
-                { state.transactions.successCount }/ <text style={{ color: 'red' }}>{ state.transactions.totalCount - state.transactions.successCount }</text>
+                { state.transactions.successCount }/ { state.transactions.totalCount - state.transactions.successCount }
               </Heading>
-              <p>Successful / <text style={{ color: 'red' }}>Failed</text> Vends</p>
+              <p>Successful / Failed Vends</p>
             </div>
             <div className="overview-box-single text-right">
               <Heading as="h2">{ state.transactions.totalCount }</Heading>
