@@ -167,7 +167,7 @@ const SaleSequence = ({ machineID }) => {
                                   padding: "5px"
                                 }}
                               >
-                                {item.aisleNum}
+                                Aisle {item.aisleNum}
                               </div>
                             </div>
                           )}
