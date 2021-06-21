@@ -32,31 +32,31 @@ const DailyOverview = () => {
     }
   });
 
-  useEffect(() => {
-    // console.log(filter)
-    const getTodayData = () => {
-      Axios.post('/api/dashboard/getTodayData', { siteID: filter.siteID, productID: filter.productID })
-      .then( res => {
-        if ( res.data.status === 'success' ) {
-          setstate(res.data.data)
-        } else {
-          notification['warning']({
-            message: 'Warning!',
-            description: 
-              res.data.message
-          })
-        }
-      })
-      .catch( res => {
+  const getTodayData = () => {
+    Axios.post('/api/dashboard/getTodayData', { siteID: filter.siteID, productID: filter.productID, paymentType: filter.paymentType })
+    .then( res => {
+      if ( res.data.status === 'success' ) {
+        setstate(res.data.data)
+      } else {
         notification['warning']({
           message: 'Warning!',
           description: 
-            "Server Error!"
+            res.data.message
         })
+      }
+    })
+    .catch( res => {
+      notification['warning']({
+        message: 'Warning!',
+        description: 
+          "Server Error!"
       })
-    }
+    })
+  }
+
+  useEffect(() => {
     getTodayData();
-  }, [ filter.siteID, filter.productID ]);
+  }, [ filter.siteID, filter.productID, filter.paymentType ]);
 
   return (
     <OverviewCard>
@@ -68,13 +68,13 @@ const DailyOverview = () => {
           <div className="d-flex align-items-center justify-content-between">
             <div className="overview-box-single">
               <Heading as="h2" className="color-primary">
-                { state.transactions.successCount }
+                { state.transactions.successCount }/ { state.transactions.totalCount - state.transactions.successCount }
               </Heading>
-              <p>Success Count</p>
+              <p>Successful / Failed Vends</p>
             </div>
             <div className="overview-box-single text-right">
               <Heading as="h2">{ state.transactions.totalCount }</Heading>
-              <p>Total Count</p>
+              <p>Total Vends</p>
             </div>
           </div>
 
@@ -99,11 +99,11 @@ const DailyOverview = () => {
               <Heading as="h2" className="color-info">
                 ${ state.cardRate.cardPrice }
               </Heading>
-              <p>Card Price</p>
+              <p>{filter.paymentType === 'CASH' ? `Cash` : `Card`} Sales</p>
             </div>
             <div className="overview-box-single text-right">
               <Heading as="h2">${ state.cardRate.totalPrice }</Heading>
-              <p>Total Price</p>
+              <p>Total Sales</p>
             </div>
           </div>
           <Progress percent={ state.cardRate.currentRate } showInfo={false} />

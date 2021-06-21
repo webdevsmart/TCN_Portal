@@ -65,6 +65,7 @@ const getPriceData = async (req, res) => {
     ]);
 
     condition['type'] = 'CARD';
+
     let cardPrice = await Transaction.aggregate([
         {
             $match: condition
@@ -250,6 +251,7 @@ const getTodayData = async (req, res) => {
     }
     const siteID = req.body.siteID;
     const productID = req.body.productID;
+    const paymentType = req.body.paymentType;
     
     let condition = {};
     condition["$and"] = [];
@@ -313,7 +315,13 @@ const getTodayData = async (req, res) => {
         }
     ]);
     retData.cardRate.totalPrice = totalPrice.length > 0 ? Utility.numberWithCommas(Math.round(totalPrice[0].sum) / 100) : 0;
-    condition['type'] = 'CARD';
+
+    if ( paymentType == 'CARD' || paymentType == 'CASH' ) {
+        condition['type'] = paymentType;
+    } else {
+        condition['type'] = 'CARD';
+    }
+
     let cardPrice = await Transaction.aggregate([
         {
             $match: condition
@@ -343,7 +351,11 @@ const getTodayData = async (req, res) => {
             }   
         }
     ]);
-    condition['type'] = 'CARD';
+    if ( paymentType == 'CARD' || paymentType == 'CASH' ) {
+        condition['type'] = paymentType;
+    } else {
+        condition['type'] = 'CARD';
+    }
     cardPrice = await Transaction.aggregate([
         {
             $match: condition
