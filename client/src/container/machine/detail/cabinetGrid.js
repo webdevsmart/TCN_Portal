@@ -90,7 +90,8 @@ const CabinetGrid = ({ machineId, refreshGrid, setRefreshGrid }) => {
       selectedAisle: {
         aisleId: aisleId,
         rowId: rowId,
-        rowLabel: rowLabel
+        rowLabel: rowLabel,
+        machineId: machineId
       }
     });
   };

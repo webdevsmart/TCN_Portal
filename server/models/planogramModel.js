@@ -52,6 +52,15 @@ const planogramModel = mongoose.Schema({
             }],
             imageUrl: String
         }]
+    }],
+    saleSequence: [{
+        productId: {
+            type: ObjectId,
+            ref: 'product'
+        },
+        sequence: [{
+            aisleNum: Number,
+        }],
     }]
 });
 

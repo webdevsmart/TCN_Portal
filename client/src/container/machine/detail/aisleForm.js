@@ -46,38 +46,34 @@ const CreateCategory = ({ visible, onCancel, selectedAisle }) => {
     Axios.post('/api/machine/planogram/getAisle', { selectedAisle })
     .then( res => {
       if (res.data.status === 'success') {
-        setFileState({
-          previewImageUrl: undefined
-        })
-        form.setFieldsValue(res.data.data);
-        // if (res.data.data.product === undefined) {
-        //   const tempProduct = [{
-        //     productId: 'sdf',
-        //     weight: 'sdf',
-        //     weightUnit: 'sdf',
-        //     height: 'sdf',
-        //     heightUnit: 'sdf',
-        //     price: 'sdf',
-        //   }];
-        //   console.log(selectedProducts)
-        //   setSeletedProducts(tempProduct);
-        // }
-        if ( res.data.data.productId !== undefined ) {
-          Axios.post('/api/stock/product/getProductById', { _id: res.data.data.productId })
-          .then( res1 => {
-            if ( res1.data.status === 'success' ) {
-              form.setFieldsValue({ categoryId: res1.data.data.categoryId });
-              selectCategory(res1.data.data.categoryId);
-            }
+        if ( res.data.data.imageUrl !== null ) {
+          setFileState({
+            previewImageUrl: 'data:image/png;base64,' + res.data.data.imageUrl
           })
-          .catch( err => {
-            notification["warning"]({
-              message: 'Warning',
-              description: 
-              'Server Error',
-            });
+        } else {
+          setFileState({
+            previewImageUrl: null
           })
         }
+        if ( res.data.data.products !== undefined && res.data.data.products !== null ) {
+          res.data.data.products.map( async (item, index) => {
+            await Axios.post('/api/stock/product/getProductById', { _id: res.data.data.products[index].productId })
+            .then( res1 => {
+              if ( res1.data.status === 'success' ) {
+                selectCategory(res1.data.data.categoryId);
+                res.data.data.products[index].categoryId = res1.data.data.categoryId;
+              }
+            })
+            .catch( err => {
+              notification["warning"]({
+                message: 'Warning',
+                description: 
+                'Server Error',
+              });
+            })
+          });
+        }
+        form.setFieldsValue(res.data.data);
       }
     })
     .catch( err => {
@@ -93,22 +89,23 @@ const CreateCategory = ({ visible, onCancel, selectedAisle }) => {
     getAisle();
   }, [ selectedAisle ]);
   
-  useEffect((state) => {
-    const getCategoryList = () => {
-      Axios.get('/api/stock/productCategory/getTotalCategory')
-      .then(( res ) => {
-        if (res.data.status === "success") {
-          setCategoryList(res.data.data);
-        }
-      })
-      .catch((err) => {
-        notification["warning"]({
-          message: 'Warning',
-          description: 
-          'Server Error',
-        });
+  const getCategoryList = () => {
+    Axios.get('/api/stock/productCategory/getTotalCategory')
+    .then(( res ) => {
+      if (res.data.status === "success") {
+        setCategoryList(res.data.data);
+      }
+    })
+    .catch((err) => {
+      notification["warning"]({
+        message: 'Warning',
+        description: 
+        'Server Error',
       });
-    }
+    });
+  }
+
+  useEffect((state) => {
     if (visible) {
       getCategoryList();
     }
@@ -128,7 +125,6 @@ const CreateCategory = ({ visible, onCancel, selectedAisle }) => {
 
   const handleSubmit = values => {
     values.imageUrl = imageUrl;
-    console.log(values)
     Axios.post('/api/machine/planogram/setAisle', { selectedAisle, values })
     .then(res => {
       if (res.data.status === 'success') {
@@ -257,8 +253,7 @@ const CreateCategory = ({ visible, onCancel, selectedAisle }) => {
           <BasicFormWrapper>
             <Form form={form} name="editAisle" onFinish={handleSubmit}>
               <Row gutter={25}>
-                <Col md={24} lg={24} xs={24}>
-                <Col md={24} lg={24} xs={24} style={{ textAlign: 'center' }}>
+                <Col md={6} lg={6} xs={24} style={{ textAlign: 'center' }}>
                   <Upload
                     name="ImageFile"
                     listType="picture-card"
@@ -267,10 +262,12 @@ const CreateCategory = ({ visible, onCancel, selectedAisle }) => {
                     action="/api/stock/product/uploadProductImage"
                     beforeUpload={beforeUpload}
                     onChange={handleChange}
+                    style={{ display: "flex", justifyContent: "center" }}
                   >
                     {previewImageUrl ? <img src={previewImageUrl} alt="ImageFile" style={{ width: '100%' }} /> : uploadButton}
                   </Upload>
-                  </Col>
+                </Col>
+                <Col md={18} lg={18} xs={24}>
                   <Form.List name="products">
                     {(products, { add, remove }) => (
                       <>
@@ -281,12 +278,12 @@ const CreateCategory = ({ visible, onCancel, selectedAisle }) => {
                               <Col md={11} xs={12}>
                                 <Form.Item name={[field.name, 'categoryId']} label="Category">
                                   <Select
-                                      showSearch
-                                      style={{ width: `100%` }}
-                                      placeholder="Select Category"
-                                      optionFilterProp="children"
-                                      filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                                      onChange={selectCategory}
+                                    showSearch
+                                    style={{ width: `100%` }}
+                                    placeholder="Select Category"
+                                    optionFilterProp="children"
+                                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                                    onChange={selectCategory}
                                   >
                                     {categoryList.map((item, index) => {
                                       return <Option value={item._id} key={index}>{item.name}</Option>
@@ -298,16 +295,15 @@ const CreateCategory = ({ visible, onCancel, selectedAisle }) => {
                               <Col md={11} xs={12}>
                                 <Form.Item label="Product" name={[field.name, 'productId']}>
                                   <Select
-                                      showSearch
-                                      style={{ width: `100%` }}
-                                      placeholder="Select Product"
-                                      optionFilterProp="children"
-                                      filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                                      onChange={selectProduct}
-                                      
+                                    showSearch
+                                    style={{ width: `100%` }}
+                                    placeholder="Select Product"
+                                    optionFilterProp="children"
+                                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                                    onChange={selectProduct}
                                   >
                                     {productList.map((item, index) => {
-                                      return <Option value={item._id} key={index}>{item.name}</Option>
+                                      return <Option value={item._id} key={index} label={item.name}>{item.name}</Option>
                                     })}
                                   </Select>
                                 </Form.Item>

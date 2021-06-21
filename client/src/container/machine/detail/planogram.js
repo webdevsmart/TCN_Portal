@@ -115,13 +115,15 @@ const Planogram = ({ machineID }) => {
     });
   }
 
-  const showModal = ( aisleId, rowId ) => {
+  const showModal = ( aisleId, rowId, aisleNum ) => {
     setState({
       ...state,
       visible: true,
       selectedAisle: {
         aisleId: aisleId,
-        rowId: rowId
+        rowId: rowId,
+        machineId: machineID,
+        aisleNum: aisleNum,
       }
     });
   };
@@ -165,7 +167,7 @@ const Planogram = ({ machineID }) => {
                 <h4>
                 MaxQty : {aisle.maxQty}
                 </h4>                          
-                <Button size="default" type="white" onClick={() => showModal(aisle._id, item._id)}>
+                <Button size="default" type="white" onClick={() => showModal( aisle._id, item._id, aisle.aisleNum )}>
                 <FeatherIcon icon="edit" size={14} />
                 </Button>
                 <Button size="default" type="white" onClick={() => deleteAisle( aisle._id, item._id )}>

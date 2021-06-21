@@ -1,4 +1,3 @@
-const imageToBase64 = require('image-to-base64');
 const fs = require('fs');
 const VendMachineModel = require('../../models/vendMachineModel');
 const PlanogramModel = require('../../models/planogramModel');

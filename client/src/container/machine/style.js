@@ -749,6 +749,11 @@ const EditAisleForm = Styled.div`
             background: ${({ theme }) => theme['bg-color-light']};
         }
     }
+
+    .ImageFile-uploader {
+      display: flex;
+      justify-content: center;
+    }
 `;
 
 const DetailStyleWrapper = Styled.div`
@@ -762,10 +767,63 @@ const DetailStyleWrapper = Styled.div`
   }
 `;
 
+const DragDropStyle = Styled.div`
+    .ant-card-body{
+        padding: 15px !important;
+    }
+    table{
+        thead{
+            display: none;
+        }
+        tbody{
+            >tr{
+                &:not(:last-child){
+                    td{
+                         border-bottom: 1px solid ${({ theme }) => theme['border-color-normal']} !important;
+                    }
+                 }
+                 &:hover{
+                     td{
+                         background-color: transparent !important;
+                     }
+                 }
+                >td{
+                    font-size: 14px;
+                    &:first-child,
+                    &:last-child{
+                        border-radius: 0 !important;
+                    }
+                }
+            }
+        }
+        tr{
+            td{
+                &.drag-visible{
+                    svg,
+                    img{
+                        width: 20px;
+                    }
+                    svg,
+                    i{
+                        color: ${({ theme }) => theme['extra-light-color']} !important;
+                    }
+                }
+            }
+        }
+        .user-info{
+            .user-name{
+                font-size: 14px;
+                margin-left: 8px;
+            }
+        }
+    }
+`;
+
 export {
     TopToolBox,
     MachineCard,
     MachineCardWrapper,
     EditAisleForm,
-    DetailStyleWrapper
+    DetailStyleWrapper,
+    DragDropStyle
 };

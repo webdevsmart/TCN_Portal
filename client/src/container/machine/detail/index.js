@@ -10,12 +10,13 @@ const BasicInfo = lazy(() => import('./basicInfo'));
 const ConfigInfo = lazy(() => import('./configInfo'));
 const CabinetLayout = lazy(() => import('./cabinetLayout'));
 const Planogram = lazy(() => import('./planogram'));
+const SaleSequence = lazy(() => import('./SaleSequence'));
 
 const MachineDetail = (data) => {
   const machineID = data.match.params.id;
   const [state, setState] = useState({
     current: 'mail',
-    pageType: 'Planogram'
+    pageType: 'SaleSequence'
   });
 
   const { machine, pageType } = state;
@@ -50,6 +51,9 @@ const MachineDetail = (data) => {
                   <Menu.Item key="Planogram">
                     Planogram
                   </Menu.Item>
+                  <Menu.Item key="SaleSequence">
+                    SaleSequence
+                  </Menu.Item>
                 </Menu>
               </Col>
             </Row>
@@ -73,6 +77,10 @@ const MachineDetail = (data) => {
                     case 'Planogram':
                       return (
                         <Planogram machineID={machineID}/>
+                      )
+                    case 'SaleSequence':
+                      return (
+                        <SaleSequence machineID={machineID}/>
                       )
                     default:
                       return (

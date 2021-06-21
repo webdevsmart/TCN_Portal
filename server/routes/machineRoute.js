@@ -26,6 +26,8 @@ router.post('/planogram/getPlanogram', planogramCtrl.getPlanogram);
 router.post('/planogram/addAisle', planogramCtrl.addAisle);
 router.post('/planogram/getAisle', planogramCtrl.getAisle);
 router.post('/planogram/setAisle', planogramCtrl.setAisle);
+router.post('/planogram/getSequenceData', planogramCtrl.getSequenceData);
+router.post('/planogram/setSaleSequence', planogramCtrl.setSaleSequence);
 
 
 
