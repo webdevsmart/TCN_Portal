@@ -19,7 +19,6 @@ const Product = ({ match }) => {
     selectedAisle: {}
   });
 
-  const { visible } = state;
   const [refresh, setRefresh] = useState(true);
   const [planogram, setPlanogram] = useState({
     _id: '',
@@ -78,22 +77,6 @@ const Product = ({ match }) => {
     });
   }
 
-  const addAisle = ( row ) => {
-    Axios.post('/api/machine/planogram/addAisle', { rowId: row })
-    .then( res => {
-      if ( res.data.status === 'success' ) {
-        setRefresh(true);
-      }
-    })
-    .catch( err => {
-      notification["warning"]({
-        message: 'Warning',
-        description: 
-        'Server Error',
-      });
-    })
-  }
-
   const deleteAisle = (aisle, row) => {
     confirm({
 			title: 'Delete this Aisle?',
@@ -126,14 +109,6 @@ const Product = ({ match }) => {
         rowId: rowId
       }
     });
-  };
-
-  const onCancel = () => {
-    setState({
-      ...state,
-      visible: false,
-    });
-    setRefresh(true);
   };
 
   return (

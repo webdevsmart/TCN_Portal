@@ -34,7 +34,6 @@ const CabinetLayout = ({ machineID }) => {
     .then( res => {
       if ( res.data.status === 'success' ) {
         form.setFieldsValue( res.data.data );
-        
       } else {
         notification["warning"]({
           message: 'Warning',
@@ -50,40 +49,11 @@ const CabinetLayout = ({ machineID }) => {
         'Server Error',
       });
     })
-  }
+  };
 
-  const getPlanogram = () => {
-    Axios.post('/api/machine/planogram/getPlanogram', { machineId: machineID })
-    .then( res => {
-      if (res.data.status === 'success') {
-        if (res.data.data !== null) {
-          console.log(res.data.data)
-          setState({
-            ...state,
-            planogram: res.data.data
-          })
-        }
-      } else {
-        notification["warning"]({
-          message: 'Warning',
-          description: 
-          res.data.message,
-        });  
-      }
-    }) 
-    .catch( err => {
-      notification["warning"]({
-        message: 'Warning',
-        description: 
-        'Server Error',
-      });
-    })
-  }
-
-  useEffect(() => {
+  useEffect( () => {
     getCabinetLayoutData();
-    getPlanogram();
-  }, []);
+  }, [getCabinetLayoutData]);
 
   const handleSubmit = values => {
     Axios.post('/api/machine/detail/setCabinetLayout', { machineId : machineID, data: values })

@@ -1,9 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom'
-import { Row, Col, Space, Input, Select, DatePicker, notification } from 'antd';
+import { Row, Col, Select, DatePicker, notification } from 'antd';
 import moment from 'moment';
-import { BasicFormWrapper } from '../../styled';
 import { Cards } from '../../../components/cards/frame/cards-frame';
 import { setDashBoardFilter } from '../../../redux/filter/actionCreator';
 import { FilterStyle } from '../style';
@@ -27,7 +26,7 @@ const FilterBar = ({ paymentType }) => {
   useEffect(() => {
     Axios.get("/api/dashboard/getSiteIDs")
     .then( res => {
-      if ( res.data.status == 'success' ) {
+      if ( res.data.status === 'success' ) {
         setSiteList( res.data.data )
       } else {
         notification['warning']({
@@ -44,10 +43,6 @@ const FilterBar = ({ paymentType }) => {
           "Server Error!"
       })
     });
-    if ( location.pathname == '/sale/card' && filter.paymentType  ) {
-
-    }
-    // filter.paymentType = 'all';
   }, []);
 
   useEffect(() => {
@@ -55,25 +50,23 @@ const FilterBar = ({ paymentType }) => {
   }, [filter.date]);
 
   // change the filter values on the only homepage
-  if (location.pathname == '/') {
-    useEffect(() => {
-      if ( siteList.length > 0 && filter.siteID.length === 0 ) {
-        filter.siteID = []; 
-        siteList.map( item => {
-          filter.siteID.push(item)
-        });
-        setState({
-          ...state,
-          siteID: filter.siteID
-        });
-      }
-    }, [ siteList ]);
-  }
+  useEffect(() => {
+    if ( siteList.length > 0 && filter.siteID.length === 0 && location.pathname === '/' ) {
+      filter.siteID = []; 
+      siteList.map( item => {
+        filter.siteID.push(item)
+      });
+      setState({
+        ...state,
+        siteID: filter.siteID
+      });
+    }
+  }, [ siteList, location.pathname ]);
 
   const onSearchProduct = ( keyword ) => {
     Axios.post("/api/dashboard/getProductList", { keyword })
     .then( res => {
-      if ( res.data.status == 'success' ) {
+      if ( res.data.status === 'success' ) {
         setProductList(res.data.data);
       } else {
         notification['warning']({
@@ -116,7 +109,7 @@ const FilterBar = ({ paymentType }) => {
   return (
     <>
       <FilterStyle>
-        <Cards headless>
+        
           <Row gutter="25">
             <Col md={5} sm={12} xs={24}>
               <span>Site Id: </span>
@@ -127,7 +120,7 @@ const FilterBar = ({ paymentType }) => {
                 optionLabelProp="label"
                 onChange={values => {
                   if (values && values.length && values.includes("all")) {
-                    if (filter.siteID.length == siteList.length) {
+                    if (filter.siteID.length === siteList.length) {
                       filter.siteID = [];
                     } else {
                       filter.siteID = [];
@@ -229,7 +222,6 @@ const FilterBar = ({ paymentType }) => {
               />
             </Col>
           </Row>
-        </Cards>
       </FilterStyle>
     </>
   );

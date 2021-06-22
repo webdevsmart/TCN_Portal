@@ -226,15 +226,6 @@ const getSiteIDs = async (req, res) => {
 }
 
 const getTodayData = async (req, res) => {
-    todayStart = new Date('2021-06-04');
-    todayStart.setHours(0, 0, 0, 0)
-    todayEnd = new Date('2021-06-04');
-    todayEnd.setHours(23, 59, 59, 999)
-    yesterdayStart = new Date(moment().subtract(1, 'days'));
-    yesterdayStart.setHours(0, 0, 0, 0)
-    yesterdayEnd = new Date(moment().subtract(1, 'days'));
-    yesterdayEnd.setHours(23, 59, 59, 999)
-
     let retData = {
         transactions: {
             totalCount: 0,
@@ -249,9 +240,11 @@ const getTodayData = async (req, res) => {
             currentRate: 0
         }
     }
-    const siteID = req.body.siteID;
-    const productID = req.body.productID;
-    const paymentType = req.body.paymentType;
+    const siteID = req.body.filter.siteID;
+    const productID = req.body.filter.productID;
+    const paymentType = req.body.filter.paymentType;
+    const startDate = new Date(req.body.filter.date[0]);
+    const endDate = new Date(req.body.filter.date[1]);
     
     let condition = {};
     condition["$and"] = [];
@@ -278,8 +271,8 @@ const getTodayData = async (req, res) => {
     }
     // get total transaction count
     condition['time'] = {
-        $gte: todayStart,
-        $lte: todayEnd
+        $gte: startDate,
+        $lte: endDate
     };
     if ( paymentType == 'CARD' || paymentType == 'CASH' ) {
         condition['type'] = paymentType;
@@ -290,16 +283,16 @@ const getTodayData = async (req, res) => {
     retData.transactions.currentRate = retData.transactions.totalCount == 0 ? 0 : Math.round((retData.transactions.successCount / retData.transactions.totalCount) * 100)
     
     // get success transaction count
-    condition['time'] = {
-        $gte: yesterdayStart,
-        $lte: yesterdayEnd
-    }
-    delete condition.status;
-    yesterdayTotalCount = await Transaction.countDocuments(condition)
-    condition['status'] = 'success'
-    yesterdaySuccessCount = await Transaction.countDocuments(condition)
-    // calculate yesterdays rate
-    retData.transactions.lastRate = yesterdayTotalCount === 0 ? 0 : Math.round((yesterdaySuccessCount / yesterdayTotalCount) * 100)
+    // condition['time'] = {
+    //     $gte: yesterdayStart,
+    //     $lte: yesterdayEnd
+    // }
+    // delete condition.status;
+    // yesterdayTotalCount = await Transaction.countDocuments(condition)
+    // condition['status'] = 'success'
+    // yesterdaySuccessCount = await Transaction.countDocuments(condition)
+    // // calculate yesterdays rate
+    // retData.transactions.lastRate = yesterdayTotalCount === 0 ? 0 : Math.round((yesterdaySuccessCount / yesterdayTotalCount) * 100)
 
     // get card Rate
     // delete condition.type;
@@ -307,8 +300,8 @@ const getTodayData = async (req, res) => {
         condition['type'] = paymentType;
     } 
     condition['time'] = {
-        $gte: todayStart,
-        $lte: todayEnd
+        $gte: startDate,
+        $lte: endDate
     };
     let totalPrice = await Transaction.aggregate([
         {
@@ -344,42 +337,42 @@ const getTodayData = async (req, res) => {
     ]);
     retData.cardRate.cardPrice = cardPrice.length > 0 ? Utility.numberWithCommas(Math.round(cardPrice[0].sum) / 100) : 0;
     retData.cardRate.currentRate = (totalPrice.length == 0 || cardPrice == 0) ? 0 : (totalPrice[0].sum == 0 ? 0 : Math.round((cardPrice[0].sum / totalPrice[0].sum) * 100));
-    condition['time'] = {
-        $gte: yesterdayStart,
-        $lte: yesterdayEnd
-    };
-    // delete condition.type;
-    delete condition.subType;
-    totalPrice = await Transaction.aggregate([
-        {
-            $match: condition
-        },
-        {
-            $group : {
-                _id : null, 
-                sum : {$sum : '$product.price'}
-            }   
-        }
-    ]);
-    if ( paymentType == 'CARD') {
-        condition['subType'] = 'MASTERCARD';
-    } else if ( paymentType == 'CASH') {
-        condition['subType'] = 'COIN';
-    } else {
-        condition['type'] = 'CARD';
-    }
-    cardPrice = await Transaction.aggregate([
-        {
-            $match: condition
-        },
-        {
-            $group : {
-                _id : null, 
-                sum : {$sum : '$product.price'}
-            }   
-        }
-    ]);
-    retData.cardRate.lastRate = (totalPrice.length == 0 || cardPrice.length == 0) ? 0 : (totalPrice[0].sum === 0 ? 0 : Math.round( ( cardPrice[0].sum / totalPrice[0].sum) * 100 ));
+    // condition['time'] = {
+    //     $gte: yesterdayStart,
+    //     $lte: yesterdayEnd
+    // };
+    // // delete condition.type;
+    // delete condition.subType;
+    // totalPrice = await Transaction.aggregate([
+    //     {
+    //         $match: condition
+    //     },
+    //     {
+    //         $group : {
+    //             _id : null, 
+    //             sum : {$sum : '$product.price'}
+    //         }   
+    //     }
+    // ]);
+    // if ( paymentType == 'CARD') {
+    //     condition['subType'] = 'MASTERCARD';
+    // } else if ( paymentType == 'CASH') {
+    //     condition['subType'] = 'COIN';
+    // } else {
+    //     condition['type'] = 'CARD';
+    // }
+    // cardPrice = await Transaction.aggregate([
+    //     {
+    //         $match: condition
+    //     },
+    //     {
+    //         $group : {
+    //             _id : null, 
+    //             sum : {$sum : '$product.price'}
+    //         }   
+    //     }
+    // ]);
+    // retData.cardRate.lastRate = (totalPrice.length == 0 || cardPrice.length == 0) ? 0 : (totalPrice[0].sum === 0 ? 0 : Math.round( ( cardPrice[0].sum / totalPrice[0].sum) * 100 ));
     // 
 
     res.json({status : "success", data: retData})

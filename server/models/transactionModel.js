@@ -40,7 +40,7 @@ const transactionSchema = mongoose.Schema({
             unique: true,
             ref: 'product'
         },
-        aisleNum: Number,
+        aisleNum: String,
         price: Number
     },
     price: {
@@ -49,6 +49,7 @@ const transactionSchema = mongoose.Schema({
     },
     fee: {
         type: Number,
+        default: 0
     },
     refund: {
         type: Number,
@@ -58,11 +59,18 @@ const transactionSchema = mongoose.Schema({
         required: true,
     },
     tubeLevelBefore: {
-        type: Number
+        type: String
     },
     tubeLevelAfter: {
+        type: String
+    },
+    startLineNumber: Number,
+    endLineNumber: Number,
+    preAuth: {
         type: Number
-    }
+    },
+    cashBoxCoins: [],
+    routedCoins: []
 });
 
 const transaction = mongoose.model('transaction', transactionSchema);

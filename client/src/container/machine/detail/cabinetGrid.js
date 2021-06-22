@@ -27,34 +27,34 @@ const CabinetGrid = ({ machineId, refreshGrid, setRefreshGrid }) => {
   const [refresh, setRefresh] = useState(refreshGrid)
   const { visible, gridData, visibleRowHeightModal } = state;
 
-  const getGridData = () => {
-    Axios.post('/api/machine/planogram/getPlanogram', { machineId })
-    .then( res => {
-      if (res.data.status === 'success') {
-        if (res.data.data !== null) {
-          setState({
-            ...state,
-            gridData: res.data.data
-          })
+  
+  useEffect(() => {
+    const getGridData = () => {
+      Axios.post('/api/machine/planogram/getPlanogram', { machineId })
+      .then( res => {
+        if (res.data.status === 'success') {
+          if (res.data.data !== null) {
+            setState({
+              ...state,
+              gridData: res.data.data
+            })
+          }
+        } else {
+          notification["warning"]({
+            message: 'Warning',
+            description: 
+            res.data.message,
+          });  
         }
-      } else {
+      }) 
+      .catch( err => {
         notification["warning"]({
           message: 'Warning',
           description: 
-          res.data.message,
-        });  
-      }
-    }) 
-    .catch( err => {
-      notification["warning"]({
-        message: 'Warning',
-        description: 
-        'Server Error',
-      });
-    })
-  }
-
-  useEffect(() => {
+          'Server Error',
+        });
+      })
+    }
     getGridData();
     setRefresh(false);
     setRefreshGrid(false);

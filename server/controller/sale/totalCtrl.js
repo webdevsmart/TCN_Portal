@@ -1,4 +1,7 @@
 const Transaction = require('../../models/transactionModel.js');
+const fs = require("fs");
+const readline = require('readline');
+const { LOG_FILE_PATH } = require('../../constants');
 
 const getTransactionList = async ( req, res ) => {
     let retData = {
@@ -71,4 +74,29 @@ const getTransactionList = async ( req, res ) => {
     res.json({status : "success", data: retData})
 }
 
-module.exports = { getTransactionList };
+const getTransactionDetail = async ( req, res ) => {
+    console.log(req.body.transactionId)
+    transaction = await Transaction.findById(req.body.transactionId);
+    console.log(transaction.startLineNumber + "-" + transaction.endLineNumber)
+    let index = 0;
+    const path = LOG_FILE_PATH + transaction.machineUID;
+    const fileName = "Logs.txt";
+    const fileStream = fs.createReadStream(path + "/" + fileName);
+    const rl = readline.createInterface({
+        input: fileStream,
+        crlfDelay: Infinity
+    });
+    let retData = "";
+    for await (const line of rl) {
+        index += 1;
+        if ( index >= transaction.startLineNumber && index <= transaction.endLineNumber ) {
+            retData += line + "\n";
+        }
+        if ( index > transaction.endLineNumber ) {
+            break;
+        }
+    }
+    res.json({status : "success", data: retData})
+}
+
+module.exports = { getTransactionList, getTransactionDetail };

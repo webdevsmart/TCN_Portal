@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Spin } from 'antd';
 import { Doughnut } from 'react-chartjs-2';
 import { useHistory } from 'react-router';

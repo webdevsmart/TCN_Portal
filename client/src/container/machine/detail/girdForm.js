@@ -27,43 +27,43 @@ const EditAisle = ({ visible, onCancel, selectedAisle }) => {
   const [selectedSameAisles, setSelectedSameAisles] = useState([]);
   const [selectedSameRows, setSelectedSameRows] = useState([]);
 
-  const getAisle = () => {
-    Axios.post('/api/machine/detail/getAisle', { selectedAisle })
-    .then( res => {
-      if (res.data.status === 'success') {
-        form.setFieldsValue(res.data.data);
-        setSameRowAisles(res.data.sameRowAisles)
-        setRowList(res.data.rowList);
-        if ( res.data.data.minWidth !== undefined ) {
-          let minWidth = res.data.data.minWidth.split(" ");
-          form.setFieldsValue({ minWidth: minWidth[0]});
-          form.setFieldsValue({ minWidthUnit: minWidth[1]});
-          
-        } else {
-          form.setFieldsValue({ minWidthUnit: LENGTH_UNIT[0]});
-        }
-        if ( res.data.data.minWeight !== undefined ) {
-          let minWeight = res.data.data.minWeight.split(" ");
-          form.setFieldsValue({ minWeight: minWeight[0]});
-          form.setFieldsValue({ minWeightUnit: minWeight[1]});
-        } else {
-          form.setFieldsValue({ minWeightUnit: WEIGHT_UNIT[0]});
-        }
-      }
-    })
-    .catch( err => {
-      notification["warning"]({
-        message: 'Warning',
-        description: 
-        'Server Error',
-      });
-    });
-  }
-
+  
   useEffect(() => {
+    const getAisle = () => {
+      Axios.post('/api/machine/detail/getAisle', { selectedAisle })
+      .then( res => {
+        if (res.data.status === 'success') {
+          form.setFieldsValue(res.data.data);
+          setSameRowAisles(res.data.sameRowAisles)
+          setRowList(res.data.rowList);
+          if ( res.data.data.minWidth !== undefined ) {
+            let minWidth = res.data.data.minWidth.split(" ");
+            form.setFieldsValue({ minWidth: minWidth[0]});
+            form.setFieldsValue({ minWidthUnit: minWidth[1]});
+            
+          } else {
+            form.setFieldsValue({ minWidthUnit: LENGTH_UNIT[0]});
+          }
+          if ( res.data.data.minWeight !== undefined ) {
+            let minWeight = res.data.data.minWeight.split(" ");
+            form.setFieldsValue({ minWeight: minWeight[0]});
+            form.setFieldsValue({ minWeightUnit: minWeight[1]});
+          } else {
+            form.setFieldsValue({ minWeightUnit: WEIGHT_UNIT[0]});
+          }
+        }
+      })
+      .catch( err => {
+        notification["warning"]({
+          message: 'Warning',
+          description: 
+          'Server Error',
+        });
+      });
+    }
     getAisle();
     setSelectedSameAisles([]);
-  }, [ selectedAisle ]);
+  }, [ selectedAisle, form ]);
   
   useEffect((state) => {
     let unmounted = false;

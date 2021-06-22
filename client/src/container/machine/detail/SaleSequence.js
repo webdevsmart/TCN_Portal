@@ -40,32 +40,31 @@ const SaleSequence = ({ machineID }) => {
     }]
   );
 
-  const getSequenceData = () => {
-    Axios.post("/api/machine/planogram/getSequenceData", { machineId: machineID })
-    .then( res => {
-      if ( res.data.status === 'success' ) {
-        setState(res.data.data);
-        // console.log(res.data.data)
-      } else {
+  
+  useEffect((state) => {
+    const getSequenceData = () => {
+      Axios.post("/api/machine/planogram/getSequenceData", { machineId: machineID })
+      .then( res => {
+        if ( res.data.status === 'success' ) {
+          setState(res.data.data);
+        } else {
+          notification["warning"]({
+            message: 'Warning',
+            description: 
+            'Server Error',
+          });
+        }
+      })
+      .catch( err => {
         notification["warning"]({
           message: 'Warning',
           description: 
           'Server Error',
         });
-      }
-    })
-    .catch( err => {
-      notification["warning"]({
-        message: 'Warning',
-        description: 
-        'Server Error',
-      });
-    })
-  }
-
-  useEffect(() => {
+      })
+    }
     getSequenceData();
-  }, []);
+  }, [machineID]);
 
   const onDragEnd = (result) => {
     const { source, destination } = result;

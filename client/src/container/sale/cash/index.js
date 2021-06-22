@@ -24,7 +24,7 @@ const TotalSale = () => {
     };
   });
   useEffect(() => {
-    if (filter.paymentType && filter.paymentType.includes('all') || !paymentType.some(item => item.key === filter.paymentType[0]) ) {
+    if (filter.paymentType && (filter.paymentType.includes('all') || !paymentType.some(item => item.key === filter.paymentType[0])) ) {
       filter.paymentType = 'CASH';
       dispatch(setDashBoardFilter(filter));
     }
@@ -38,7 +38,9 @@ const TotalSale = () => {
       <Main>
         <Row gutter={25} justify="center">
           <Col xxl={24} md={24} sm={24} xs={24}>
-            <FilterBar paymentType={paymentType} />
+            <Cards headless>
+              <FilterBar paymentType={paymentType} />
+            </Cards>
           </Col>
           <Cards title="Transaction Detail">
             <Col xs={24}>

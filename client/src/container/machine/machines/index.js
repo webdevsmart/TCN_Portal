@@ -27,7 +27,7 @@ const Product = () => {
     length: 6,
     keyword: ''
   });
-  const [refresh, setRefresh] = useState(true);
+  // const [refresh, setRefresh] = useState(true);
   
   const { visible } = state;
   const { machines } = state;
@@ -61,7 +61,7 @@ const Product = () => {
       ...state,
       visible: false,
     });
-    setRefresh(true);
+    // setRefresh(true);
   };
 
   const onChange = (current, pageSize) => {

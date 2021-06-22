@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Progress, notification } from 'antd';
-import FeatherIcon from 'feather-icons-react';
+import { Progress, notification, Dropdown } from 'antd';
 import { useSelector } from 'react-redux';
 import { OverviewCard } from '../style';
 import { Cards } from '../../../components/cards/frame/cards-frame';
@@ -19,19 +18,17 @@ const DailyOverview = () => {
     transactions: {
       totalCount: 0,
       successCount: 0,
-      lastRate: 0,
       currentRate: 0,
     },
     cardRate: {
       totalPrice: 0,
       cardPrice: 0,
-      lastRate: 0,
       currentRate: 0,
     }
   });
 
   const getTodayData = () => {
-    Axios.post('/api/dashboard/getTodayData', { siteID: filter.siteID, productID: filter.productID, paymentType: filter.paymentType })
+    Axios.post('/api/dashboard/getTodayData', { filter })
     .then( res => {
       if ( res.data.status === 'success' ) {
         setstate(res.data.data)
@@ -54,21 +51,27 @@ const DailyOverview = () => {
 
   useEffect(() => {
     getTodayData();
-  }, [ filter.siteID, filter.productID, filter.paymentType ]);
+  }, [ filter.date, filter.siteID, filter.productID, filter.paymentType ]);
 
   return (
     <OverviewCard>
-      <div className="d-flex align-items-center justify-content-between overview-head">
-        <Heading as="h4">Today Transaction Overview</Heading>
+      <div className="d-flex align-items-center justify-content-between overview-head" style={{ marginBottom: '30px' }}>
+        <Heading as="h4">Activity Transaction Overview</Heading>
       </div>
       <div className="overview-box">
         <Cards headless>
           <div className="d-flex align-items-center justify-content-between">
             <div className="overview-box-single">
-              <Heading as="h2" className="color-primary">
-                { state.transactions.successCount }/ { state.transactions.totalCount - state.transactions.successCount }
+              <Heading as="h2" className="color-success">
+                { state.transactions.successCount }
               </Heading>
-              <p>Successful / Failed Vends</p>
+              <p>Successful</p>
+            </div>
+            <div className="overview-box-single">
+              <Heading as="h2" className="color-error">
+                { state.transactions.totalCount - state.transactions.successCount }
+              </Heading>
+              <p>Failed Vends</p>
             </div>
             <div className="overview-box-single text-right">
               <Heading as="h2">{ state.transactions.totalCount }</Heading>
@@ -76,12 +79,10 @@ const DailyOverview = () => {
             </div>
           </div>
 
-          <Progress percent={ state.transactions.currentRate } showInfo={false} className="progress-primary" />
-
+          <Progress percent={ state.transactions.currentRate } showInfo={false} className="progress-success"/>
           <p>
-            <span className={(state.transactions.currentRate - state.transactions.lastRate) > 0 ? "growth-upward" : "growth-downward"}>
-              <FeatherIcon icon={(state.transactions.currentRate - state.transactions.lastRate) > 0 ? "arrow-up" : "arrow-down"} size={14} />
-              { Math.abs(state.transactions.currentRate - state.transactions.lastRate) }% <span>Since yesterday</span>
+            <span className={state.transactions.currentRate > 50 ? "growth-upward" : "growth-downward"}>
+              Success Vends Rate
             </span>
             <span className="overview-box-percentage" style={{ float: !rtl ? 'right' : 'left' }}>
               { state.transactions.currentRate }%
@@ -97,21 +98,40 @@ const DailyOverview = () => {
               <Heading as="h2" className="color-info">
                 ${ state.cardRate.cardPrice }
               </Heading>
-              <p>{filter.paymentType === 'CARD' ? 'Mastercard' : (filter.paymentType === 'CASH' ? 'Coin' : 'Card')} Sales</p>
+              <p>
+                {filter.paymentType === 'CARD' ? 'Mastercard' : (filter.paymentType === 'CASH' ? 'Coin' : 'Card')} Sales
+              </p>
+            </div>
+            <div className="overview-box-single">
+              <Heading as="h2" className="color-warning">
+                $ { Math.round((state.cardRate.totalPrice - state.cardRate.cardPrice) * 100) / 100 }
+              </Heading>
+              <p>
+                {filter.paymentType === 'CARD' ? 'Visa' : (filter.paymentType === 'CASH' ? 'Bill' : 'Cash')} Sales
+              </p>
             </div>
             <div className="overview-box-single text-right">
               <Heading as="h2">${ state.cardRate.totalPrice }</Heading>
               <p>{filter.paymentType === 'CARD' ? 'Card' : (filter.paymentType === 'CASH' ? 'Cash' : 'Total')} Sales</p>
             </div>
           </div>
+          
           <Progress percent={ state.cardRate.currentRate } showInfo={false} />
           <p>
-            <span className={(state.cardRate.currentRate - state.cardRate.lastRate) > 0 ? "growth-upward" : "growth-downward"}>
-              <FeatherIcon icon={(state.cardRate.currentRate - state.cardRate.lastRate) > 0 ? "arrow-up" : "arrow-down"} size={ 14 } />
-              { Math.abs(state.cardRate.currentRate - state.cardRate.lastRate) }% <span>Since yesterday</span>
+            <span className="color-info">
+            {filter.paymentType === 'CARD' ? 'Mastercard' : (filter.paymentType === 'CASH' ? 'Coin' : 'Card')} Sales Rate
             </span>
             <span className="overview-box-percentage" style={{ float: !rtl ? 'right' : 'left' }}>
               { state.cardRate.currentRate }%
+            </span>
+          </p>
+          <Progress percent={ 100 - state.cardRate.currentRate } showInfo={false} />
+          <p>
+            <span className="color-warning">
+            {filter.paymentType === 'CARD' ? 'Visa' : (filter.paymentType === 'CASH' ? 'Bill' : 'Cash')} Sales Rate
+            </span>
+            <span className="overview-box-percentage" style={{ float: !rtl ? 'right' : 'left' }}>
+              { 100 - state.cardRate.currentRate }%
             </span>
           </p>
         </Cards>

@@ -29,6 +29,7 @@ const YES = 'Yes';
 const NO = 'No'; 
 
 const IMAGE_UPLOAD_URL = '/uploads/images/';
+const LOG_FILE_PATH = "D:/Workspace/0514_vending_portal/vgc2_backup/";
 
 module.exports = { 
     ROLE_MEMBER, 
@@ -43,5 +44,6 @@ module.exports = {
     IMAGE_UPLOAD_URL,
     LENGTH_UNIT,
     WEIGHT_UNIT,
-    PRICE_UNIT
+    PRICE_UNIT,
+    LOG_FILE_PATH
 };

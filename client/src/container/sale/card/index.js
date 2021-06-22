@@ -37,7 +37,9 @@ const CardSale = () => {
       <Main>
         <Row gutter={25} justify="center">
           <Col xxl={24} md={24} sm={24} xs={24}>
-            <FilterBar paymentType={paymentType}  />
+            <Cards headless>
+              <FilterBar paymentType={paymentType} />
+            </Cards>
           </Col>
           <Cards title="Transaction Detail">
             <Row>

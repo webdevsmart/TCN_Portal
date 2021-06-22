@@ -36,7 +36,9 @@ const Dashboard = () => {
       <Main>
         <Row gutter={25} justify="center">
           <Col xxl={24} md={24} sm={24} xs={24}>
-            <FilterBar />
+            <Cards headless>
+              <FilterBar />
+            </Cards>
           </Col>
           <Col xxl={8} xl={10} lg={12} xs={24}>
             <Suspense

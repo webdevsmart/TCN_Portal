@@ -23,10 +23,8 @@ const CreateCategory = ({ visible, onCancel, selectedAisle }) => {
     
   });
 
-  const { selectedCategory } = state;
   const [categoryList, setCategoryList] = useState([]);
   const [productList, setProductList] = useState([]);
-  const [selectedProducts, setSeletedProducts] = useState([]);
   const [fileState, setFileState] = useState({
     loading: false,
     previewImageUrl: '',

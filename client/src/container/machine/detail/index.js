@@ -16,7 +16,7 @@ const MachineDetail = (data) => {
   const machineID = data.match.params.id;
   const [state, setState] = useState({
     current: 'mail',
-    pageType: 'SaleSequence'
+    pageType: 'Basic'
   });
 
   const { pageType } = state;

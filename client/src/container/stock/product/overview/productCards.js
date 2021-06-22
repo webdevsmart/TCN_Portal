@@ -1,8 +1,7 @@
 import React from 'react';
-import { Rate, Modal, notification } from 'antd';
+import { Modal, notification } from 'antd';
 import FeatherIcon from 'feather-icons-react';
 import { useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Axios from 'axios';
 

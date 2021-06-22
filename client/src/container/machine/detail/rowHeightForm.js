@@ -19,36 +19,36 @@ const RowHeightForm = ({ visible, onCancel, selectedRow }) => {
     modalType: 'primary',
   });
 
-  const getRowConfig = () => {
-    Axios.post('/api/machine/detail/getRowConfig', { selectedRow })
-    .then( res => {
-      if ( res.data.status === 'success' ) {
-        form.setFieldsValue(res.data.data)
-        if ( res.data.data.maxHeight !== undefined ) {
-          let maxHeight = res.data.data.maxHeight.split(" ");
-          form.setFieldsValue({ maxHeight: maxHeight[0]});
-          form.setFieldsValue({ maxHeightUnit: maxHeight[1]});
+  
+  useEffect((state) => {
+    const getRowConfig = () => {
+      Axios.post('/api/machine/detail/getRowConfig', { selectedRow })
+      .then( res => {
+        if ( res.data.status === 'success' ) {
+          form.setFieldsValue(res.data.data)
+          if ( res.data.data.maxHeight !== undefined ) {
+            let maxHeight = res.data.data.maxHeight.split(" ");
+            form.setFieldsValue({ maxHeight: maxHeight[0]});
+            form.setFieldsValue({ maxHeightUnit: maxHeight[1]});
+          } else {
+            form.setFieldsValue({ maxHeightUnit: LENGTH_UNIT[0]});
+          }
         } else {
-          form.setFieldsValue({ maxHeightUnit: LENGTH_UNIT[0]});
+          notification["warning"]({
+            message: 'Warning',
+            description: 
+            'Server Error',
+          });
         }
-      } else {
+      })
+      .catch( err => {
         notification["warning"]({
           message: 'Warning',
           description: 
           'Server Error',
         });
-      }
-    })
-    .catch( err => {
-      notification["warning"]({
-        message: 'Warning',
-        description: 
-        'Server Error',
       });
-    });
-  }
-
-  useEffect((state) => {
+    }
     if ( selectedRow.rowId !== undefined ) {
       getRowConfig();
     }
@@ -62,7 +62,7 @@ const RowHeightForm = ({ visible, onCancel, selectedRow }) => {
     return () => {
       unmounted = true;
     };
-  }, [visible]);
+  }, [visible, form]);
 
   const handleSubmit = values => {
     values.maxHeight = values.maxHeight + " " + values.maxHeightUnit;
