@@ -29,7 +29,8 @@ const YES = 'Yes';
 const NO = 'No'; 
 
 const IMAGE_UPLOAD_URL = '/uploads/images/';
-const LOG_FILE_PATH = "D:/Workspace/0514_vending_portal/vgc2_backup/";
+// const LOG_FILE_PATH = "D:/Workspace/0514_vending_portal/vgc2_backup/";
+const LOG_FILE_PATH = "/home/vending/vgc2_backup/";
 
 module.exports = { 
     ROLE_MEMBER, 
