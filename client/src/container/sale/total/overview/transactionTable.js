@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import { useSelector } from 'react-redux';
-import { Badge, Table, notification } from 'antd';
+import { Badge, Table } from 'antd';
 import Axios from 'axios';
 import FeatherIcon from 'feather-icons-react';
 import { format } from 'date-fns';

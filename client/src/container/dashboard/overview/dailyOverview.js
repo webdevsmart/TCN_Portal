@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Progress, notification, Dropdown } from 'antd';
 import { useSelector } from 'react-redux';
 import { OverviewCard } from '../style';
+import Axios from 'axios';
 import { Cards } from '../../../components/cards/frame/cards-frame';
 import Heading from '../../../components/heading/heading';
-import Axios from 'axios';
+import { numberWithCommas } from '../../../utility/utility';
 
 const DailyOverview = () => {
   const filter = useSelector(state => state.filterDashboard.data)
@@ -96,22 +97,22 @@ const DailyOverview = () => {
           <div className="d-flex align-items-center justify-content-between">
             <div className="overview-box-single">
               <Heading as="h2" className="color-info">
-                ${ state.cardRate.cardPrice }
+                ${ numberWithCommas(state.cardRate.cardPrice) }
               </Heading>
               <p>
-                {filter.paymentType === 'CARD' ? 'Mastercard' : (filter.paymentType === 'CASH' ? 'Coin' : 'Card')} Sales
+                {filter.paymentType === 'CARD' ? 'Mastercard' : (filter.paymentType === 'CASH' ? 'Bill' : 'Card')} Sales
               </p>
             </div>
             <div className="overview-box-single">
               <Heading as="h2" className="color-warning">
-                $ { Math.round((state.cardRate.totalPrice - state.cardRate.cardPrice) * 100) / 100 }
+                $ { numberWithCommas(Math.round((state.cardRate.totalPrice - state.cardRate.cardPrice) * 100) / 100) }
               </Heading>
               <p>
-                {filter.paymentType === 'CARD' ? 'Visa' : (filter.paymentType === 'CASH' ? 'Bill' : 'Cash')} Sales
+                {filter.paymentType === 'CARD' ? 'Visa' : (filter.paymentType === 'CASH' ? 'Coin' : 'Cash')} Sales
               </p>
             </div>
             <div className="overview-box-single text-right">
-              <Heading as="h2">${ state.cardRate.totalPrice }</Heading>
+              <Heading as="h2">${ numberWithCommas(state.cardRate.totalPrice) }</Heading>
               <p>{filter.paymentType === 'CARD' ? 'Card' : (filter.paymentType === 'CASH' ? 'Cash' : 'Total')} Sales</p>
             </div>
           </div>
@@ -119,7 +120,7 @@ const DailyOverview = () => {
           <Progress percent={ state.cardRate.currentRate } showInfo={false} />
           <p>
             <span className="color-info">
-            {filter.paymentType === 'CARD' ? 'Mastercard' : (filter.paymentType === 'CASH' ? 'Coin' : 'Card')} Sales Rate
+            {filter.paymentType === 'CARD' ? 'Mastercard' : (filter.paymentType === 'CASH' ? 'Bill' : 'Card')} Sales Rate
             </span>
             <span className="overview-box-percentage" style={{ float: !rtl ? 'right' : 'left' }}>
               { state.cardRate.currentRate }%
@@ -128,7 +129,7 @@ const DailyOverview = () => {
           <Progress percent={ 100 - state.cardRate.currentRate } showInfo={false} />
           <p>
             <span className="color-warning">
-            {filter.paymentType === 'CARD' ? 'Visa' : (filter.paymentType === 'CASH' ? 'Bill' : 'Cash')} Sales Rate
+            {filter.paymentType === 'CARD' ? 'Visa' : (filter.paymentType === 'CASH' ? 'Coin' : 'Cash')} Sales Rate
             </span>
             <span className="overview-box-percentage" style={{ float: !rtl ? 'right' : 'left' }}>
               { 100 - state.cardRate.currentRate }%

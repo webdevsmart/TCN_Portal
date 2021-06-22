@@ -75,9 +75,7 @@ const getTransactionList = async ( req, res ) => {
 }
 
 const getTransactionDetail = async ( req, res ) => {
-    console.log(req.body.transactionId)
     transaction = await Transaction.findById(req.body.transactionId);
-    console.log(transaction.startLineNumber + "-" + transaction.endLineNumber)
     let index = 0;
     const path = LOG_FILE_PATH + transaction.machineUID;
     const fileName = "Logs.txt";

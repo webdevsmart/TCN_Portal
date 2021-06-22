@@ -1,4 +1,4 @@
-import React, { lazy, useEffect } from 'react';
+import React, { lazy, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Row, Col } from 'antd';
 import { PageHeader } from '../../../components/page-headers/page-headers';
@@ -9,9 +9,31 @@ import { setDashBoardFilter } from '../../../redux/filter/actionCreator';
 const FilterBar = lazy(() => import('../../dashboard/overview/searchFilterBar'));
 const TransactionTable = lazy(() => import('./overview/transactionTable'));
 const TransactionChart = lazy(() => import('../../dashboard/overview/transactionChart'));
+const TransactionDetailForm = lazy(() => import('../total/overview/transactionDetailForm'));
 
 const CardSale = () => {
   const dispatch = useDispatch();
+
+  const [state, setState] = useState({
+    visible: false,
+  });
+  const { visible } = state;
+
+  const showDetailModal = ( selectedTransaction = "" ) => {
+    setState({
+      ...state,
+      visible: true,
+      selectedTransaction: selectedTransaction,
+    });
+  };
+
+  const onCancel = () => {
+    setState({
+      ...state,
+      visible: false,
+    });
+  };  
+
   const paymentType = [
     {'key': 'CARD', 'label': 'All'},
     {'key': 'MASTERCARD', 'label': 'MasterCard'},
@@ -35,6 +57,7 @@ const CardSale = () => {
         title="Card Transaction"
       />
       <Main>
+        <TransactionDetailForm onCancel={onCancel} visible={visible} selectedTransaction={state.selectedTransaction}/>
         <Row gutter={25} justify="center">
           <Col xxl={24} md={24} sm={24} xs={24}>
             <Cards headless>
@@ -47,7 +70,7 @@ const CardSale = () => {
                 <TransactionChart />
               </Col>
               <Col xxl={24} md={24} sm={24} xs={24}>
-                <TransactionTable />
+                <TransactionTable showDetailModal={showDetailModal}/>
               </Col>
             </Row>
           </Cards>

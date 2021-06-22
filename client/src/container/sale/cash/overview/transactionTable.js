@@ -2,9 +2,12 @@ import React, {useEffect, useState} from 'react';
 import { useSelector } from 'react-redux';
 import { Badge, Table } from 'antd';
 import axios from 'axios';
+import FeatherIcon from 'feather-icons-react';
 import { format } from 'date-fns';
 
-const TransactionTable = (  ) => {
+import { Button } from '../../../../components/buttons/buttons';
+
+const TransactionTable = ( { showDetailModal } ) => {
   const { filter } = useSelector(state => {
     return {
       filter: state.filterDashboard.data
@@ -65,11 +68,27 @@ const TransactionTable = (  ) => {
       dataIndex: 'refund',
       key: 'refund',
     },
+    {
+      title: 'Tube Level Before',
+      dataIndex: 'tubeLevelBefore',
+      key: 'tubeLevelBefore',
+    },
+    {
+      title: 'Tube Level After',
+      dataIndex: 'tubeLevelAfter',
+      key: 'tubeLevelAfter',
+    },
+    {
+      title: 'Actions',
+      dataIndex: 'action',
+      key: 'action',
+      width: '90px',
+    },
   ];
 
 	// set transaction datatable datasource
   transactionList.list.map((value, index) => {
-    const {time, status, siteID, subType, product, refund } = value;
+    const { _id, time, status, siteID, subType, product, refund, tubeLevelBefore, tubeLevelAfter } = value;
     return transactionDataSource.push({
       key: index,
       time: format(new Date(time), 'yyyy-MM-dd HH:mm:ss'),
@@ -83,6 +102,17 @@ const TransactionTable = (  ) => {
 			realStatus: status,
 			realPrice: product.price,
 			refund: "$ " + (refund / 100).toFixed(2),
+      tubeLevelBefore: tubeLevelBefore,
+      tubeLevelAfter: tubeLevelAfter,
+      action: (
+        <div className="table-actions">
+          <>
+          <Button className="btn-icon" type="info" to="#" shape="circle" onClick={() => showDetailModal(_id)}>
+            <FeatherIcon icon="eye" size={16} />
+          </Button>
+          </>
+        </div>
+      ),
     });
   });
 	

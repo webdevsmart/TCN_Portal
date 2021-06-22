@@ -314,14 +314,20 @@ const getTodayData = async (req, res) => {
             }   
         }
     ]);
-    retData.cardRate.totalPrice = totalPrice.length > 0 ? Utility.numberWithCommas(Math.round(totalPrice[0].sum) / 100) : 0;
+    // retData.cardRate.totalPrice = totalPrice.length > 0 ? Utility.numberWithCommas(Math.round(totalPrice[0].sum) / 100) : 0;
+    retData.cardRate.totalPrice = totalPrice.length > 0 ? Math.round(totalPrice[0].sum) / 100 : 0;
 
     if ( paymentType == 'CARD') {
         condition['subType'] = 'MASTERCARD';
     } else if ( paymentType == 'CASH') {
-        condition['subType'] = 'COIN';
+        condition['subType'] = 'BILL';
     } else {
         condition['type'] = 'CARD';
+    }
+
+    let sumQuery = {$sum : '$product.price'};
+    if ( condition['subType'] == 'BILL' ) {
+        sumQuery = {$sum : '$billLevel'};
     }
 
     let cardPrice = await Transaction.aggregate([
@@ -331,11 +337,11 @@ const getTodayData = async (req, res) => {
         {
             $group : {
                 _id : null, 
-                sum : {$sum : '$product.price'}
+                sum : sumQuery
             }   
         }
     ]);
-    retData.cardRate.cardPrice = cardPrice.length > 0 ? Utility.numberWithCommas(Math.round(cardPrice[0].sum) / 100) : 0;
+    retData.cardRate.cardPrice = cardPrice.length > 0 ? Math.round(cardPrice[0].sum) / 100 : 0;
     retData.cardRate.currentRate = (totalPrice.length == 0 || cardPrice == 0) ? 0 : (totalPrice[0].sum == 0 ? 0 : Math.round((cardPrice[0].sum / totalPrice[0].sum) * 100));
     // condition['time'] = {
     //     $gte: yesterdayStart,

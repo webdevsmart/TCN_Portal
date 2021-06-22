@@ -6,6 +6,7 @@ import Axios from 'axios';
 import { Button } from '../../../../components/buttons/buttons';
 import { Modal } from '../../../../components/modals/antd-modals';
 import { BasicFormWrapper } from '../../../styled';
+import { AddProductForm } from '../../style';
 
 const CreateCategory = ({ visible, onCancel, setTableRefresh, selectedTransaction }) => {
   const [form] = Form.useForm();
@@ -68,36 +69,38 @@ const CreateCategory = ({ visible, onCancel, setTableRefresh, selectedTransactio
     <Modal
       destroyOnClose={true}
       type={state.modalType}
-      title="Edit Category"
+      title="Edit Log"
       visible={state.visible}
       footer={[]}
       onCancel={handleCancel}
     >
       <div className="category-modal">
-        <BasicFormWrapper>
-        <Form form={form} name="createCategory" onFinish={handleOk}>
-            <Form.Item label="Log Content:" name='log'>
-              <TextArea name="name" placeholder="" rows={20}/>
-            </Form.Item>
-            <div className="add-form-action">
-            <Form.Item>
-                <Button
-                    className="btn-cancel"
-                    size="large"
-                    onClick={() => {
-                        form.resetFields();
-                        return onCancel();
-                    }}
-                >
-                    Cancel
-                </Button>
-                <Button size="large" htmlType="submit" type="primary" raised>
-                    Save Category
-                </Button>
-            </Form.Item>
-          </div>
-        </Form>
-        </BasicFormWrapper>
+        <AddProductForm>
+          <BasicFormWrapper>
+            <Form form={form} name="createCategory" onFinish={handleOk}>
+                <Form.Item label="Log Content:" name='log'>
+                  <TextArea name="name" placeholder="" rows={20}/>
+                </Form.Item>
+                <div className="add-form-action">
+                <Form.Item>
+                    <Button
+                        className="btn-cancel"
+                        size="large"
+                        onClick={() => {
+                            form.resetFields();
+                            return onCancel();
+                        }}
+                    >
+                        Cancel
+                    </Button>
+                    <Button size="large" htmlType="submit" type="primary" raised>
+                        Save Log
+                    </Button>
+                </Form.Item>
+              </div>
+            </Form>
+          </BasicFormWrapper>
+        </AddProductForm>
       </div>
     </Modal>
   );

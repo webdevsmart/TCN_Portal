@@ -2,9 +2,12 @@ import React, {useEffect, useState} from 'react';
 import { useSelector } from 'react-redux';
 import { Badge, Table } from 'antd';
 import axios from 'axios';
+import FeatherIcon from 'feather-icons-react';
 import { format } from 'date-fns';
 
-const TransactionTable = (  ) => {
+import { Button } from '../../../../components/buttons/buttons';
+
+const TransactionTable = ( { showDetailModal } ) => {
   const { filter } = useSelector(state => {
     return {
       filter: state.filterDashboard.data
@@ -65,11 +68,17 @@ const TransactionTable = (  ) => {
       dataIndex: 'fee',
       key: 'fee',
     },
+    {
+      title: 'Actions',
+      dataIndex: 'action',
+      key: 'action',
+      width: '90px',
+    },
   ];
 
 	// set transaction datatable datasource
   transactionList.list.map((value, index) => {
-    const {time, status, siteID, subType, product, fee } = value;
+    const { _id, time, status, siteID, subType, product, fee } = value;
     return transactionDataSource.push({
       key: index,
       time: format(new Date(time), 'yyyy-MM-dd hh:mm:ss'),
@@ -83,6 +92,15 @@ const TransactionTable = (  ) => {
 			realStatus: status,
 			realPrice: product.price,
 			fee: "$ " + (fee / 100).toFixed(2),
+      action: (
+        <div className="table-actions">
+          <>
+          <Button className="btn-icon" type="info" to="#" shape="circle" onClick={() => showDetailModal(_id)}>
+            <FeatherIcon icon="eye" size={16} />
+          </Button>
+          </>
+        </div>
+      ),
     });
   });
 	
