@@ -69,14 +69,9 @@ const TransactionTable = ( { showDetailModal } ) => {
       key: 'refund',
     },
     {
-      title: 'Tube Level Before',
-      dataIndex: 'tubeLevelBefore',
-      key: 'tubeLevelBefore',
-    },
-    {
-      title: 'Tube Level After',
-      dataIndex: 'tubeLevelAfter',
-      key: 'tubeLevelAfter',
+      title: 'Tube Level Change',
+      dataIndex: 'tubeLevelChange',
+      key: 'tubeLevelChange',
     },
     {
       title: 'Actions',
@@ -89,6 +84,16 @@ const TransactionTable = ( { showDetailModal } ) => {
 	// set transaction datatable datasource
   transactionList.list.map((value, index) => {
     const { _id, time, status, siteID, subType, product, refund, tubeLevelBefore, tubeLevelAfter } = value;
+    let levelChange = ""
+    let levelBeforeArray = tubeLevelBefore.split(" ");
+    let levelAfterArray = tubeLevelAfter.split(" ");
+    levelBeforeArray.map( (item, index) => {
+      if ( item.trim() !== '' && item.trim() !== '0') {
+        let spanTagClass = item * 1 > levelAfterArray[index] * 1 ? 'color-warning' : 'color-primary';
+        levelChange += item + "/" + levelAfterArray[index] + ", ";
+      }
+    })
+    console.log(levelChange)
     return transactionDataSource.push({
       key: index,
       time: format(new Date(time), 'yyyy-MM-dd HH:mm:ss'),
@@ -102,8 +107,7 @@ const TransactionTable = ( { showDetailModal } ) => {
 			realStatus: status,
 			realPrice: product.price,
 			refund: "$ " + (refund / 100).toFixed(2),
-      tubeLevelBefore: tubeLevelBefore,
-      tubeLevelAfter: tubeLevelAfter,
+      tubeLevelChange: levelChange,
       action: (
         <div className="table-actions">
           <>
