@@ -47,5 +47,6 @@ module.exports = {
     PRICE_UNIT,
     LOG_FILE_PATH,
     PYTHON_PATH,
-    USER_ROLE
+    USER_ROLE,
+    APP_PATH
 };
