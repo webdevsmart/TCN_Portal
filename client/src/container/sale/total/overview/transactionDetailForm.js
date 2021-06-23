@@ -42,7 +42,7 @@ const CreateCategory = ({ visible, onCancel, setTableRefresh, selectedTransactio
   }
 
   useEffect((state) => {
-    if (selectedTransaction !== '') {
+    if (selectedTransaction !== undefined) {
       getTransactionLog()
     }
 

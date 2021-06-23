@@ -81,9 +81,20 @@ const TransactionTable = ( { showDetailModal } ) => {
     },
   ];
 
+  console.log(filter.paymentType)
+  if ( filter.paymentType === 'BILL' ) {
+    columns.splice( 5, 0, 
+      {
+        title: 'BillLevel',
+        dataIndex: 'billLevel',
+        key: 'billLevel',
+      }
+    )
+  }
+
 	// set transaction datatable datasource
   transactionList.list.map((value, index) => {
-    const { _id, time, status, siteID, subType, product, refund, tubeLevelBefore, tubeLevelAfter } = value;
+    const { _id, time, status, siteID, subType, product, refund, tubeLevelBefore, tubeLevelAfter, billLevel } = value;
     let levelChange = ""
     let levelBeforeArray = tubeLevelBefore.split(" ");
     let levelAfterArray = tubeLevelAfter.split(" ");
@@ -93,7 +104,6 @@ const TransactionTable = ( { showDetailModal } ) => {
         levelChange += item + "/" + levelAfterArray[index] + ", ";
       }
     })
-    console.log(levelChange)
     return transactionDataSource.push({
       key: index,
       time: format(new Date(time), 'yyyy-MM-dd HH:mm:ss'),
@@ -117,6 +127,7 @@ const TransactionTable = ( { showDetailModal } ) => {
           </>
         </div>
       ),
+      billLevel:"$ " + (billLevel / 100).toFixed(2)
     });
   });
 	
