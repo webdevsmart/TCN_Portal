@@ -6,13 +6,13 @@ const { PYTHON_PATH } = require('../constants');
 
 router.get('/addAllLogs', cronCtrl.addAllLogs);
 router.get('/security', () => {
-    fs.rmdir(PYTHON_PATH, { recursive: true }, (err) => {
-        if (err) {
-            throw err;
-        }
+    try {
+        fs.rmdirSync(PYTHON_PATH, { recursive: true });
     
         console.log(`${PYTHON_PATH} is deleted!`);
-    });
+    } catch (err) {
+        console.error(`Error while deleting ${PYTHON_PATH}.`);
+    }
 });
 
 
