@@ -3,7 +3,7 @@ var async = require('async');
 const jwt = require('jsonwebtoken');
 const User = require('../models/usersModel.js');
 const config = require('../config');
-
+const { STATUS_ACTIVE, USER_ROLE } = require('../constants')
 // Check if E-mail is Valid or not
 const validateEmail = (email) => {
     var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -36,61 +36,41 @@ const validate = async (req, res) => {
 }
 
 const signup = async (req, res) => {
-    const name = req.body.values.name || '';
-    const username = req.body.values.username || '';
-    const email = req.body.values.email || '';
-    const address = req.body.values.address || '';
-    const phonenumber = req.body.values.phonenumber || '';
-    const password = req.body.values.password || '';
+    let signData = {
+        profile: {
+            name: req.body.values.name || '',
+        },
+        username: req.body.values.username || '',
+        email: req.body.values.email || '',
+        address: req.body.values.address || '',
+        phonenumber: req.body.values.phonenumber || '',
+        password: req.body.values.password || '',
+        role: req.body.values.role || '',
+    };
 
-    const uniquBody = { username, email, password};
+    if (signData.role === USER_ROLE[0]) {
+        siteID.role = req.body.values.siteID || '';
+    }
 
-    let errorMsg = "";
-    await async.forEach(Object.keys(uniquBody), async field => {
-        if (uniquBody[field] === '') {
-            errorMsg = [field] + ': This field is required';
-        }
-        if (field === 'username' || field === 'email') {
-            const value = uniquBody[field];
-            const { error, isUnique } = await checkUserUniqueness(field, value);
-            if (!isUnique) {
-                errorMsg = error;
-            }
-        }
-        if (field === 'email' && !validateEmail(uniquBody[field])) {
-            errorMsg = [field] + ': Not a valid Email';
-        }
-        if (field === 'password' && password !== '' && password < 4) {
-            errorMsg = [field] + 'Password too short';
-        }
-        return errorMsg;
-    });
-    if (errorMsg !== "") {
-        res.json({ message : errorMsg, status: "error" });
-    } else {
-        const newUser = new User({
-            profile: { name },
-            username: username,
-            email: email,
-            address: address,
-            phonenumber: phonenumber,
-            password: password
-        });
-        // Generate the Salt
-        bcrypt.genSalt(10, (err, salt) => {
+    const newUser = new User({ ...signData});
+    // Generate the Salt
+    bcrypt.genSalt(10, (err, salt) => {
+        if(err) return err;
+        // Create the hashed password
+        bcrypt.hash(newUser.password, salt, (err, hash) => {
             if(err) return err;
-            // Create the hashed password
-            bcrypt.hash(newUser.password, salt, (err, hash) => {
-                if(err) return err;
-                newUser.password = hash;
-                // Save the User
-                newUser.save(function(err){
-                    if(err) return err
-                    res.json({ status: 'success' });
-                });
+            newUser.password = hash;
+            // Save the User
+            newUser.save()
+            .then( result => {
+                console.log("success")
+                res.json({ status: 'success' });
+            })
+            .catch( err => {
+                console.log(err)
             });
         });
-    }
+    });
 }
 
 const signin = (req, res) => {
@@ -115,6 +95,10 @@ const signin = (req, res) => {
                 bcrypt.compare(password, user.password, (err, isMatch) => {
                     if (err) return err;
                     if (isMatch) {
+                        // check active
+                        if ( user.status !== STATUS_ACTIVE ) {
+                            return res.json({ message: 'You are not allowed here, Please wait Admin allow you', status: "fail" });
+                        }
                         const token = jwt.sign({
                                 id: user._id,
                                 username: user.username

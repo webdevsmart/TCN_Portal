@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom'
 import { Row, Col, Select, DatePicker, notification } from 'antd';
 import moment from 'moment';
-import { Cards } from '../../../components/cards/frame/cards-frame';
 import { setDashBoardFilter } from '../../../redux/filter/actionCreator';
 import { FilterStyle } from '../style';
 import Axios from 'axios';

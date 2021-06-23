@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { ROLE_MEMBER, ROLE_CLIENT, ROLE_OWNER, ROLE_ADMIN } = require('../constants.js');
+const { USER_ROLE, STATUS_ACTIVE, STATUS_DEACTIVE } = require('../constants.js');
 
 const UserSchema = mongoose.Schema({
     profile: {
@@ -29,9 +29,15 @@ const UserSchema = mongoose.Schema({
     },
     role: {
         type: String,
-        enum: [ROLE_MEMBER, ROLE_CLIENT, ROLE_OWNER, ROLE_ADMIN],
-        default: ROLE_MEMBER
+        enum: USER_ROLE,
+        default: USER_ROLE[0]
     },
+    status: {
+        type: String,
+        enum: [STATUS_ACTIVE, STATUS_DEACTIVE],
+        default: STATUS_DEACTIVE
+    },
+    siteID: [],
 },
 {
   timestamps: true

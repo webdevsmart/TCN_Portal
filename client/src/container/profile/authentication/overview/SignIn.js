@@ -56,7 +56,7 @@ const SignIn = () => {
             <Input.Password placeholder="Password" />
           </Form.Item>
           <div className="auth-form-action">
-            <Checkbox onChange={onChange}>Keep me logged in</Checkbox>
+            <Checkbox onChange={onChange} checked={state.checked}>Keep me logged in</Checkbox>
             <NavLink className="forgot-pass-link" to="#">
               Forgot password?
             </NavLink>

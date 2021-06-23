@@ -1,21 +1,53 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom/cjs/react-router-dom.min';
-import { Form, Input, notification } from 'antd';
-import axios from 'axios';
+import { Form, Input, notification, Select } from 'antd';
 import { AuthWrapper } from './style';
 import { Button } from '../../../../components/buttons/buttons';
 import { Checkbox } from '../../../../components/checkbox/checkbox';
 import Heading from '../../../../components/heading/heading';
+import { USER_ROLE } from '../../../../constants';
+import Axios from 'axios';
+
+const { Option } = Select;
 
 const SignUp = () => {
   const [state, setState] = useState({
     values: null,
     checked: null,
+    role: '',
+    siteList: []
   });
+
+  const { siteList } = state;
+  // get site list
+  useEffect(() => {
+    Axios.get("/api/dashboard/getSiteIDs")
+    .then( res => {
+      if ( res.data.status === 'success' ) {
+        setState({
+          ...state,
+          siteList: res.data.data
+        }  )
+      } else {
+        notification['warning']({
+          message: 'Warning!',
+          description: 
+            res.data.message
+        })
+      }
+    })
+    .catch( err => {
+      notification['warning']({
+        message: 'Warning!',
+        description: 
+          "Server Error!"
+      })
+    });
+  }, []);
 
   const handleSubmit = values => {
     const url = '/api/auth/signup';
-    axios.post(url, { values })
+    Axios.post(url, { values })
     .then(res => {
       if (res.data.status === "success") {
         notification["success"]({
@@ -38,6 +70,7 @@ const SignUp = () => {
   };
 
   const onChange = checked => {
+    console.log(checked)
     setState({ ...state, checked });
   };
 
@@ -88,10 +121,57 @@ const SignUp = () => {
           >
             <Input.Password placeholder="Password" />
           </Form.Item>
+          <Form.Item
+            label="Role"
+            name="role"
+            rules={[{ required: true, message: 'Please input your role!' }]}
+          >
+            <Select 
+              style={{ height: '34px' }}
+              onChange={ value => {
+                setState({
+                  ...state,
+                  role: value
+                })
+              }}
+            >
+              {USER_ROLE.map( (item, index) => {
+                return (
+                  <Option value={ item } label={ item } key={ index }>{ item }</Option>
+                );
+              })}
+            </Select>
+          </Form.Item>
+          {state.role === USER_ROLE[0] ? (
+          <Form.Item
+            label="Role"
+            name="siteID"
+          >
+            <Select 
+                mode="multiple"
+                style={{ width: '100%', minHeight: '49px' }}
+                maxTagCount={2}
+                >
+                {
+                  siteList.map( (item, index) => {
+                    return (
+                      <Select.Option value={item} key={index}>{item}</Select.Option>
+                    );
+                  })
+                }
+              </Select>
+          </Form.Item>
+            ) : ''
+          }
           <div className="auth-form-action">
-            <Checkbox onChange={onChange}>
-              Creating an account means you’re okay with our Terms of Service and Privacy Policy
-            </Checkbox>
+            <Form.Item
+              name="checkedPolicy"
+              rules={[{ required: true, message: 'Please confirm this!' }]}
+            >
+              <Checkbox onChange={onChange} checked={state.checked}>
+                Creating an account means you’re okay with our Terms of Service and Privacy Policy
+              </Checkbox>
+            </Form.Item>
           </div>
           <Form.Item>
             <Button className="btn-create" htmlType="submit" type="primary" size="large">

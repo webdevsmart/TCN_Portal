@@ -1,7 +1,7 @@
-const ROLE_MEMBER = 'Member';
-const ROLE_CLIENT = 'Client';
-const ROLE_OWNER = 'Owner';
-const ROLE_ADMIN = 'Admin';
+const USER_ROLE = [
+    'Client',
+    'Admin'
+];
 
 const STATUS_ACTIVE = 'Active'; 
 const STATUS_DEACTIVE = 'Inactive'; 
@@ -32,13 +32,10 @@ const IMAGE_UPLOAD_URL = '/uploads/images/';
 // const LOG_FILE_PATH = "D:/Workspace/0514_vending_portal/vgc2_backup/";
 const LOG_FILE_PATH = "/home/vending/vgc2_backup/";
 const PYTHON_PATH = "/home/vending/python";
+const APP_PATH = "/home/TCN_Portal";
 // const PYTHON_PATH = "D:/Workspace/0514_vending_portal/test";
 
 module.exports = { 
-    ROLE_MEMBER, 
-    ROLE_CLIENT, 
-    ROLE_OWNER, 
-    ROLE_ADMIN,
     STATUS_ACTIVE,
     STATUS_DEACTIVE,
     RELEASE_TYPE,
@@ -49,5 +46,6 @@ module.exports = {
     WEIGHT_UNIT,
     PRICE_UNIT,
     LOG_FILE_PATH,
-    PYTHON_PATH
+    PYTHON_PATH,
+    USER_ROLE
 };

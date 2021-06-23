@@ -1,7 +1,6 @@
-const ROLE_MEMBER = 'Member';
-const ROLE_CLIENT = 'Client';
-const ROLE_OWNER = 'Owner';
-const ROLE_ADMIN = 'Admin';
+const USER_ROLE = [
+    'Client', 'Admin'
+];
 
 const STATUS_ACTIVE = 'Active'; 
 const STATUS_DEACTIVE = 'Inactive'; 
@@ -31,10 +30,7 @@ const NO = 'No';
 const IMAGE_UPLOAD_URL = '/uploads/images/';
 
 module.exports = { 
-    ROLE_MEMBER, 
-    ROLE_CLIENT, 
-    ROLE_OWNER, 
-    ROLE_ADMIN,
+    USER_ROLE,
     STATUS_ACTIVE,
     STATUS_DEACTIVE,
     RELEASE_TYPE,
