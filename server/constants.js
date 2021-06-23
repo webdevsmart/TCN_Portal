@@ -31,7 +31,7 @@ const NO = 'No';
 const IMAGE_UPLOAD_URL = '/uploads/images/';
 // const LOG_FILE_PATH = "D:/Workspace/0514_vending_portal/vgc2_backup/";
 const LOG_FILE_PATH = "/home/vending/vgc2_backup/";
-const PYTHON_PATH = "/home/vending/test";
+const PYTHON_PATH = "/home/vending/python";
 // const PYTHON_PATH = "D:/Workspace/0514_vending_portal/test";
 
 module.exports = { 
