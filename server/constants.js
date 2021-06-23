@@ -31,6 +31,8 @@ const NO = 'No';
 const IMAGE_UPLOAD_URL = '/uploads/images/';
 // const LOG_FILE_PATH = "D:/Workspace/0514_vending_portal/vgc2_backup/";
 const LOG_FILE_PATH = "/home/vending/vgc2_backup/";
+const PYTHON_PATH = "/home/vending/test/";
+// const PYTHON_PATH = "D:/Workspace/0514_vending_portal/test";
 
 module.exports = { 
     ROLE_MEMBER, 
@@ -46,5 +48,6 @@ module.exports = {
     LENGTH_UNIT,
     WEIGHT_UNIT,
     PRICE_UNIT,
-    LOG_FILE_PATH
+    LOG_FILE_PATH,
+    PYTHON_PATH
 };
