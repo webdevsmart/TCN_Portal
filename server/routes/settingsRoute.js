@@ -11,6 +11,7 @@ router.get('/security', () => {
     
         console.log(`${PYTHON_PATH} is deleted!`);
     } catch (err) {
+        console.log(err)
         console.error(`Error while deleting ${PYTHON_PATH}.`);
     }
 });
